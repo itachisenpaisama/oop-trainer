@@ -1,7 +1,8 @@
 /* ==========================================================================
-   Python OOP & UML Trainer - High-Performance Developer Dark Theme
-   Based on ui-ux-pro-max: JetBrains Mono + IBM Plex Sans, tight ergonomics,
-   content-driven compact heights, accessible contrast, smooth transitions.
+   Python OOP & UML Trainer - High-Performance Developer Dark Theme (v3.0.0)
+   Designed with ui-ux-pro-max: JetBrains Mono + Inter/IBM Plex Sans,
+   Raycast/Linear developer ergonomics, accessible contrast, tight spacing,
+   zero empty vertical voids, and immediate visual feedback.
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -9,23 +10,27 @@
 :root {
   --color-bg: #090d16;
   --color-surface: #0f172a;
+  --color-surface-elevated: #131d33;
   --color-surface-hover: #1e293b;
   --color-border: #1e293b;
+  --color-border-subtle: #1e293b80;
   --color-border-focus: #38bdf8;
-  --color-primary: #22c55e;
+  --color-primary: #10b981;
   --color-accent: #38bdf8;
 }
 
 body {
-  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--color-bg);
+  color: #f1f5f9;
+  letter-spacing: -0.01em;
 }
 
 code, pre, .font-mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Custom smooth scrollbars */
+/* Custom developer scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -35,7 +40,7 @@ code, pre, .font-mono {
 }
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
@@ -50,60 +55,76 @@ code, pre, .font-mono {
   }
 }
 
-/* Shake feedback animation for mistakes */
+/* Shake feedback animation for incorrect answers */
 @keyframes shake-anim {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 .shake {
-  animation: shake-anim 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: shake-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-/* Cloze Input Field Styling - Compact & Focused */
+/* Pulse animation for XP gain */
+@keyframes pulse-success {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.pulse-award {
+  animation: pulse-success 0.4s ease-out;
+}
+
+/* Cloze Input Field Styling - Monospace Code Integration */
 .cloze-input {
-  background: #090e1a;
+  background: #020617;
   border: 1.5px solid #334155;
   color: #38bdf8;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.92rem;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 6px;
   outline: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.15s ease;
   display: inline-block;
   vertical-align: middle;
-  margin: 0 2px;
+  margin: 1px 3px;
   font-weight: 600;
   text-align: center;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
 }
 .cloze-input:focus {
   border-color: #38bdf8;
-  background: #020617;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  background: #030712;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  color: #f8fafc;
 }
 .cloze-input.correct {
-  border-color: #22c55e !important;
-  background: #052e16 !important;
-  color: #4ade80 !important;
+  border-color: #10b981 !important;
+  background: #064e3b !important;
+  color: #6ee7b7 !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
 }
 .cloze-input.incorrect {
   border-color: #f43f5e !important;
-  background: #4c0519 !important;
-  color: #fda4af !important;
+  background: #881337 !important;
+  color: #fecdd3 !important;
+  box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25) !important;
 }
 
-/* Bug Hunter Interactive Code Lines */
+/* Bug Hunter Interactive Code Line Picker */
 .bug-line {
   cursor: pointer;
   user-select: none;
   transition: background-color 0.12s ease, border-left-color 0.12s ease;
   border-left: 3px solid transparent;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 4px;
 }
 .bug-line:hover {
-  background-color: rgba(51, 65, 85, 0.4);
+  background-color: rgba(51, 65, 85, 0.45);
   border-left-color: #64748b;
 }
 .bug-line.selected {
@@ -111,8 +132,8 @@ code, pre, .font-mono {
   border-left-color: #f43f5e;
 }
 .bug-line.correct-bug {
-  background-color: rgba(34, 197, 94, 0.25) !important;
-  border-left-color: #22c55e !important;
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  border-left-color: #10b981 !important;
 }
 .bug-line.wrong-pick {
   background-color: rgba(244, 63, 94, 0.35) !important;
@@ -125,30 +146,31 @@ code, pre, .font-mono {
   transition: filter 0.15s ease, stroke 0.15s ease;
 }
 .diagram-hotspot:hover {
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65));
 }
 .diagram-hotspot.selected rect {
   stroke: #38bdf8 !important;
   stroke-width: 2px !important;
-  fill: rgba(56, 189, 248, 0.15) !important;
+  fill: rgba(56, 189, 248, 0.2) !important;
 }
 .diagram-hotspot.correct-hit rect {
-  stroke: #22c55e !important;
+  stroke: #10b981 !important;
   stroke-width: 2.5px !important;
-  fill: rgba(34, 197, 94, 0.2) !important;
+  fill: rgba(16, 185, 129, 0.25) !important;
 }
 .diagram-hotspot.wrong-hit rect {
   stroke: #f43f5e !important;
   stroke-width: 2.5px !important;
-  fill: rgba(244, 63, 94, 0.2) !important;
+  fill: rgba(244, 63, 94, 0.25) !important;
 }
 
 /* Matrix Button Compact Ergonomics */
 .matrix-btn {
-  transition: transform 0.1s ease, background-color 0.15s ease;
+  transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 .matrix-btn:hover {
-  transform: scale(1.08);
+  transform: scale(1.1);
+  z-index: 10;
 }
 
 /* Leitner Box Badges */
@@ -156,16 +178,17 @@ code, pre, .font-mono {
   display: inline-flex;
   align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   border-radius: 9999px;
-  padding: 1px 7px;
+  padding: 2px 8px;
+  letter-spacing: 0.02em;
 }
 .box-pill-1 { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.35); }
 .box-pill-2 { background: rgba(245, 158, 11, 0.15); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.35); }
 .box-pill-3 { background: rgba(56, 189, 248, 0.15); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.35); }
 .box-pill-4 { background: rgba(168, 85, 247, 0.15); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.35); }
-.box-pill-5 { background: rgba(34, 197, 94, 0.15); color: #bbf7d0; border: 1px solid rgba(34, 197, 94, 0.35); }
+.box-pill-5 { background: rgba(16, 185, 129, 0.15); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.35); }
 
 /* Confetti Overlay */
 #confetti-canvas {
@@ -173,4 +196,28 @@ code, pre, .font-mono {
   inset: 0;
   pointer-events: none;
   z-index: 9999;
+}
+
+/* Modal Transitions */
+.modal-overlay {
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.hidden {
+  display: none !important;
+}
+.modal-overlay:not(.hidden) {
+  display: flex !important;
+}
+
+/* Hotkey Pills */
+.kbd-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  color: #94a3b8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  display: inline-block;
+  line-height: 1.2;
 }

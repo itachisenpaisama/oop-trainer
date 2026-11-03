@@ -1,7 +1,8 @@
 /**
- * Python OOP & UML Trainer - Master Application Controller
- * Rebuilt from scratch: tight ergonomics, reliable modals, zero-DOM-destruction filtering,
- * live badge counts, Leitner spaced repetition, and exam simulator.
+ * Python OOP & UML Trainer - Master Application Controller (v3.0.0)
+ * Rebuilt from scratch: Linear/Raycast-grade ergonomics, reliable modal lifecycle,
+ * zero-DOM-destruction filtering, live badge counts, Leitner spaced repetition,
+ * and IHK exam simulator.
  */
 (function() {
   let storage;
@@ -37,13 +38,13 @@
     if (!modalEl) return;
     sfx?.playClick();
     modalEl.classList.remove('hidden');
-    modalEl.classList.add('flex');
+    modalEl.style.display = 'flex';
   }
 
   function closeModal(modalEl) {
     if (!modalEl) return;
     modalEl.classList.add('hidden');
-    modalEl.classList.remove('flex');
+    modalEl.style.display = 'none';
   }
 
   /* ==========================================================================
@@ -58,9 +59,9 @@
     canvas.height = window.innerHeight;
 
     const particles = [];
-    const colors = ['#22c55e', '#38bdf8', '#a855f7', '#f59e0b', '#ec4899', '#f8fafc'];
+    const colors = ['#10b981', '#38bdf8', '#a855f7', '#f59e0b', '#ec4899', '#f8fafc'];
 
-    for (let i = 0; i < 65; i++) {
+    for (let i = 0; i < 60; i++) {
       particles.push({
         x: canvas.width * 0.5 + (Math.random() - 0.5) * 160,
         y: canvas.height * 0.45,
@@ -97,7 +98,7 @@
         }
       });
 
-      if (alive && frame < 80) {
+      if (alive && frame < 75) {
         frame++;
         requestAnimationFrame(render);
       } else {
@@ -118,7 +119,7 @@
       state.filteredTaskIds = activeTasks
         .filter(t => {
           const stats = storage.getTaskStats(t.id);
-          return stats.incorrect > 0 || (stats.attempts > 0 && stats.box <= 2);
+          return stats.incorrect > 0 || (stats.attempts > 0 && stats.box === 1);
         })
         .map(t => t.id);
     } else if (state.filterType === 'bookmarks') {
@@ -164,15 +165,27 @@
     const rankInfo = storage.getRank();
 
     // Top Header
-    document.getElementById('xp-counter').textContent = `${storage.data.xp} XP`;
-    document.getElementById('streak-counter').textContent = storage.data.streak;
-    document.getElementById('user-rank-badge').textContent = `${rankInfo.badge} ${rankInfo.title}`;
+    const xpEl = document.getElementById('xp-counter');
+    if (xpEl) xpEl.textContent = `${storage.data.xp} XP`;
+
+    const streakEl = document.getElementById('streak-counter');
+    if (streakEl) streakEl.textContent = storage.data.streak;
+
+    const rankBadgeEl = document.getElementById('user-rank-badge');
+    if (rankBadgeEl) rankBadgeEl.textContent = `${rankInfo.badge} ${rankInfo.title}`;
 
     // Sidebar Progress
-    document.getElementById('progress-percent').textContent = `${metrics.percent}%`;
-    document.getElementById('progress-bar-fill').style.width = `${metrics.percent}%`;
-    document.getElementById('progress-text').textContent = `${metrics.solvedCount} von ${metrics.total} gemeistert`;
-    document.getElementById('unseen-count-text').textContent = `${metrics.unseenCount} offen`;
+    const pctEl = document.getElementById('progress-percent');
+    if (pctEl) pctEl.textContent = `${metrics.percent}%`;
+
+    const barEl = document.getElementById('progress-bar-fill');
+    if (barEl) barEl.style.width = `${metrics.percent}%`;
+
+    const progTextEl = document.getElementById('progress-text');
+    if (progTextEl) progTextEl.textContent = `${metrics.solvedCount} von ${metrics.total} gemeistert`;
+
+    const unseenTextEl = document.getElementById('unseen-count-text');
+    if (unseenTextEl) unseenTextEl.textContent = `${metrics.unseenCount} offen`;
 
     // Filter badges count
     const errorCountEl = document.getElementById('filter-error-count');
@@ -183,7 +196,14 @@
     if (bookmarkCountEl) bookmarkCountEl.textContent = bookmarkCount;
 
     // Sound Icon
-    document.getElementById('sound-icon').textContent = storage.data.settings.soundEnabled ? '🔊' : '🔇';
+    const soundIconEl = document.getElementById('sound-icon');
+    if (soundIconEl) {
+      if (storage.data.settings.soundEnabled) {
+        soundIconEl.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+      } else {
+        soundIconEl.innerHTML = `<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+      }
+    }
   }
 
   function renderMatrix() {
@@ -214,7 +234,7 @@
       }
 
       if (isCurrent) {
-        btn.classList.add('ring-2', 'ring-white', 'scale-110', 'font-black');
+        btn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-500', 'text-slate-950', 'scale-110', 'font-black');
       }
 
       btn.addEventListener('click', () => {
@@ -238,9 +258,9 @@
       const f = btn.dataset.filter;
       const isActive = state.filterType === f;
       if (isActive) {
-        btn.className = 'special-filter-btn px-2.5 py-1.5 rounded-lg font-semibold bg-brand-500 text-slate-950 transition text-center truncate shadow';
+        btn.className = 'special-filter-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 transition text-center truncate shadow font-semibold';
       } else {
-        btn.className = 'special-filter-btn px-2.5 py-1.5 rounded-lg font-semibold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition text-center truncate';
+        btn.className = 'special-filter-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white transition text-center truncate font-semibold';
       }
     });
 
@@ -249,9 +269,9 @@
       const top = btn.dataset.topic;
       const isActive = state.filterType === 'all' && state.currentTopic.toString() === top.toString();
       if (isActive) {
-        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 flex items-center justify-between transition';
+        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center justify-between transition';
       } else {
-        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between';
+        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent';
       }
     });
   }
@@ -269,19 +289,19 @@
     const hintBox = document.getElementById('hint-box');
     const feedbackBox = document.getElementById('feedback-box');
 
-    hintBox.classList.add('hidden');
-    feedbackBox.classList.add('hidden');
+    if (hintBox) hintBox.classList.add('hidden');
+    if (feedbackBox) feedbackBox.classList.add('hidden');
 
     const task = getActiveTask();
     if (!task) {
       // Toggle views gracefully without overwriting HTML!
-      activeContainer.classList.add('hidden');
-      emptyContainer.classList.remove('hidden');
+      if (activeContainer) activeContainer.classList.add('hidden');
+      if (emptyContainer) emptyContainer.classList.remove('hidden');
       return;
     }
 
-    activeContainer.classList.remove('hidden');
-    emptyContainer.classList.add('hidden');
+    if (activeContainer) activeContainer.classList.remove('hidden');
+    if (emptyContainer) emptyContainer.classList.add('hidden');
 
     // Reset temporary interaction selections
     state.selectedTf = null;
@@ -292,19 +312,36 @@
     const topicMeta = window.TASK_DATABASE.TOPICS[task.topic] || { title: `Thema ${task.topic}`, icon: "📚" };
 
     // Badges
-    document.getElementById('current-task-badge').textContent = `Aufgabe ${task.id} (${state.currentTaskIdx + 1}/${state.filteredTaskIds.length})`;
-    document.getElementById('current-topic-badge').textContent = `${topicMeta.icon} ${topicMeta.title}`;
-    document.getElementById('current-type-badge').textContent = task.type.toUpperCase();
+    const badgeTaskEl = document.getElementById('current-task-badge');
+    if (badgeTaskEl) badgeTaskEl.textContent = `Aufgabe ${task.id} (${state.currentTaskIdx + 1}/${state.filteredTaskIds.length})`;
+
+    const badgeTopicEl = document.getElementById('current-topic-badge');
+    if (badgeTopicEl) badgeTopicEl.textContent = `${topicMeta.icon} ${topicMeta.title}`;
+
+    const badgeTypeEl = document.getElementById('current-type-badge');
+    if (badgeTypeEl) badgeTypeEl.textContent = task.type.toUpperCase();
 
     // Box Pill
     const boxPill = document.getElementById('task-box-pill');
-    boxPill.className = `box-pill box-pill-${stats.box || 1}`;
-    boxPill.textContent = `Fach ${stats.box || 1} / 5`;
+    if (boxPill) {
+      boxPill.className = `box-pill box-pill-${stats.box || 1}`;
+      boxPill.textContent = `Fach ${stats.box || 1} / 5`;
+    }
 
-    // Bookmark
+    // Bookmark Star
     const bookmarkBtn = document.getElementById('bookmark-task-btn');
-    bookmarkBtn.textContent = storage.isBookmarked(task.id) ? '★' : '☆';
-    bookmarkBtn.className = storage.isBookmarked(task.id) ? 'p-1 rounded text-base hover:scale-125 transition text-amber-400' : 'p-1 rounded text-base hover:scale-125 transition text-slate-500 hover:text-amber-400';
+    const bookmarkStarIcon = document.getElementById('bookmark-star-icon');
+    if (bookmarkStarIcon) {
+      if (storage.isBookmarked(task.id)) {
+        bookmarkStarIcon.setAttribute('fill', '#f59e0b');
+        bookmarkStarIcon.setAttribute('stroke', '#f59e0b');
+        bookmarkBtn.className = 'p-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 transition';
+      } else {
+        bookmarkStarIcon.setAttribute('fill', 'none');
+        bookmarkStarIcon.setAttribute('stroke', 'currentColor');
+        bookmarkBtn.className = 'p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition';
+      }
+    }
 
     // Title & Prompt
     document.getElementById('task-title').textContent = task.title;
@@ -317,14 +354,14 @@
 
     if (task.type === 'tf') {
       area.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto py-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto py-2">
           <button id="tf-true-btn" class="py-3 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition">
-            <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-xs">✓</span>
-            <span>Wahr <span class="text-[11px] font-mono text-slate-400 font-normal">[W / 1]</span></span>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Wahr</span> <span class="kbd-pill">W / 1</span>
           </button>
           <button id="tf-false-btn" class="py-3 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition">
-            <span class="w-5 h-5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-xs">✗</span>
-            <span>Falsch <span class="text-[11px] font-mono text-slate-400 font-normal">[F / 2]</span></span>
+            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Falsch</span> <span class="kbd-pill">F / 2</span>
           </button>
         </div>
       `;
@@ -354,233 +391,246 @@
       });
 
       area.innerHTML = `
-        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3.5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-slate-200">
+        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3.5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-slate-200 shadow-inner">
           <pre class="whitespace-pre-wrap">${codeHtml}</pre>
         </div>
-        <p class="text-[11px] text-slate-400 mt-1.5">💡 Springe mit <code>Tab</code> zur nächsten Lücke und drücke <code>Enter</code> zum Prüfen.</p>
+        <p class="text-[11px] text-slate-400 mt-1.5">💡 Springe mit <span class="kbd-pill">Tab</span> zur nächsten Lücke und drücke <span class="kbd-pill">Enter</span> zum Prüfen.</p>
       `;
 
-      const firstInp = area.querySelector('.cloze-input');
-      if (firstInp) setTimeout(() => firstInp.focus(), 50);
-
-      area.querySelectorAll('.cloze-input').forEach(inp => {
-        inp.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') checkAnswer();
-        });
-      });
+      // Focus first input automatically
+      setTimeout(() => {
+        const firstInp = area.querySelector('input.cloze-input');
+        if (firstInp) firstInp.focus();
+      }, 50);
 
     } else if (task.type === 'bughunt') {
-      const req = task.bugIndices.length;
-      let lines = task.codeLines.map((line, idx) => `
-        <div class="bug-line px-2.5 py-1 flex items-center gap-3 font-mono text-xs" data-line="${idx}">
-          <span class="text-slate-600 select-none w-4 text-right">${idx + 1}</span>
-          <span class="text-slate-200 whitespace-pre">${escapeHtml(line)}</span>
-        </div>
-      `).join('');
+      const lines = task.codeLines || [];
+      let linesHtml = lines.map((l, idx) => {
+        const lineNo = (idx + 1).toString().padStart(2, ' ');
+        return `
+          <div class="bug-line flex items-center font-mono text-xs sm:text-sm" data-lineno="${idx + 1}">
+            <span class="text-slate-600 select-none w-8 text-right pr-3 font-semibold">${lineNo}</span>
+            <span class="text-slate-200 select-text">${escapeHtml(l)}</span>
+          </div>
+        `;
+      }).join('');
 
       area.innerHTML = `
-        <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-          <span>Klicke auf die fehlerhafte(n) Zeile(n):</span>
-          <span id="bug-counter-status" class="font-bold text-amber-400">0 von ${req} Zeilen markiert</span>
+        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3 space-y-0.5 shadow-inner">
+          ${linesHtml}
         </div>
-        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-1.5 overflow-x-auto space-y-0.5">
-          ${lines}
-        </div>
+        <p class="text-[11px] text-slate-400 mt-1.5">🎯 Klicke auf die Zeile, die den syntaktischen oder logischen Fehler enthält.</p>
       `;
 
-      area.querySelectorAll('.bug-line').forEach(lineEl => {
-        lineEl.addEventListener('click', () => {
+      area.querySelectorAll('.bug-line').forEach(el => {
+        el.addEventListener('click', () => {
           sfx.playClick();
-          const lineIdx = parseInt(lineEl.dataset.line, 10);
-          if (state.selectedBugLines.includes(lineIdx)) {
-            state.selectedBugLines = state.selectedBugLines.filter(i => i !== lineIdx);
-            lineEl.classList.remove('selected');
-          } else {
-            if (state.selectedBugLines.length < req) {
-              state.selectedBugLines.push(lineIdx);
-              lineEl.classList.add('selected');
-            } else {
-              const first = state.selectedBugLines.shift();
-              area.querySelector(`[data-line="${first}"]`)?.classList.remove('selected');
-              state.selectedBugLines.push(lineIdx);
-              lineEl.classList.add('selected');
-            }
-          }
-          document.getElementById('bug-counter-status').textContent = `${state.selectedBugLines.length} von ${req} Zeilen markiert`;
+          const lineNo = parseInt(el.dataset.lineno, 10);
+          area.querySelectorAll('.bug-line').forEach(b => b.classList.remove('selected'));
+          el.classList.add('selected');
+          state.selectedBugLines = [lineNo];
         });
       });
 
     } else if (task.type === 'diagram_click') {
-      let svgMarkup = '';
-      if (task.diagramType === 'class_diagram') {
-        svgMarkup = diagrams.renderClassDiagram(task.diagramConfig);
-      } else if (task.diagramType === 'memory_pointer') {
-        svgMarkup = diagrams.renderMemoryPointerModel(task.diagramConfig);
-      } else if (task.diagramType === 'relationship') {
-        svgMarkup = diagrams.renderRelationshipDiagram(task.diagramConfig);
-      } else if (task.diagramType === 'use_case') {
-        svgMarkup = diagrams.renderUseCaseDiagram(task.diagramConfig);
+      let diagramSvg = '';
+      if (task.diagramKind === 'class') {
+        diagramSvg = diagrams.renderClassDiagram(task.diagramConfig);
+      } else if (task.diagramKind === 'pointer_model') {
+        diagramSvg = diagrams.renderMemoryPointerModel(task.diagramConfig);
+      } else if (task.diagramKind === 'relationship') {
+        diagramSvg = diagrams.renderRelationshipDiagram(task.diagramConfig);
+      } else if (task.diagramKind === 'usecase') {
+        diagramSvg = diagrams.renderUseCaseDiagram(task.diagramConfig);
       }
 
       area.innerHTML = `
-        <div class="p-3 rounded-xl bg-[#070b14] border border-slate-800/80 flex flex-col items-center justify-center">
-          ${svgMarkup}
+        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3 flex flex-col items-center justify-center shadow-inner">
+          ${diagramSvg}
         </div>
-        <p class="text-[11px] text-slate-400 mt-1.5 text-center">👆 Klicke direkt im Diagramm auf das Element und bestätige mit "Antwort prüfen".</p>
+        <p class="text-[11px] text-slate-400 mt-1.5 text-center">👆 Klicke direkt im Diagramm auf das gesuchte Element oder den Zielbereich.</p>
       `;
 
       area.querySelectorAll('.diagram-hotspot').forEach(el => {
-        el.addEventListener('click', () => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
           sfx.playClick();
+          const hotspotId = el.dataset.hotspotId;
           area.querySelectorAll('.diagram-hotspot').forEach(h => h.classList.remove('selected'));
           el.classList.add('selected');
-          state.selectedHotspotId = el.dataset.hotspotId;
+          state.selectedHotspotId = hotspotId;
         });
       });
 
     } else if (task.type === 'write') {
       area.innerHTML = `
         <div class="space-y-2">
-          <textarea id="code-writer-textarea" rows="6" spellcheck="false" class="w-full rounded-xl bg-[#070b14] border border-slate-800/80 p-3 font-mono text-xs leading-relaxed outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-slate-200">${task.starterCode}</textarea>
-          <div class="flex items-center justify-between text-[11px] text-slate-400">
-            <span>Drücke <code>Tab</code> für 4 Leerzeichen.</span>
-            <button id="insert-starter-btn" class="text-slate-400 hover:text-white underline">Code zurücksetzen</button>
-          </div>
+          <textarea id="write-answer-input" rows="4" placeholder="Schreibe deinen Python-Code oder deine Lösung hier..." class="w-full bg-[#070b14] border border-slate-800 rounded-xl p-3 font-mono text-xs sm:text-sm text-brand-300 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition shadow-inner resize-y"></textarea>
+          <p class="text-[11px] text-slate-400">💡 Schreibe die präzise Anweisung oder den Methodenkopf.</p>
         </div>
       `;
-
-      const textarea = document.getElementById('code-writer-textarea');
-      textarea.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          const start = this.selectionStart;
-          const end = this.selectionEnd;
-          this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-          this.selectionStart = this.selectionEnd = start + 4;
-        }
-      });
-
-      document.getElementById('insert-starter-btn')?.addEventListener('click', () => {
-        textarea.value = task.starterCode;
-        textarea.focus();
-      });
     }
   }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
   /* ==========================================================================
-     CHECK ANSWER & FEEDBACK LOGIC
+     ANSWER EVALUATION ENGINE
      ========================================================================== */
   function checkAnswer() {
     const task = getActiveTask();
     if (!task) return;
 
-    const feedbackBox = document.getElementById('feedback-box');
-    const feedbackTitle = document.getElementById('feedback-title');
-    const feedbackDesc = document.getElementById('feedback-desc');
-
     let isCorrect = false;
-    let feedbackText = "";
+    let userDetail = '';
 
     if (task.type === 'tf') {
       if (state.selectedTf === null) {
-        alert("Bitte wähle zuerst Wahr oder Falsch aus!");
+        alert("Bitte wähle zuerst 'Wahr' oder 'Falsch' aus!");
         return;
       }
-      isCorrect = (state.selectedTf === task.answer);
-      feedbackText = task.explanation;
+      isCorrect = (state.selectedTf === task.correctAnswer);
+      userDetail = state.selectedTf ? 'Wahr' : 'Falsch';
 
     } else if (task.type === 'cloze') {
       const inputs = document.querySelectorAll('.cloze-input');
-      let allCorrect = true;
+      let allFilled = true;
+      let gapsCorrect = true;
+
       inputs.forEach(inp => {
-        const gapKey = inp.dataset.gap;
-        const userVal = inp.value.trim().toLowerCase();
-        const expected = task.gaps[gapKey].trim().toLowerCase();
-        if (userVal === expected) {
+        const key = inp.dataset.gap;
+        const val = inp.value.trim();
+        const expected = task.gaps[key];
+
+        if (!val) allFilled = false;
+
+        let match = false;
+        if (Array.isArray(expected)) {
+          match = expected.some(ex => ex.toLowerCase() === val.toLowerCase());
+        } else {
+          match = expected.toLowerCase() === val.toLowerCase();
+        }
+
+        if (match) {
           inp.classList.remove('incorrect');
           inp.classList.add('correct');
         } else {
           inp.classList.remove('correct');
           inp.classList.add('incorrect');
-          allCorrect = false;
+          gapsCorrect = false;
         }
       });
-      isCorrect = allCorrect;
-      feedbackText = isCorrect ? "Exzellent ausgefüllt! Genau so ist die Syntax." : "Noch nicht ganz richtig. Überprüfe die rot markierten Felder.";
 
-    } else if (task.type === 'bughunt') {
-      const selected = [...state.selectedBugLines].sort();
-      const expected = [...task.bugIndices].sort();
-      if (selected.length === 0) {
-        alert("Bitte markiere die fehlerhaften Zeilen.");
+      if (!allFilled) {
+        alert("Bitte fülle alle Lücken aus!");
         return;
       }
-      document.querySelectorAll('.bug-line').forEach(lineEl => {
-        const idx = parseInt(lineEl.dataset.line, 10);
-        lineEl.classList.remove('correct-bug', 'wrong-pick');
-        if (selected.includes(idx)) {
-          if (expected.includes(idx)) lineEl.classList.add('correct-bug');
-          else lineEl.classList.add('wrong-pick');
-        }
-      });
-      isCorrect = (selected.length === expected.length && selected.every((v, i) => v === expected[i]));
-      feedbackText = task.explanation;
+      isCorrect = gapsCorrect;
+
+    } else if (task.type === 'bughunt') {
+      if (state.selectedBugLines.length === 0) {
+        alert("Bitte klicke auf die fehlerhafte Code-Zeile!");
+        return;
+      }
+      const picked = state.selectedBugLines[0];
+      const target = task.targetLine;
+      isCorrect = (picked === target);
+
+      const pickedEl = document.querySelector(`.bug-line[data-lineno="${picked}"]`);
+      if (isCorrect) {
+        pickedEl?.classList.add('correct-bug');
+      } else {
+        pickedEl?.classList.add('wrong-pick');
+        const correctEl = document.querySelector(`.bug-line[data-lineno="${target}"]`);
+        correctEl?.classList.add('correct-bug');
+      }
 
     } else if (task.type === 'diagram_click') {
       if (!state.selectedHotspotId) {
-        alert("Bitte klicke auf das gesuchte Element im Diagramm!");
+        alert("Bitte klicke auf ein Element im Diagramm!");
         return;
       }
       isCorrect = (state.selectedHotspotId === task.targetHotspotId);
-      const clickedEl = document.querySelector(`[data-hotspot-id="${state.selectedHotspotId}"]`);
-      if (clickedEl) {
-        clickedEl.classList.remove('selected');
-        clickedEl.classList.add(isCorrect ? 'correct-hit' : 'wrong-hit');
+
+      const el = document.querySelector(`.diagram-hotspot[data-hotspot-id="${state.selectedHotspotId}"]`);
+      if (isCorrect) {
+        el?.classList.add('correct-hit');
+      } else {
+        el?.classList.add('wrong-hit');
+        const targetEl = document.querySelector(`.diagram-hotspot[data-hotspot-id="${task.targetHotspotId}"]`);
+        targetEl?.classList.add('correct-hit');
       }
-      feedbackText = task.explanation;
 
     } else if (task.type === 'write') {
-      const textarea = document.getElementById('code-writer-textarea');
-      const code = textarea.value.trim();
-      const missing = task.expectedKeywords.filter(kw => !code.toLowerCase().includes(kw.toLowerCase()));
-      isCorrect = (missing.length === 0);
-      if (isCorrect) {
-        feedbackText = `Großartig! Alle wesentlichen Sprachbausteine wurden umgesetzt.\n\nMusterlösung:\n${task.solutionCode}`;
-      } else {
-        feedbackText = `Es fehlt noch ein wichtiges Konstrukt: '${missing[0]}'. Klicke auf 'Musterlösung' für die exakte Syntax.`;
+      const txt = (document.getElementById('write-answer-input')?.value || '').trim();
+      if (!txt) {
+        alert("Bitte gib eine Lösung ein!");
+        return;
       }
+      const keywords = task.keywords || [];
+      const lower = txt.toLowerCase();
+      const matched = keywords.every(kw => lower.includes(kw.toLowerCase()));
+      isCorrect = matched;
     }
 
-    // Record result
-    const oldRank = storage.getRank().title;
-    const res = storage.recordResult(task.id, isCorrect);
-    const newRank = storage.getRank().title;
+    // Record result in storage
+    const result = storage.recordResult(task.id, isCorrect);
 
-    feedbackBox.classList.remove('hidden', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-200', 'bg-rose-500/10', 'border-rose-500/30', 'text-rose-200');
-
+    // Audio & Visual Effects
+    const workspace = document.getElementById('task-workspace');
     if (isCorrect) {
       sfx.playCorrect();
       fireConfetti();
-      if (newRank !== oldRank) {
-        setTimeout(() => sfx.playLevelUp(), 250);
-      }
-      feedbackBox.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-200');
-      feedbackTitle.innerHTML = `<span class="text-emerald-400 text-base">✓</span> <span>Richtig gelöst! (+${res.xpEarned} XP) • Wandert in Fach ${res.stats.box}</span>`;
-      feedbackDesc.innerHTML = `<p>${escapeHtml(feedbackText)}</p>`;
+      document.getElementById('xp-counter')?.classList.add('pulse-award');
+      setTimeout(() => document.getElementById('xp-counter')?.classList.remove('pulse-award'), 500);
     } else {
       sfx.playIncorrect();
       if (storage.data.settings.animationsEnabled) {
-        document.getElementById('task-workspace')?.classList.add('shake');
-        setTimeout(() => document.getElementById('task-workspace')?.classList.remove('shake'), 350);
+        workspace?.classList.add('shake');
+        setTimeout(() => workspace?.classList.remove('shake'), 400);
       }
-      feedbackBox.classList.add('bg-rose-500/10', 'border-rose-500/30', 'text-rose-200');
-      feedbackTitle.innerHTML = `<span class="text-rose-400 text-base">✗</span> <span>Leider nicht ganz korrekt • Zurück in Fach 1</span>`;
-      feedbackDesc.innerHTML = `<p>${escapeHtml(feedbackText)}</p>`;
+    }
+
+    // Show Feedback Box
+    const box = document.getElementById('feedback-box');
+    const title = document.getElementById('feedback-title');
+    const desc = document.getElementById('feedback-desc');
+
+    box.classList.remove('hidden', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-200', 'bg-rose-500/10', 'border-rose-500/30', 'text-rose-200');
+
+    if (isCorrect) {
+      box.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-200');
+      title.innerHTML = `
+        <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">✓</span>
+        <span class="text-emerald-400 font-bold">Korrekt gelöst! (+${result.xpEarned} XP)</span>
+        <span class="ml-auto text-[11px] font-mono text-emerald-300">Aufgestiegen in Fach ${result.stats.box}/5</span>
+      `;
+      desc.innerHTML = `
+        <p class="leading-relaxed">${escapeHtml(task.explanation)}</p>
+        <div class="pt-2">
+          <button id="feedback-next-btn" class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5">
+            <span>Weiter zur nächsten Aufgabe</span>
+            <span class="kbd-pill bg-emerald-300/40 text-slate-950 border-emerald-600/40">Enter</span>
+          </button>
+        </div>
+      `;
+      document.getElementById('feedback-next-btn')?.addEventListener('click', () => {
+        document.getElementById('next-btn')?.click();
+      });
+    } else {
+      box.classList.add('bg-rose-500/10', 'border-rose-500/30', 'text-rose-200');
+      title.innerHTML = `
+        <span class="w-5 h-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs">✗</span>
+        <span class="text-rose-400 font-bold">Leider noch nicht ganz richtig!</span>
+        <span class="ml-auto text-[11px] font-mono text-rose-300">Zurück in Fach 1</span>
+      `;
+
+      let solCodeHtml = '';
+      if (task.solutionCode) {
+        solCodeHtml = `<pre class="bg-[#070b14] p-2.5 rounded-lg font-mono text-xs text-brand-300 border border-slate-800 my-1.5">${escapeHtml(task.solutionCode)}</pre>`;
+      }
+      desc.innerHTML = `
+        <p class="leading-relaxed">${escapeHtml(task.explanation)}</p>
+        ${solCodeHtml}
+      `;
     }
 
     renderHeaderStats();
@@ -588,190 +638,236 @@
   }
 
   /* ==========================================================================
-     SPACED REPETITION (KARTEIKASTEN) DASHBOARD
+     KARTEIKASTEN (LEITNER 5-FÄCHER SYSTEM)
      ========================================================================== */
   function renderSpacedDashboard() {
     const container = document.getElementById('spaced-boxes-container');
     if (!container) return;
-    const metrics = storage.getGlobalMetrics(window.TASK_DATABASE.TASKS);
     container.innerHTML = '';
 
-    const boxConfigs = [
-      { box: 1, name: "Fach 1: Problemfälle & Neu", desc: "Höchste Priorität • Tägliche Wiederholung", color: "border-rose-500/40 bg-rose-500/10 text-rose-300" },
-      { box: 2, name: "Fach 2: Einmal gewusst", desc: "Wiederholung in 2 Tagen", color: "border-amber-500/40 bg-amber-500/10 text-amber-300" },
-      { box: 3, name: "Fach 3: Befriedigend", desc: "Wiederholung in 4 Tagen", color: "border-sky-500/40 bg-sky-500/10 text-sky-300" },
-      { box: 4, name: "Fach 4: Sicher", desc: "Wiederholung in 7 Tagen", color: "border-purple-500/40 bg-purple-500/10 text-purple-300" },
-      { box: 5, name: "Fach 5: Gemeistert!", desc: "Klausurfest im Langzeitgedächtnis", color: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" }
+    const all = window.TASK_DATABASE.TASKS;
+    const metrics = storage.getGlobalMetrics(all);
+
+    const boxMeta = [
+      { box: 1, name: "Fach 1: Täglich", interval: "Jeden Lerntag", color: "rose", desc: "Neue & fehlerhafte Aufgaben" },
+      { box: 2, name: "Fach 2: Alle 2 Tage", interval: "Nach 2 Tagen", color: "amber", desc: "Erste Festigung" },
+      { box: 3, name: "Fach 3: Alle 4 Tage", interval: "Nach 4 Tagen", color: "sky", desc: "Mittleres Langzeitgedächtnis" },
+      { box: 4, name: "Fach 4: Wöchentlich", interval: "Nach 7 Tagen", color: "purple", desc: "Sichere Prüfungsroutine" },
+      { box: 5, name: "Fach 5: Gemeistert", interval: "Vor der Klausur", color: "emerald", desc: "Perfekt verankert" }
     ];
 
-    boxConfigs.forEach(item => {
-      const count = metrics.boxCounts[item.box] || 0;
+    boxMeta.forEach(b => {
+      const count = metrics.boxCounts[b.box] || 0;
       const card = document.createElement('div');
-      card.className = `p-4 rounded-xl border ${item.color} flex items-center justify-between transition hover:scale-[1.01] cursor-pointer shadow-sm`;
+      card.className = `p-4 rounded-2xl bg-[#0f172a] border border-slate-800 flex flex-col justify-between space-y-3 hover:border-slate-700 transition`;
+
       card.innerHTML = `
         <div>
-          <h4 class="font-bold text-sm text-white">${item.name}</h4>
-          <p class="text-[11px] opacity-75 mt-0.5">${item.desc}</p>
+          <div class="flex items-center justify-between mb-1">
+            <span class="box-pill box-pill-${b.box}">${b.name}</span>
+            <span class="font-mono text-base font-bold text-white">${count}</span>
+          </div>
+          <p class="text-[11px] text-slate-400">${b.desc}</p>
         </div>
-        <div class="text-right">
-          <span class="text-2xl font-black font-mono">${count}</span>
-          <span class="text-[10px] block opacity-75">Karten</span>
+        <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+          <span class="text-[10px] text-slate-500 font-mono">Wdh: ${b.interval}</span>
+          <button class="practice-box-btn px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs border border-slate-700 transition" data-box="${b.box}">
+            Dieses Fach üben →
+          </button>
         </div>
       `;
-      card.addEventListener('click', () => {
+
+      card.querySelector('.practice-box-btn')?.addEventListener('click', () => {
         sfx.playClick();
-        state.filterType = 'spaced';
-        document.getElementById('nav-mode-practice').click();
+        state.mode = 'practice';
+        state.filterType = 'all';
+        state.currentTopic = 'all';
+        state.currentType = 'all';
+        updateFilterUI();
+        updateFilteredTasks();
+
+        // Filter taskIds specifically in this box
+        const boxTaskIds = state.filteredTaskIds.filter(id => {
+          return (storage.getTaskStats(id).box || 1) === b.box;
+        });
+
+        if (boxTaskIds.length > 0) {
+          state.filteredTaskIds = boxTaskIds;
+          state.currentTaskIdx = 0;
+        }
+
+        switchView('practice');
       });
+
       container.appendChild(card);
     });
   }
 
   /* ==========================================================================
-     STATISTICS DASHBOARD
-     ========================================================================== */
-  function renderStatsDashboard() {
-    const metrics = storage.getGlobalMetrics(window.TASK_DATABASE.TASKS);
-    document.getElementById('stats-total-xp').textContent = `${storage.data.xp} XP`;
-    document.getElementById('stats-streak').textContent = `${storage.data.bestStreak} (Aktuell: ${storage.data.streak})`;
-    document.getElementById('stats-solved-count').textContent = `${metrics.solvedCount} / ${metrics.total}`;
-    document.getElementById('stats-accuracy-rate').textContent = `${metrics.percent}%`;
-
-    const topicContainer = document.getElementById('stats-topic-list');
-    topicContainer.innerHTML = '';
-
-    Object.keys(metrics.topicMetrics).forEach(topId => {
-      const m = metrics.topicMetrics[topId];
-      const topMeta = window.TASK_DATABASE.TOPICS[topId] || { title: `Thema ${topId}`, icon: "📚" };
-      const percent = m.total > 0 ? Math.round((m.solved / m.total) * 100) : 0;
-
-      const row = document.createElement('div');
-      row.className = 'p-3 rounded-lg bg-[#070b14] border border-slate-800/80 space-y-1';
-      row.innerHTML = `
-        <div class="flex items-center justify-between text-xs">
-          <span class="font-bold text-slate-200">${topMeta.icon} ${topMeta.title}</span>
-          <span class="font-mono text-slate-400">${m.solved} / ${m.total} (${percent}%)</span>
-        </div>
-        <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-          <div class="h-1.5 rounded-full ${percent >= 70 ? 'bg-emerald-500' : percent >= 40 ? 'bg-amber-500' : 'bg-rose-500'}" style="width: ${percent}%"></div>
-        </div>
-      `;
-      topicContainer.appendChild(row);
-    });
-  }
-
-  /* ==========================================================================
-     EXAM SIMULATION
+     KLAUSUR-SIMULATOR (TIMED EXAM WITH IHK GRADE)
      ========================================================================== */
   function startExam() {
-    const all = window.TASK_DATABASE.TASKS.filter(t => !storage.isTrash(t.id));
-    const sizeRadio = document.querySelector('input[name="exam-size"]:checked');
-    const count = parseInt(sizeRadio ? sizeRadio.value : "25", 10);
-    const examCount = Math.min(count, all.length);
+    sfx.playClick();
+    const sizeRadios = document.querySelectorAll('input[name="exam-size"]');
+    let size = 25;
+    sizeRadios.forEach(r => { if (r.checked) size = parseInt(r.value, 10); });
 
-    const minutesMap = { 15: 20, 25: 45, 40: 75 };
-    const minutes = minutesMap[examCount] || 45;
+    let timeMinutes = 45;
+    if (size === 15) timeMinutes = 20;
+    if (size === 40) timeMinutes = 75;
 
-    const shuffled = [...all].sort(() => 0.5 - Math.random());
-    state.examTasks = shuffled.slice(0, examCount);
+    // Pick random tasks across all 6 topics
+    const all = [...window.TASK_DATABASE.TASKS].filter(t => !storage.isTrash(t.id));
+    all.sort(() => Math.random() - 0.5);
+    state.examTasks = all.slice(0, size);
     state.examCurrentIdx = 0;
     state.examAnswers = {};
-    state.examTotalSeconds = minutes * 60;
-    state.examSecondsLeft = minutes * 60;
+    state.examSecondsLeft = timeMinutes * 60;
+    state.examTotalSeconds = state.examSecondsLeft;
 
     document.getElementById('exam-setup-card').classList.add('hidden');
-    document.getElementById('exam-result-card').classList.add('hidden');
     document.getElementById('exam-active-card').classList.remove('hidden');
+    document.getElementById('exam-result-card').classList.add('hidden');
 
-    clearInterval(state.examTimerInterval);
-    updateExamTimer();
-    state.examTimerInterval = setInterval(() => {
-      state.examSecondsLeft--;
-      updateExamTimer();
-      if (state.examSecondsLeft <= 0) {
-        clearInterval(state.examTimerInterval);
-        finishExam();
-      }
-    }, 1000);
+    if (state.examTimerInterval) clearInterval(state.examTimerInterval);
+    state.examTimerInterval = setInterval(updateExamTimer, 1000);
 
     renderExamTask();
   }
 
   function updateExamTimer() {
+    if (state.examSecondsLeft <= 0) {
+      clearInterval(state.examTimerInterval);
+      finishExam();
+      return;
+    }
+    state.examSecondsLeft--;
     const mins = Math.floor(state.examSecondsLeft / 60);
     const secs = state.examSecondsLeft % 60;
-    const el = document.getElementById('exam-timer');
-    if (el) el.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    document.getElementById('exam-timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
   function renderExamTask() {
     const task = state.examTasks[state.examCurrentIdx];
-    const total = state.examTasks.length;
-    document.getElementById('exam-question-progress').textContent = `Frage ${state.examCurrentIdx + 1} von ${total}`;
+    if (!task) return;
 
-    const container = document.getElementById('exam-task-box');
-    container.innerHTML = `
-      <div>
-        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Thema ${task.topic}</span>
-        <h3 class="text-base font-bold text-white mt-1">${escapeHtml(task.title)}</h3>
-        <p class="text-xs text-slate-300 mt-1">${escapeHtml(task.prompt)}</p>
+    document.getElementById('exam-question-progress').textContent = `Aufgabe ${state.examCurrentIdx + 1} von ${state.examTasks.length}`;
+
+    const box = document.getElementById('exam-task-box');
+    box.innerHTML = `
+      <div class="space-y-1">
+        <span class="text-xs font-mono text-emerald-400">Thema ${task.topic} • ${task.type.toUpperCase()}</span>
+        <h3 class="text-base font-bold text-white">${task.title}</h3>
+        <p class="text-xs sm:text-sm text-slate-300">${task.prompt}</p>
       </div>
-      <div id="exam-interactive-slot" class="pt-3 border-t border-slate-800/80"></div>
+      <div id="exam-interactive-container" class="pt-2"></div>
     `;
 
-    const slot = document.getElementById('exam-interactive-slot');
-    const saved = state.examAnswers[state.examCurrentIdx];
+    const area = document.getElementById('exam-interactive-container');
+    const prevAnswer = state.examAnswers[task.id];
 
     if (task.type === 'tf') {
-      slot.innerHTML = `
-        <div class="grid grid-cols-2 gap-3 max-w-sm mx-auto">
-          <button id="exam-tf-t" class="py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold text-xs">Wahr</button>
-          <button id="exam-tf-f" class="py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold text-xs">Falsch</button>
+      area.innerHTML = `
+        <div class="grid grid-cols-2 gap-3 max-w-sm py-2">
+          <button id="exam-tf-true" class="py-2.5 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-900 text-slate-300'}">
+            Wahr
+          </button>
+          <button id="exam-tf-false" class="py-2.5 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === false ? 'bg-rose-500/20 border-rose-500 text-rose-300' : 'bg-slate-900 text-slate-300'}">
+            Falsch
+          </button>
         </div>
       `;
-      const tBtn = document.getElementById('exam-tf-t');
-      const fBtn = document.getElementById('exam-tf-f');
+      document.getElementById('exam-tf-true')?.addEventListener('click', () => {
+        state.examAnswers[task.id] = true;
+        renderExamTask();
+      });
+      document.getElementById('exam-tf-false')?.addEventListener('click', () => {
+        state.examAnswers[task.id] = false;
+        renderExamTask();
+      });
 
-      const setTf = (val) => {
-        state.examAnswers[state.examCurrentIdx] = val;
-        if (val === true) {
-          tBtn.className = 'py-2.5 px-4 rounded-xl border-2 border-brand-500 bg-brand-500/20 text-brand-300 font-bold text-xs';
-          fBtn.className = 'py-2.5 px-4 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold text-xs';
-        } else {
-          fBtn.className = 'py-2.5 px-4 rounded-xl border-2 border-rose-500 bg-rose-500/20 text-rose-300 font-bold text-xs';
-          tBtn.className = 'py-2.5 px-4 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold text-xs';
-        }
-      };
-      if (saved !== undefined) setTf(saved);
-      tBtn.addEventListener('click', () => setTf(true));
-      fBtn.addEventListener('click', () => setTf(false));
+    } else if (task.type === 'cloze') {
+      let codeHtml = task.codeTemplate;
+      Object.keys(task.gaps).forEach(gapKey => {
+        const prevVal = (prevAnswer && prevAnswer[gapKey]) || '';
+        const inp = `<input type="text" autocomplete="off" data-gap="${gapKey}" value="${escapeHtml(prevVal)}" class="exam-cloze-input cloze-input" style="width: ${Math.max(6, task.gaps[gapKey].length + 2)}ch">`;
+        codeHtml = codeHtml.replace(`{{${gapKey}}}`, inp);
+      });
+      area.innerHTML = `
+        <div class="rounded-xl bg-[#070b14] border border-slate-800 p-3 font-mono text-xs sm:text-sm leading-relaxed text-slate-200">
+          <pre class="whitespace-pre-wrap">${codeHtml}</pre>
+        </div>
+      `;
+      area.querySelectorAll('.exam-cloze-input').forEach(inp => {
+        inp.addEventListener('input', () => {
+          if (!state.examAnswers[task.id]) state.examAnswers[task.id] = {};
+          state.examAnswers[task.id][inp.dataset.gap] = inp.value;
+        });
+      });
+
     } else {
-      slot.innerHTML = `<p class="text-xs text-slate-400 italic">Antworte gedanklich und klicke auf Weiter.</p>`;
+      // General freeform answer or note
+      const prevVal = typeof prevAnswer === 'string' ? prevAnswer : '';
+      area.innerHTML = `
+        <textarea id="exam-generic-input" rows="3" placeholder="Deine Klausurantwort..." class="w-full bg-[#070b14] border border-slate-800 rounded-xl p-3 font-mono text-xs sm:text-sm text-slate-200 outline-none focus:border-emerald-500">${escapeHtml(prevVal)}</textarea>
+      `;
+      document.getElementById('exam-generic-input')?.addEventListener('input', (e) => {
+        state.examAnswers[task.id] = e.target.value;
+      });
     }
   }
 
   function finishExam() {
     clearInterval(state.examTimerInterval);
+    sfx.playCorrect();
+
     let correct = 0;
-    state.examTasks.forEach((task, idx) => {
-      const ans = state.examAnswers[idx];
-      let isC = false;
-      if (task.type === 'tf') isC = (ans === task.answer);
-      if (isC) {
-        correct++;
-        storage.recordResult(task.id, true);
+    const total = state.examTasks.length;
+
+    state.examTasks.forEach(task => {
+      const ans = state.examAnswers[task.id];
+      if (task.type === 'tf') {
+        if (ans === task.correctAnswer) correct++;
+      } else if (task.type === 'cloze') {
+        if (ans && typeof ans === 'object') {
+          let allMatch = true;
+          Object.keys(task.gaps).forEach(k => {
+            const userV = (ans[k] || '').trim().toLowerCase();
+            const exp = task.gaps[k];
+            if (Array.isArray(exp)) {
+              if (!exp.some(e => e.toLowerCase() === userV)) allMatch = false;
+            } else {
+              if (exp.toLowerCase() !== userV) allMatch = false;
+            }
+          });
+          if (allMatch) correct++;
+        }
+      } else {
+        if (ans) correct++; // partial credit for attempting
       }
     });
 
-    const total = state.examTasks.length;
     const percent = Math.round((correct / total) * 100);
 
-    let grade = "Note 5,0 (Mangelhaft)";
-    let badgeClass = "bg-rose-500/20 text-rose-400 border border-rose-500/40";
-    if (percent >= 92) { grade = "Note 1,0 (Sehr gut)"; badgeClass = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"; }
-    else if (percent >= 81) { grade = "Note 2,0 (Gut)"; badgeClass = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"; }
-    else if (percent >= 67) { grade = "Note 3,0 (Befriedigend)"; badgeClass = "bg-blue-500/20 text-blue-400 border border-blue-500/40"; }
-    else if (percent >= 50) { grade = "Note 4,0 (Ausreichend)"; badgeClass = "bg-amber-500/20 text-amber-400 border border-amber-500/40"; }
+    // Official IHK Grade Curve
+    let grade = '6 (Ungenügend)';
+    let badgeClass = 'bg-rose-500/20 text-rose-300 border border-rose-500/40';
+    if (percent >= 92) {
+      grade = 'Note 1,0 (Sehr gut)';
+      badgeClass = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+    } else if (percent >= 81) {
+      grade = 'Note 2,0 (Gut)';
+      badgeClass = 'bg-teal-500/20 text-teal-300 border border-teal-500/40';
+    } else if (percent >= 67) {
+      grade = 'Note 3,0 (Befriedigend)';
+      badgeClass = 'bg-sky-500/20 text-sky-300 border border-sky-500/40';
+    } else if (percent >= 50) {
+      grade = 'Note 4,0 (Ausreichend)';
+      badgeClass = 'bg-amber-500/20 text-amber-300 border border-amber-500/40';
+    } else if (percent >= 30) {
+      grade = 'Note 5,0 (Mangelhaft)';
+      badgeClass = 'bg-orange-500/20 text-orange-300 border border-orange-500/40';
+    }
 
     document.getElementById('exam-active-card').classList.add('hidden');
     document.getElementById('exam-result-card').classList.remove('hidden');
@@ -783,9 +879,57 @@
   }
 
   /* ==========================================================================
+     STATISTIKEN (DEEP ANALYTICS DASHBOARD)
+     ========================================================================== */
+  function renderStatsDashboard() {
+    const all = window.TASK_DATABASE.TASKS;
+    const metrics = storage.getGlobalMetrics(all);
+
+    document.getElementById('stats-total-xp').textContent = `${storage.data.xp} XP`;
+    document.getElementById('stats-streak').textContent = storage.data.bestStreak;
+    document.getElementById('stats-solved-count').textContent = `${metrics.solvedCount} / ${metrics.total}`;
+    
+    let totalAttempts = 0;
+    let totalCorrect = 0;
+    Object.values(metrics.topicMetrics).forEach(m => {
+      totalAttempts += m.attempts;
+      totalCorrect += m.correct;
+    });
+    const acc = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+    document.getElementById('stats-accuracy-rate').textContent = `${acc}%`;
+
+    const topicList = document.getElementById('stats-topic-list');
+    topicList.innerHTML = '';
+
+    Object.keys(window.TASK_DATABASE.TOPICS).forEach(topId => {
+      const tInfo = window.TASK_DATABASE.TOPICS[topId];
+      const tMetric = metrics.topicMetrics[topId] || { total: 0, solved: 0 };
+      const pct = tMetric.total > 0 ? Math.round((tMetric.solved / tMetric.total) * 100) : 0;
+
+      const row = document.createElement('div');
+      row.className = 'p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5';
+      row.innerHTML = `
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-200">${tInfo.icon} ${tInfo.title}</span>
+          <span class="font-mono text-emerald-400 font-bold">${tMetric.solved} / ${tMetric.total} (${pct}%)</span>
+        </div>
+        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+          <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+        </div>
+      `;
+      topicList.appendChild(row);
+    });
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  /* ==========================================================================
      APP INITIALIZATION & EVENT LISTENERS
      ========================================================================== */
-  document.addEventListener('DOMContentLoaded', () => {
+  function initApp() {
     storage = new window.TrainerStorage();
     sfx = new window.SoundEngine(storage);
     diagrams = new window.DiagramEngine();
@@ -817,9 +961,9 @@
       Object.keys(navBtns).forEach(m => {
         if (navBtns[m]) {
           if (m === targetMode) {
-            navBtns[m].className = 'px-3 py-1.5 rounded-lg font-semibold bg-brand-500 text-slate-950 shadow transition';
+            navBtns[m].className = 'px-3.5 py-1.5 rounded-lg font-semibold bg-emerald-500 text-slate-950 shadow transition flex items-center gap-1.5';
           } else {
-            navBtns[m].className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition';
+            navBtns[m].className = 'px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5';
           }
         }
       });
@@ -842,6 +986,10 @@
       btn.addEventListener('click', () => {
         sfx.playClick();
         state.filterType = btn.dataset.filter;
+        if (btn.dataset.filter === 'all') {
+          state.currentTopic = 'all';
+          state.currentType = 'all';
+        }
         state.currentTaskIdx = 0;
         updateFilterUI();
         renderCurrentTask();
@@ -877,9 +1025,19 @@
       if (!task) return;
       sfx.playClick();
       const isBookmarked = storage.toggleBookmark(task.id);
+      const starIcon = document.getElementById('bookmark-star-icon');
       const bBtn = document.getElementById('bookmark-task-btn');
-      bBtn.textContent = isBookmarked ? '★' : '☆';
-      bBtn.className = isBookmarked ? 'p-1 rounded text-base hover:scale-125 transition text-amber-400' : 'p-1 rounded text-base hover:scale-125 transition text-slate-500 hover:text-amber-400';
+      if (starIcon) {
+        if (isBookmarked) {
+          starIcon.setAttribute('fill', '#f59e0b');
+          starIcon.setAttribute('stroke', '#f59e0b');
+          bBtn.className = 'p-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 transition';
+        } else {
+          starIcon.setAttribute('fill', 'none');
+          starIcon.setAttribute('stroke', 'currentColor');
+          bBtn.className = 'p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition';
+        }
+      }
       renderHeaderStats();
     });
 
@@ -919,7 +1077,12 @@
 
       box.classList.remove('hidden', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-200', 'bg-rose-500/10', 'border-rose-500/30', 'text-rose-200');
       box.classList.add('bg-slate-900', 'border-slate-800', 'text-slate-200');
-      title.innerHTML = `<span class="text-sky-400">📖</span> <span>Musterlösung & Erklärung:</span>`;
+      title.innerHTML = `
+        <span class="text-sky-400 font-bold flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>Musterlösung & Erklärung:</span>
+        </span>
+      `;
       
       let html = `<p class="mt-1">${escapeHtml(task.explanation)}</p>`;
       if (task.solutionCode) {
@@ -941,7 +1104,7 @@
     document.getElementById('sound-btn')?.addEventListener('click', () => {
       storage.data.settings.soundEnabled = !storage.data.settings.soundEnabled;
       storage.save();
-      document.getElementById('sound-icon').textContent = storage.data.settings.soundEnabled ? '🔊' : '🔇';
+      renderHeaderStats();
       const toggleInSettings = document.getElementById('setting-sound-toggle');
       if (toggleInSettings) toggleInSettings.checked = storage.data.settings.soundEnabled;
       if (storage.data.settings.soundEnabled) sfx.playClick();
@@ -950,7 +1113,6 @@
     // MODAL: Settings
     const settingsModal = document.getElementById('settings-modal');
     document.getElementById('settings-btn')?.addEventListener('click', () => {
-      // Sync form values
       const soundToggle = document.getElementById('setting-sound-toggle');
       if (soundToggle) soundToggle.checked = storage.data.settings.soundEnabled;
       const volSlider = document.getElementById('setting-volume-slider');
@@ -975,7 +1137,7 @@
     document.getElementById('setting-sound-toggle')?.addEventListener('change', (e) => {
       storage.data.settings.soundEnabled = e.target.checked;
       storage.save();
-      document.getElementById('sound-icon').textContent = storage.data.settings.soundEnabled ? '🔊' : '🔇';
+      renderHeaderStats();
     });
 
     document.getElementById('setting-volume-slider')?.addEventListener('input', (e) => {
@@ -1060,7 +1222,15 @@
 
       if (state.mode === 'practice') {
         if (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.key !== 'Enter')) return;
-        if (e.key === 'Enter') checkAnswer();
+        if (e.key === 'Enter') {
+          // If feedback next button exists, click it, else check answer
+          const feedbackNext = document.getElementById('feedback-next-btn');
+          if (feedbackNext && !document.getElementById('feedback-box').classList.contains('hidden')) {
+            feedbackNext.click();
+          } else {
+            checkAnswer();
+          }
+        }
         else if (e.key === 't' || e.key === 'T') document.getElementById('hint-btn')?.click();
         else if (e.key === 'l' || e.key === 'L') document.getElementById('solution-btn')?.click();
         else if (e.key === 'w' || e.key === 'W' || e.key === '1') document.getElementById('tf-true-btn')?.click();
@@ -1069,5 +1239,12 @@
         else if (e.key === 'ArrowLeft' && e.altKey) document.getElementById('prev-btn')?.click();
       }
     });
-  });
+  }
+
+  // Bulletproof initialization regardless of script loading timing:
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 })();

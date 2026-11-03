@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python OOP & UML Klausur-Trainer</title>
+  <title>Python OOP & UML Klausur-Trainer (LF7 & LF8)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,9 +12,9 @@
         extend: {
           colors: {
             brand: {
-              400: '#4ade80',
-              500: '#22c55e',
-              600: '#16a34a'
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669'
             },
             accent: {
               blue: '#38bdf8',
@@ -28,77 +28,86 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3.0.1">
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-slate-950">
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950">
 
   <!-- Confetti Canvas Overlay -->
   <canvas id="confetti-canvas"></canvas>
 
   <!-- TOP APP BAR -->
-  <header class="border-b border-slate-800 bg-[#0d1322]/95 backdrop-blur sticky top-0 z-40 px-4 py-2.5">
+  <header class="border-b border-slate-800 bg-[#0d1322]/95 backdrop-blur-md sticky top-0 z-40 px-4 py-2.5">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Logo & Meta -->
+      <!-- Brand & Rank -->
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-blue flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-brand-500/20">
-          OOP
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-sky-500 flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-emerald-500/20">
+          <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
         </div>
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-sm font-bold text-white tracking-tight">Python & UML Trainer</h1>
-            <span id="user-rank-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-brand-400 border border-slate-700">
+            <span id="user-rank-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-slate-700">
               🌱 Syntax-Novize
             </span>
           </div>
-          <p class="text-[11px] text-slate-400 hidden sm:block">110 Klausurfragen • LF7 & LF8 Prüfungsvorbereitung</p>
+          <p class="text-[11px] text-slate-400 hidden sm:block">110 Klausuraufgaben • IHK LF7 & LF8 Prüfungsvorbereitung</p>
         </div>
       </div>
 
       <!-- Center: Modes Switcher -->
-      <div class="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
-        <button id="nav-mode-practice" class="px-3 py-1.5 rounded-lg font-semibold bg-brand-500 text-slate-950 shadow transition">
-          📚 Training
+      <div class="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800/90 text-xs">
+        <button id="nav-mode-practice" class="px-3.5 py-1.5 rounded-lg font-semibold bg-emerald-500 text-slate-950 shadow transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Training</span>
         </button>
-        <button id="nav-mode-spaced" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition">
-          🗂️ Karteikarten
+        <button id="nav-mode-spaced" class="px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span>Karteikarten</span>
         </button>
-        <button id="nav-mode-exam" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition">
-          ⏱️ Klausur
+        <button id="nav-mode-exam" class="px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Klausur</span>
         </button>
-        <button id="nav-mode-stats" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition">
-          📊 Statistik
+        <button id="nav-mode-stats" class="px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Statistik</span>
         </button>
       </div>
 
       <!-- Right: Gamification Badges & Tools -->
       <div class="flex items-center gap-2">
         <!-- Streak -->
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium" title="Aktuelle Streak">
-          <span>🔥</span>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium" title="Aktuelle Streak richtiger Antworten">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.527.82-1.14 2.07-1.393 3.518-1.04-.61-1.89-1.54-2.45-2.61a1 1 0 00-1.782.908c.7 1.83 2.018 3.56 3.732 4.636C8.75 10.45 8.5 11.2 8.5 12c0 2.485 2.015 4.5 4.5 4.5s4.5-2.015 4.5-4.5c0-2.317-1.636-4.25-3.83-4.475.295-.623.6-1.28.725-1.972.16-.89.05-1.77-.5-2.5a1 1 0 00-1.5-.5z" clip-rule="evenodd"></path></svg>
           <span id="streak-counter" class="font-bold text-amber-400 font-mono">0</span>
         </div>
 
         <!-- XP -->
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium" title="Erfahrungspunkte">
-          <span>⚡</span>
-          <span id="xp-counter" class="font-bold text-brand-400 font-mono">0 XP</span>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium" title="Erfahrungspunkte (XP)">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
+          <span id="xp-counter" class="font-bold text-emerald-400 font-mono">0 XP</span>
         </div>
 
-        <!-- Sound Toggle Button -->
-        <button id="sound-btn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition" title="Sound ein/aus">
-          <span id="sound-icon">🔊</span>
+        <!-- Sound Button -->
+        <button id="sound-btn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition" title="Sound ein/aus" aria-label="Sound umschalten">
+          <span id="sound-icon">
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </span>
         </button>
 
         <!-- Cheatsheet Button -->
-        <button id="cheat-sheet-btn" class="px-2.5 py-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 text-xs font-semibold flex items-center gap-1.5 transition" title="Klausur-Spickzettel öffnen">
-          <span>📖</span>
+        <button id="cheat-sheet-btn" class="px-3 py-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 text-xs font-semibold flex items-center gap-1.5 transition" title="Klausur-Spickzettel & Formelsammlung öffnen">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
           <span class="hidden md:inline">Spickzettel</span>
         </button>
 
         <!-- Settings Button -->
-        <button id="settings-btn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition" title="Einstellungen & Daten-Backup">
-          <span>⚙️</span>
+        <button id="settings-btn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition" title="Einstellungen & Daten-Backup" aria-label="Einstellungen öffnen">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
       </div>
 
@@ -113,199 +122,223 @@
     <!-- ========================================== -->
     <div id="practice-view" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
       
-      <!-- LEFT SIDEBAR: FILTERS & MATRIX (4 Cols) -->
-      <div class="lg:col-span-4 flex flex-col gap-3">
+      <!-- LEFT SIDEBAR: ALL-IN-ONE HARMONIZED PANEL (4 Cols) -->
+      <aside class="lg:col-span-4 flex flex-col gap-3">
 
-        <!-- Progress Overview Card -->
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800 shadow-sm">
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-            <span class="font-medium text-slate-300">Trainingsfortschritt</span>
-            <span id="progress-percent" class="font-mono font-bold text-brand-400">0%</span>
-          </div>
-          <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden mb-1.5">
-            <div id="progress-bar-fill" class="bg-brand-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400">
-            <span id="progress-text">0 von 110 gemeistert</span>
-            <span id="unseen-count-text" class="text-slate-500 font-mono">110 offen</span>
-          </div>
-        </div>
-
-        <!-- Quick Filter Pills -->
-        <div class="grid grid-cols-3 gap-2 text-xs">
-          <button data-filter="all" class="special-filter-btn px-2.5 py-1.5 rounded-lg font-semibold bg-brand-500 text-slate-950 transition text-center truncate">
-            🌟 Alle (110)
-          </button>
-          <button data-filter="errors" class="special-filter-btn px-2.5 py-1.5 rounded-lg font-semibold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition text-center truncate" title="Nur falsch beantwortete Aufgaben">
-            ⚠️ Fehler (<span id="filter-error-count">0</span>)
-          </button>
-          <button data-filter="bookmarks" class="special-filter-btn px-2.5 py-1.5 rounded-lg font-semibold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition text-center truncate" title="Mit Stern gemerkte Aufgaben">
-            ⭐ Gemerkt (<span id="filter-bookmark-count">0</span>)
-          </button>
-        </div>
-
-        <!-- Topic List (6 Kernbereiche) -->
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-            <span>Themengebiete</span>
-            <span class="text-[10px] text-slate-500 lowercase font-normal">Klick zum Filtern</span>
-          </div>
-          <div class="space-y-1" id="topic-filter-list">
-            <button data-topic="all" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 flex items-center justify-between transition">
-              <span>🌟 Alle Themen</span>
-              <span class="font-mono text-[11px]">110</span>
-            </button>
-            <button data-topic="1" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">1. OOP-Theorie & Grundbegriffe</span>
-              <span class="font-mono text-[11px]">18</span>
-            </button>
-            <button data-topic="2" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">2. Konstruktor, self & Attribute</span>
-              <span class="font-mono text-[11px]">19</span>
-            </button>
-            <button data-topic="3" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">3. Kapselung, Getter & Setter</span>
-              <span class="font-mono text-[11px]">18</span>
-            </button>
-            <button data-topic="4" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">4. return vs print & Type Hints</span>
-              <span class="font-mono text-[11px]">16</span>
-            </button>
-            <button data-topic="5" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">5. Vererbung, super() & Polymorphie</span>
-              <span class="font-mono text-[11px]">18</span>
-            </button>
-            <button data-topic="6" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 transition flex items-center justify-between">
-              <span class="truncate">6. UML: Klassen & Use-Cases</span>
-              <span class="font-mono text-[11px]">21</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Question Matrix Grid -->
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
-            <span class="font-bold uppercase tracking-wider">Aufgaben-Matrix</span>
-            <div class="flex items-center gap-2 text-[10px]">
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-slate-800"></span> Offen</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-500"></span> Sicher</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-rose-500"></span> Fehler</span>
+        <!-- Unified Sidebar Card -->
+        <div class="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md space-y-4">
+          
+          <!-- 1. Progress Overview -->
+          <div>
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-bold text-slate-300 uppercase tracking-wider text-[11px]">Gesamtfortschritt</span>
+              <span id="progress-percent" class="font-mono font-bold text-emerald-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden mb-1.5 border border-slate-800">
+              <div id="progress-bar-fill" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+              <span id="progress-text">0 von 110 gemeistert</span>
+              <span id="unseen-count-text" class="text-slate-500">110 offen</span>
             </div>
           </div>
-          <div id="matrix-grid" class="grid grid-cols-10 gap-1 max-h-48 overflow-y-auto p-0.5">
-            <!-- Dynamically populated buttons -->
+
+          <!-- 2. Segmented Filter Pills (Alle, Fehler, Gemerkt) -->
+          <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold">
+            <button data-filter="all" class="special-filter-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 transition text-center truncate shadow" title="Alle 110 Aufgaben anzeigen">
+              Alle (110)
+            </button>
+            <button data-filter="errors" class="special-filter-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white transition text-center truncate" title="Nur falsch beantwortete Aufgaben">
+              Fehler (<span id="filter-error-count">0</span>)
+            </button>
+            <button data-filter="bookmarks" class="special-filter-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white transition text-center truncate" title="Mit Stern markierte Aufgaben">
+              Gemerkt (<span id="filter-bookmark-count">0</span>)
+            </button>
           </div>
+
+          <!-- 3. Topic Navigation List (6 Kernbereiche) -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+              <span>Themengebiete</span>
+              <span class="text-[10px] text-slate-500 font-normal lowercase">Klick zum Filtern</span>
+            </div>
+            <div class="space-y-1" id="topic-filter-list">
+              <button data-topic="all" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center justify-between transition">
+                <span>🌟 Alle Themengebiete</span>
+                <span class="font-mono text-[11px]">110</span>
+              </button>
+              <button data-topic="1" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">1. OOP-Theorie & Grundbegriffe</span>
+                <span class="font-mono text-[11px] text-slate-400">18</span>
+              </button>
+              <button data-topic="2" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">2. Konstruktor, self & Attribute</span>
+                <span class="font-mono text-[11px] text-slate-400">19</span>
+              </button>
+              <button data-topic="3" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">3. Kapselung, Getter & Setter</span>
+                <span class="font-mono text-[11px] text-slate-400">18</span>
+              </button>
+              <button data-topic="4" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">4. return vs print & Type Hints</span>
+                <span class="font-mono text-[11px] text-slate-400">16</span>
+              </button>
+              <button data-topic="5" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">5. Vererbung, super() & Polymorphie</span>
+                <span class="font-mono text-[11px] text-slate-400">18</span>
+              </button>
+              <button data-topic="6" class="topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent">
+                <span class="truncate">6. UML: Klassen & Use-Cases</span>
+                <span class="font-mono text-[11px] text-slate-400">21</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Aufgaben-Matrix (Integrated Grid) -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span class="font-bold uppercase tracking-wider">Aufgaben-Matrix (110)</span>
+              <div class="flex items-center gap-2 text-[10px]">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-slate-800"></span> Offen</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-500"></span> Gut</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-rose-500"></span> Üben</span>
+              </div>
+            </div>
+            <div id="matrix-grid" class="grid grid-cols-10 gap-1 max-h-48 overflow-y-auto p-1 bg-slate-950 rounded-xl border border-slate-800/80">
+              <!-- Dynamically populated buttons -->
+            </div>
+          </div>
+
         </div>
 
-      </div>
+      </aside>
 
-      <!-- RIGHT COLUMN: COMPACT ACTIVE TASK STAGE (8 Cols) -->
-      <div class="lg:col-span-8 flex flex-col gap-3">
+      <!-- RIGHT COLUMN: ERGONOMIC TASK WORKSPACE (8 Cols) -->
+      <section class="lg:col-span-8 flex flex-col gap-3">
 
-        <!-- Task Workspace Card -->
-        <div id="task-workspace" class="p-4 sm:p-5 rounded-xl bg-[#0f172a] border border-slate-800 shadow-md">
+        <!-- Task Workspace Card (Snug, Content-Driven, No Massive Gaps) -->
+        <div id="task-workspace" class="p-4 sm:p-6 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg min-h-[420px] flex flex-col justify-between">
           
           <!-- SUB-CONTAINER A: ACTIVE TASK CONTENT -->
           <div id="task-active-container" class="space-y-4">
             
             <!-- Meta Header Bar -->
             <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800/80">
+              
+              <!-- Badges Group -->
               <div class="flex items-center gap-2 flex-wrap text-xs">
-                <span id="current-task-badge" class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 font-mono font-bold text-brand-400">
+                <span id="current-task-badge" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 font-mono font-bold text-emerald-400">
                   Aufgabe 1 / 110
                 </span>
-                <span id="current-topic-badge" class="px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 font-semibold text-indigo-300">
+                <span id="current-topic-badge" class="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 font-semibold text-indigo-300">
                   Thema 1
                 </span>
-                <span id="current-type-badge" class="px-2 py-0.5 rounded-md bg-sky-500/10 border border-sky-500/20 font-mono text-sky-300 text-[11px]">
+                <span id="current-type-badge" class="px-2 py-0.5 rounded-lg bg-sky-500/10 border border-sky-500/20 font-mono text-sky-300 text-[11px] font-bold">
                   TF
                 </span>
                 <span id="task-box-pill" class="box-pill box-pill-1">
                   Fach 1 / 5
                 </span>
-                <button id="bookmark-task-btn" class="p-1 rounded text-base hover:scale-125 transition text-amber-400" title="Frage merken / unmerken">
-                  ☆
+                <button id="bookmark-task-btn" class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition" title="Frage merken / unmerken" aria-label="Lesezeichen setzen">
+                  <svg id="bookmark-star-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 </button>
               </div>
 
-              <!-- Top Quick Action (Trash & Nav) -->
+              <!-- Top Nav Actions (Trash & Prev/Next) -->
               <div class="flex items-center gap-1.5 text-xs">
-                <button id="hide-current-btn" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 transition" title="Frage ausblenden (in den Papierkorb)">
-                  🗑️
+                <button id="hide-current-btn" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 transition" title="Frage ausblenden" aria-label="Frage ausblenden">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 </button>
-                <button id="prev-btn" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold transition">
-                  ← Zurück
+                <button id="prev-btn" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold transition flex items-center gap-1" title="Vorherige Aufgabe (Alt+Links)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  <span class="hidden sm:inline">Zurück</span>
                 </button>
-                <button id="next-btn" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold transition">
-                  Weiter →
+                <button id="next-btn" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold transition flex items-center gap-1" title="Nächste Aufgabe (Alt+Rechts)">
+                  <span class="hidden sm:inline">Weiter</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
               </div>
+
             </div>
 
             <!-- Task Title & Prompt -->
-            <div>
+            <div class="space-y-1.5">
               <h2 id="task-title" class="text-base sm:text-lg font-bold text-white leading-snug">
                 Aufgabentitel
               </h2>
-              <p id="task-prompt" class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+              <p id="task-prompt" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Aufgabenstellung...
               </p>
             </div>
 
             <!-- INTERACTIVE QUESTION BODY (TF, Cloze, BugHunt, Diagram, Code) -->
             <div id="interactive-area" class="py-1">
-              <!-- Dynamically populated -->
+              <!-- Dynamically populated without empty space -->
             </div>
 
-            <!-- ACTION BAR: IMMEDIATELY BELOW THE QUESTION (No 500px gap!) -->
+            <!-- ACTION BAR: IMMEDIATELY BELOW THE QUESTION (Tight Ergonomics!) -->
             <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
+              
               <div class="flex items-center gap-2">
-                <button id="check-btn" class="px-5 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 active:scale-95 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-brand-500/20 transition flex items-center gap-2">
-                  <span>✓</span> Antwort prüfen <span class="text-[11px] opacity-75 font-mono">(Enter)</span>
+                <button id="check-btn" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 active:scale-95 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/20 transition flex items-center gap-2">
+                  <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Antwort prüfen</span>
+                  <span class="kbd-pill text-slate-950/80 bg-emerald-300/40 border-emerald-600/40">Enter</span>
                 </button>
+
                 <button id="hint-btn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 text-xs font-semibold flex items-center gap-1.5 transition">
-                  <span>💡</span> Tipp <span class="text-[10px] text-slate-400 font-mono">(T)</span>
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
+                  <span>Tipp</span>
+                  <span class="kbd-pill">T</span>
                 </button>
               </div>
 
               <div>
                 <button id="solution-btn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition">
-                  <span>👁️</span> Musterlösung <span class="text-[10px] text-slate-400 font-mono">(L)</span>
+                  <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  <span>Musterlösung</span>
+                  <span class="kbd-pill">L</span>
                 </button>
               </div>
+
             </div>
 
             <!-- Expandable Hint Box -->
-            <div id="hint-box" class="hidden p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs leading-relaxed">
-              <div class="font-bold mb-1 flex items-center gap-1 text-amber-400">
-                <span>💡</span> Denkanstoß:
+            <div id="hint-box" class="hidden p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs leading-relaxed">
+              <div class="font-bold mb-1 flex items-center gap-1.5 text-amber-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Denkanstoß:</span>
               </div>
               <p id="hint-text">Tipp-Inhalt...</p>
             </div>
 
             <!-- Expandable Feedback / Result Box -->
-            <div id="feedback-box" class="hidden p-3.5 rounded-xl border text-xs sm:text-sm leading-relaxed transition-all">
-              <div id="feedback-title" class="font-bold flex items-center gap-2 mb-1"></div>
+            <div id="feedback-box" class="hidden p-4 rounded-xl border text-xs sm:text-sm leading-relaxed transition-all">
+              <div id="feedback-title" class="font-bold flex items-center gap-2 mb-1.5"></div>
               <div id="feedback-desc" class="text-xs leading-relaxed space-y-2"></div>
             </div>
 
           </div>
 
-          <!-- SUB-CONTAINER B: EMPTY FILTER FALLBACK (DOM is never destroyed) -->
-          <div id="task-empty-container" class="hidden py-12 text-center space-y-3">
-            <span class="text-4xl">✨</span>
-            <h3 class="text-base font-bold text-white">Keine Aufgaben in diesem Filter</h3>
-            <p class="text-xs text-slate-400 max-w-sm mx-auto">
-              Für die aktuelle Auswahl (z. B. "Nur Fehler") liegen aktuell keine offenen Aufgaben vor.
-            </p>
-            <button id="reset-filter-btn" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs transition">
-              🌟 Zurück zu allen Aufgaben
+          <!-- SUB-CONTAINER B: EMPTY FILTER FALLBACK (DOM is never wiped) -->
+          <div id="task-empty-container" class="hidden py-14 text-center space-y-4 my-auto">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mx-auto">
+              ✓
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white">Keine Aufgaben in dieser Ansicht</h3>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+                Für den gewählten Filter (z. B. "Fehler" oder "Gemerkt") liegen aktuell keine offenen Aufgaben vor.
+              </p>
+            </div>
+            <button id="reset-filter-btn" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-md shadow-emerald-500/20">
+              🌟 Zurück zu allen 110 Aufgaben
             </button>
           </div>
 
         </div>
 
-      </div>
+      </section>
 
     </div>
 
@@ -313,14 +346,16 @@
     <!-- VIEW 2: KARTEIKASTEN (SPACED REPETITION)   -->
     <!-- ========================================== -->
     <div id="spaced-view" class="hidden flex flex-col gap-4 max-w-4xl mx-auto">
-      <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800 text-center space-y-1">
-        <h2 class="text-lg font-bold text-white">🗂️ Leitner Spaced-Repetition System</h2>
-        <p class="text-xs text-slate-400">
-          Richtig gelöste Fragen wandern in höhere Fächer (bis Fach 5). Bei einem Fehler fällt die Frage sofort in Fach 1 zurück.
+      <div class="p-5 rounded-2xl bg-[#0f172a] border border-slate-800 text-center space-y-1.5">
+        <h2 class="text-lg font-bold text-white flex items-center justify-center gap-2">
+          <span>🗂️</span> Leitner 5-Fächer Spaced-Repetition System
+        </h2>
+        <p class="text-xs text-slate-400 max-w-lg mx-auto">
+          Richtig beantwortete Aufgaben steigen in höhere Fächer auf (bis Fach 5). Bei jedem Fehler fällt die Aufgabe sofort zurück in Fach 1 zur erneuten Wiederholung.
         </p>
       </div>
 
-      <div id="spaced-boxes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div id="spaced-boxes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
         <!-- Dynamically rendered -->
       </div>
     </div>
@@ -331,34 +366,34 @@
     <div id="exam-view" class="hidden flex flex-col gap-4 max-w-3xl mx-auto">
       
       <!-- Exam Setup Screen -->
-      <div id="exam-setup-card" class="p-6 rounded-xl bg-[#0f172a] border border-slate-800 text-center space-y-5">
-        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto">
-          ⏱️
+      <div id="exam-setup-card" class="p-6 sm:p-8 rounded-2xl bg-[#0f172a] border border-slate-800 text-center space-y-5 shadow-xl">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         </div>
         <div>
           <h2 class="text-xl font-bold text-white">IHK Klausur-Simulator</h2>
           <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-            Prüfung unter Realbedingungen: Zufallsfragen aus allen 6 Bereichen, Countdown-Timer und offizielle IHK-Notenberechnung.
+            Prüfung unter Realbedingungen: Zufallsfragen aus allen 6 Bereichen, offizieller Notenschlüssel nach IHK-Standard.
           </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-          <label class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-brand-500 transition flex flex-col justify-between">
-            <input type="radio" name="exam-size" value="15" checked class="text-brand-500 focus:ring-0">
+          <label class="p-4 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-emerald-500 transition flex flex-col justify-between">
+            <input type="radio" name="exam-size" value="15" checked class="text-emerald-500 focus:ring-0">
             <div class="mt-2">
               <span class="block font-bold text-white text-xs">Sprint-Test</span>
               <span class="text-[11px] text-slate-400">15 Fragen • 20 Min.</span>
             </div>
           </label>
-          <label class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-brand-500 transition flex flex-col justify-between">
-            <input type="radio" name="exam-size" value="25" class="text-brand-500 focus:ring-0">
+          <label class="p-4 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-emerald-500 transition flex flex-col justify-between">
+            <input type="radio" name="exam-size" value="25" class="text-emerald-500 focus:ring-0">
             <div class="mt-2">
               <span class="block font-bold text-white text-xs">Standard-Klausur</span>
               <span class="text-[11px] text-slate-400">25 Fragen • 45 Min.</span>
             </div>
           </label>
-          <label class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-brand-500 transition flex flex-col justify-between">
-            <input type="radio" name="exam-size" value="40" class="text-brand-500 focus:ring-0">
+          <label class="p-4 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-emerald-500 transition flex flex-col justify-between">
+            <input type="radio" name="exam-size" value="40" class="text-emerald-500 focus:ring-0">
             <div class="mt-2">
               <span class="block font-bold text-white text-xs">Generalprobe</span>
               <span class="text-[11px] text-slate-400">40 Fragen • 75 Min.</span>
@@ -366,20 +401,20 @@
           </label>
         </div>
 
-        <button id="start-exam-btn" class="px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-brand-500/20 active:scale-95 transition">
+        <button id="start-exam-btn" class="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/20 active:scale-95 transition">
           🚀 Prüfung jetzt starten
         </button>
       </div>
 
       <!-- Exam Active Testing Screen -->
       <div id="exam-active-card" class="hidden flex flex-col gap-3">
-        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
+        <div class="flex items-center justify-between p-4 rounded-xl bg-[#0f172a] border border-slate-800">
           <span id="exam-question-progress" class="font-mono text-xs font-bold text-slate-300">Frage 1 von 25</span>
           <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-950 border border-slate-800 font-mono font-bold text-amber-400 text-xs">
             <span>⏳</span>
             <span id="exam-timer">45:00</span>
           </div>
-          <button id="finish-exam-btn" class="px-3 py-1 rounded-lg bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold text-xs transition">
+          <button id="finish-exam-btn" class="px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold text-xs transition">
             Abgeben & Auswerten
           </button>
         </div>
@@ -390,20 +425,20 @@
           <button id="exam-prev-btn" class="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 transition">
             ← Vorherige
           </button>
-          <button id="exam-next-btn" class="px-4 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold transition">
+          <button id="exam-next-btn" class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition">
             Nächste →
           </button>
         </div>
       </div>
 
       <!-- Exam Result Screen -->
-      <div id="exam-result-card" class="hidden p-6 rounded-xl bg-[#0f172a] border border-slate-800 space-y-4 text-center">
+      <div id="exam-result-card" class="hidden p-6 rounded-2xl bg-[#0f172a] border border-slate-800 space-y-4 text-center">
         <div id="exam-grade-badge" class="inline-block px-5 py-2.5 rounded-xl text-2xl font-black mb-1 shadow-lg">
           Note 1,0 (Sehr gut)
         </div>
         <h2 class="text-xl font-bold text-white">Klausurergebnis</h2>
         <p id="exam-summary-text" class="text-xs text-slate-400">Ergebnis</p>
-        <button id="exam-back-btn" class="px-4 py-2 rounded-xl bg-brand-500 text-slate-950 font-bold text-xs transition">
+        <button id="exam-back-btn" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs transition">
           Zurück zum Training
         </button>
       </div>
@@ -415,25 +450,25 @@
     <!-- ========================================== -->
     <div id="stats-view" class="hidden flex flex-col gap-4 max-w-4xl mx-auto">
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
+        <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800">
           <span class="text-[11px] text-slate-400 block mb-0.5">Gesamt XP</span>
-          <span id="stats-total-xp" class="text-lg font-black font-mono text-brand-400">0 XP</span>
+          <span id="stats-total-xp" class="text-lg font-black font-mono text-emerald-400">0 XP</span>
         </div>
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
+        <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800">
           <span class="text-[11px] text-slate-400 block mb-0.5">Beste Streak</span>
           <span id="stats-streak" class="text-lg font-black font-mono text-amber-400">0</span>
         </div>
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
+        <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800">
           <span class="text-[11px] text-slate-400 block mb-0.5">Gemeistert</span>
           <span id="stats-solved-count" class="text-lg font-black font-mono text-sky-400">0 / 110</span>
         </div>
-        <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-800">
+        <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800">
           <span class="text-[11px] text-slate-400 block mb-0.5">Erfolgsquote</span>
           <span id="stats-accuracy-rate" class="text-lg font-black font-mono text-purple-400">0%</span>
         </div>
       </div>
 
-      <div class="p-4 rounded-xl bg-[#0f172a] border border-slate-800 space-y-3">
+      <div class="p-5 rounded-2xl bg-[#0f172a] border border-slate-800 space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Fortschritt nach Themenbereichen</h3>
         <div id="stats-topic-list" class="space-y-2"></div>
       </div>
@@ -444,21 +479,25 @@
   <!-- ========================================== -->
   <!-- MODAL: EINSTELLUNGEN & DATEN-BACKUP        -->
   <!-- ========================================== -->
-  <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-[#0f172a] border border-slate-700 w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">⚙️ Einstellungen</h3>
-        <button id="close-settings-modal-btn" class="text-slate-400 hover:text-white text-base p-1">✕</button>
+  <div id="settings-modal" class="modal-overlay hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700/80 w-full max-w-md rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Einstellungen & Daten-Backup</span>
+        </h3>
+        <button id="close-settings-modal-btn" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" aria-label="Schließen">✕</button>
       </div>
 
-      <div class="space-y-3.5 text-xs text-slate-300">
-        <!-- Sound Settings -->
-        <div class="space-y-2">
+      <div class="space-y-4 text-xs text-slate-300">
+        <!-- Audio Settings -->
+        <div class="space-y-2.5 p-3 rounded-xl bg-slate-950 border border-slate-800">
           <div class="flex items-center justify-between">
             <span class="font-bold text-white">Audio-Feedback</span>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" id="setting-sound-toggle" class="sr-only peer" checked>
-              <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
+              <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
             </label>
           </div>
           <div>
@@ -466,49 +505,54 @@
               <span>Lautstärke</span>
               <span id="setting-volume-label" class="font-mono">70%</span>
             </div>
-            <input type="range" id="setting-volume-slider" min="0" max="100" value="70" class="w-full accent-brand-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer">
+            <input type="range" id="setting-volume-slider" min="0" max="100" value="70" class="w-full accent-emerald-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer">
           </div>
           <div class="flex items-center justify-between pt-1">
             <span>Sound-Profil</span>
-            <select id="setting-sound-profile" class="bg-slate-900 border border-slate-800 text-white rounded-lg px-2 py-1 outline-none text-xs">
-              <option value="synth">Modern Synth (Glocken)</option>
+            <select id="setting-sound-profile" class="bg-slate-900 border border-slate-700 text-white rounded-lg px-2 py-1 outline-none text-xs">
+              <option value="synth">Modern Synth (Glocken-Akkord)</option>
               <option value="retro">8-Bit Retro (Gameboy)</option>
             </select>
           </div>
         </div>
 
         <!-- Animation Toggle -->
-        <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
           <div>
             <span class="font-bold text-white block">Visuelle Effekte</span>
-            <span class="text-[11px] text-slate-400">Konfetti & Shake-Animationen</span>
+            <span class="text-[11px] text-slate-400">Konfetti bei Erfolg & Shake bei Fehlern</span>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" id="setting-anim-toggle" class="sr-only peer" checked>
-            <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
+            <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
           </label>
         </div>
 
         <!-- Data Backup -->
-        <div class="pt-3 border-t border-slate-800 space-y-2">
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
           <span class="font-bold text-white block">Lernstand sichern & übertragen</span>
-          <p class="text-[11px] text-slate-400">Exportiere deinen Fortschritt als JSON-Datei oder lade ihn auf ein anderes Gerät hoch.</p>
+          <p class="text-[11px] text-slate-400">
+            Exportiere deinen Fortschritt als JSON-Datei oder lade ihn auf einem anderen Gerät hoch. Daten gehen beim Neuladen nicht verloren.
+          </p>
           <div class="flex items-center gap-2 pt-1">
-            <button id="export-json-btn" class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-semibold transition text-center">
-              💾 Exportieren
+            <button id="export-json-btn" class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-semibold transition text-center flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Exportieren</span>
             </button>
-            <button id="import-json-btn" class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-semibold transition text-center">
-              📥 Importieren
+            <button id="import-json-btn" class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-semibold transition text-center flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Importieren</span>
             </button>
           </div>
         </div>
 
         <!-- Reset Button -->
         <div class="pt-2 text-right">
-          <button id="reset-all-data-btn" class="text-rose-400 hover:text-rose-300 underline text-[11px]">
-            Lernstand & XP zurücksetzen
+          <button id="reset-all-data-btn" class="text-rose-400 hover:text-rose-300 underline text-[11px] transition">
+            Lernstand & XP komplett zurücksetzen
           </button>
         </div>
+
       </div>
     </div>
   </div>
@@ -516,28 +560,32 @@
   <!-- ========================================== -->
   <!-- MODAL: SPICKZETTEL (CHEATSHEET)            -->
   <!-- ========================================== -->
-  <div id="cheat-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-[#0f172a] border border-slate-700 w-full max-w-2xl max-h-[85vh] rounded-2xl flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-5 py-3 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">📖 Klausur-Spickzettel & Formelsammlung</h3>
-        <button id="close-cheat-modal-btn" class="text-slate-400 hover:text-white text-base p-1">✕</button>
+  <div id="cheat-modal" class="modal-overlay hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700/80 w-full max-w-2xl max-h-[85vh] rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+      
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <span>Klausur-Spickzettel & Formelsammlung (LF7 & LF8)</span>
+        </h3>
+        <button id="close-cheat-modal-btn" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" aria-label="Schließen">✕</button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-300 flex-1 leading-relaxed">
         
         <!-- 1. UML Notation -->
-        <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-          <h4 class="font-bold text-accent-blue text-xs uppercase tracking-wider">1. UML-Klassendiagramm Notation</h4>
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <h4 class="font-bold text-sky-400 text-xs uppercase tracking-wider">1. UML-Klassendiagramm Notation</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-            <div class="p-2 rounded bg-slate-900 border border-slate-800/80">
-              <strong class="text-white block mb-0.5">Sichtbarkeiten:</strong>
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <strong class="text-white block mb-1">Sichtbarkeiten:</strong>
               • <code>+</code> public (öffentlich)<br>
               • <code>-</code> private (privat, in Python <code>__</code>)<br>
               • <code>#</code> protected (geschützt, in Python <code>_</code>)<br>
               • <code>~</code> package (Paket-Sichtbarkeit)
             </div>
-            <div class="p-2 rounded bg-slate-900 border border-slate-800/80">
-              <strong class="text-white block mb-0.5">Besondere Attribute:</strong>
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <strong class="text-white block mb-1">Besondere Kennzeichnungen:</strong>
               • <code>/abgeleitet</code>: Berechnet, nicht gespeichert!<br>
               • <u>unterstrichen</u>: Statisch (Klassenattribut / Klassenmethode)<br>
               • <em>kursiv</em>: Abstrakt (Klasse oder Methode)
@@ -546,56 +594,57 @@
         </div>
 
         <!-- 2. UML Beziehungen -->
-        <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-          <h4 class="font-bold text-brand-400 text-xs uppercase tracking-wider">2. UML Beziehungen (Klausur-Regeln)</h4>
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <h4 class="font-bold text-emerald-400 text-xs uppercase tracking-wider">2. UML Beziehungen (Klausur-Regeln)</h4>
           <ul class="space-y-1.5 list-disc pl-4 text-[11px]">
-            <li><strong>◇ Aggregation (weiße Raute):</strong> Lose Teil-Ganzes-Beziehung. Das Teil lebt ohne das Ganze weiter. <em>Die Raute steht immer beim Ganzen!</em></li>
-            <li><strong>◆ Komposition (schwarze Raute):</strong> Strenge Existenzabhängigkeit. Stirbt das Ganze, stirbt das Teil mit. <em>Die Raute steht immer beim Ganzen!</em></li>
-            <li><strong>▷ Generalisierung (leere Pfeilspitze):</strong> Vererbung ("ist-ein"). Der Pfeil zeigt immer nach oben zur Superklasse.</li>
+            <li><strong>◇ Aggregation (weiße Raute):</strong> Lose Teil-Ganzes-Beziehung. Das Teil existiert auch ohne das Ganze weiter. <em>Die Raute steht immer am Ganzen!</em></li>
+            <li><strong>◆ Komposition (schwarze Raute):</strong> Strenge Existenzabhängigkeit. Stirbt das Ganze, stirbt das Teil mit. <em>Die Raute steht immer am Ganzen!</em></li>
+            <li><strong>▷ Generalisierung (leere Dreiecksspitze):</strong> Vererbung ("ist-ein"). Der Pfeil zeigt immer nach oben zur Basisklasse.</li>
           </ul>
         </div>
 
         <!-- 3. Use-Case Regeln -->
-        <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-          <h4 class="font-bold text-accent-purple text-xs uppercase tracking-wider">3. Use-Case (Anwendungsfall) Diagramme</h4>
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <h4 class="font-bold text-purple-400 text-xs uppercase tracking-wider">3. Use-Case (Anwendungsfall) Diagramme</h4>
           <ul class="space-y-1.5 list-disc pl-4 text-[11px]">
             <li><strong>Akteure:</strong> Stehen ausnahmslos <strong>immer außerhalb</strong> der Systemgrenze!</li>
-            <li><strong>&lt;&lt;include&gt;&gt;:</strong> Zwingender Pflichtschritt. Pfeil zeigt zum Teilschritt.</li>
-            <li><strong>&lt;&lt;extend&gt;&gt;:</strong> Optionaler Sonderfall bei Bedingung. Pfeil zeigt <em>zurück</em> zum Basisfall!</li>
+            <li><strong>&lt;&lt;include&gt;&gt;:</strong> Zwingend erforderlicher Pflichtschritt. Pfeil zeigt zum Teilschritt.</li>
+            <li><strong>&lt;&lt;extend&gt;&gt;:</strong> Optionaler Erweiterungsschritt bei Bedingung. Pfeil zeigt <em>zurück</em> zum Basisfall!</li>
           </ul>
         </div>
 
         <!-- 4. Python OOP Syntax -->
-        <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5 font-mono text-[11px]">
-          <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider font-sans">4. Python OOP Kernregeln</h4>
-          <pre class="text-slate-200">
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5 font-mono text-[11px]">
+          <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider font-sans">4. Python OOP & Speicher-Referenzen</h4>
+          <pre class="text-slate-200 bg-[#070b14] p-3 rounded-lg border border-slate-800/80">
 class Auto:
     anzahl = 0                 # Klassenattribut (statisch)
     def __init__(self, marke): # Konstruktor
-        self.marke = marke     # Instanzattribut
+        self.marke = marke     # Instanzattribut auf Heap
         self.__pin = 1234      # Privat (__ Name Mangling)
 
 class Elektro(Auto):
     def __init__(self, marke, kwh):
-        super().__init__(marke)# Delegation an Elternklasse
+        super().__init__(marke)# Delegation an Basisklasse
         self.kwh = kwh</pre>
         </div>
 
       </div>
 
-      <div class="px-5 py-2.5 border-t border-slate-800 bg-slate-900/90 text-right">
-        <button id="close-cheat-modal-footer" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold">
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-900/90 text-right">
+        <button id="close-cheat-modal-footer" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition">
           Schließen
         </button>
       </div>
+
     </div>
   </div>
 
-  <!-- SCRIPTS -->
-  <script src="js/storage.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/diagrams.js"></script>
-  <script src="js/tasks.js"></script>
-  <script src="js/app.js"></script>
+  <!-- SCRIPTS WITH CACHE BUSTING -->
+  <script src="js/storage.js?v=3.0.1"></script>
+  <script src="js/audio.js?v=3.0.1"></script>
+  <script src="js/diagrams.js?v=3.0.1"></script>
+  <script src="js/tasks.js?v=3.0.1"></script>
+  <script src="js/app.js?v=3.0.1"></script>
 </body>
 </html>

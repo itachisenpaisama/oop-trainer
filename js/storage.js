@@ -1,9 +1,9 @@
 /**
- * Python OOP & UML Trainer - LocalStorage & Progress Engine
- * Resilient schema, Leitner Spaced Repetition & Detailed Statistics
+ * Python OOP & UML Trainer - LocalStorage & Progress Engine (v3.0.0)
+ * Resilient schema, Leitner Spaced Repetition (5 Boxes), Detailed Statistics & JSON Backup
  */
 (function() {
-  const STORAGE_KEY = 'oop_trainer_data_v2';
+  const STORAGE_KEY = 'oop_trainer_data_v3';
 
   const RANKS = [
     { minXp: 0, title: "Syntax-Novize", badge: "🌱", color: "text-slate-400" },
@@ -17,7 +17,7 @@
   ];
 
   const defaultState = {
-    version: 2,
+    version: 3,
     xp: 0,
     streak: 0,
     bestStreak: 0,
@@ -39,40 +39,58 @@
 
     load() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          // Migration from old v1 keys if present
-          const v1Xp = parseInt(localStorage.getItem('oop_xp') || '0', 10);
-          const v1Streak = parseInt(localStorage.getItem('oop_streak') || '0', 10);
-          const v1Solved = JSON.parse(localStorage.getItem('oop_solved') || '{}');
-          const v1Hidden = JSON.parse(localStorage.getItem('oop_hidden') || '[]');
-
-          const migrated = JSON.parse(JSON.stringify(defaultState));
-          migrated.xp = v1Xp;
-          migrated.streak = v1Streak;
-          migrated.bestStreak = v1Streak;
-          migrated.hidden = v1Hidden;
-
-          Object.keys(v1Solved).forEach(id => {
-            const isCorrect = v1Solved[id];
-            migrated.tasks[id] = {
-              attempts: 1,
-              correct: isCorrect ? 1 : 0,
-              incorrect: isCorrect ? 0 : 1,
-              box: isCorrect ? 2 : 1,
-              lastTested: Date.now(),
-              bookmarked: false
-            };
-          });
-
-          this.saveState(migrated);
-          return migrated;
+        if (typeof localStorage === 'undefined') {
+          return JSON.parse(JSON.stringify(defaultState));
         }
 
-        const parsed = JSON.parse(raw);
-        return Object.assign({}, defaultState, parsed, {
-          settings: Object.assign({}, defaultState.settings, parsed.settings || {})
+        const rawV3 = localStorage.getItem(STORAGE_KEY);
+        if (rawV3) {
+          const parsed = JSON.parse(rawV3);
+          return Object.assign({}, defaultState, parsed, {
+            settings: Object.assign({}, defaultState.settings, parsed.settings || {})
+          });
+        }
+
+        // Migrate from v2 if present
+        const rawV2 = localStorage.getItem('oop_trainer_data_v2');
+        if (rawV2) {
+          try {
+            const parsedV2 = JSON.parse(rawV2);
+            const migrated = Object.assign({}, defaultState, parsedV2, {
+              version: 3,
+              settings: Object.assign({}, defaultState.settings, parsedV2.settings || {})
+            });
+            this.saveState(migrated);
+            return migrated;
+          } catch(e) {}
+        }
+
+        // Migrate from v1 legacy keys
+        const v1Xp = parseInt(localStorage.getItem('oop_xp') || '0', 10);
+        const v1Streak = parseInt(localStorage.getItem('oop_streak') || '0', 10);
+        const v1Solved = JSON.parse(localStorage.getItem('oop_solved') || '{}');
+        const v1Hidden = JSON.parse(localStorage.getItem('oop_hidden') || '[]');
+
+        const migrated = JSON.parse(JSON.stringify(defaultState));
+        migrated.xp = v1Xp;
+        migrated.streak = v1Streak;
+        migrated.bestStreak = v1Streak;
+        migrated.hidden = Array.isArray(v1Hidden) ? v1Hidden : [];
+
+        Object.keys(v1Solved).forEach(id => {
+          const isCorrect = v1Solved[id];
+          migrated.tasks[id] = {
+            attempts: 1,
+            correct: isCorrect ? 1 : 0,
+            incorrect: isCorrect ? 0 : 1,
+            box: isCorrect ? 2 : 1,
+            lastTested: Date.now(),
+            bookmarked: false
+          };
         });
+
+        this.saveState(migrated);
+        return migrated;
       } catch(e) {
         console.error("Failed to load trainer storage:", e);
         return JSON.parse(JSON.stringify(defaultState));
@@ -85,7 +103,9 @@
 
     saveState(stateObj) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+        }
       } catch(e) {
         console.error("Storage save failed:", e);
       }
@@ -213,6 +233,7 @@
             solvedCount++;
             topicMetrics[top].solved++;
           }
+          // Error check matching filter definition:
           if (stats.incorrect > 0 || stats.box === 1) {
             errorCount++;
           }
@@ -253,6 +274,7 @@
     resetAllProgress() {
       this.data.xp = 0;
       this.data.streak = 0;
+      this.data.bestStreak = 0;
       this.data.tasks = {};
       this.save();
     }
