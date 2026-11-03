@@ -2,10 +2,19 @@
 <html lang="de" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Python OOP & UML Klausur-Trainer (LF7 & LF8)</title>
+  
+  <!-- iOS & Android Mobile Web App Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OOP Trainer">
+  <meta name="theme-color" content="#0a0d1a">
+  <meta name="format-detection" content="telephone=no">
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css?v=3.5.0">
+  <link rel="stylesheet" href="css/style.css?v=3.6.0">
 </head>
 <body data-theme="indigo" class="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
 
@@ -43,22 +52,26 @@
       </div>
 
       <!-- Center: Modes Switcher -->
-      <nav class="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800/90 text-xs">
-        <button id="nav-mode-practice" class="nav-mode-btn px-3.5 py-1.5 rounded-lg font-semibold active shadow transition flex items-center gap-1.5">
+      <nav class="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800/90 text-xs w-full md:w-auto justify-between sm:justify-start order-3 md:order-none mt-1 md:mt-0">
+        <button id="nav-mode-practice" class="nav-mode-btn flex-1 sm:flex-initial px-3 sm:px-3.5 py-1.5 rounded-lg font-semibold active shadow transition flex items-center justify-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          <span>Training</span>
+          <span class="hidden sm:inline">Training</span>
+          <span class="sm:hidden text-[11px]">Üben</span>
         </button>
-        <button id="nav-mode-spaced" class="nav-mode-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+        <button id="nav-mode-spaced" class="nav-mode-btn flex-1 sm:flex-initial px-3 sm:px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-          <span>Karteikarten</span>
+          <span class="hidden sm:inline">Karteikarten</span>
+          <span class="sm:hidden text-[11px]">Karten</span>
         </button>
-        <button id="nav-mode-exam" class="nav-mode-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+        <button id="nav-mode-exam" class="nav-mode-btn flex-1 sm:flex-initial px-3 sm:px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span>Klausur</span>
+          <span class="hidden sm:inline">Klausur</span>
+          <span class="sm:hidden text-[11px]">Klausur</span>
         </button>
-        <button id="nav-mode-stats" class="nav-mode-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+        <button id="nav-mode-stats" class="nav-mode-btn flex-1 sm:flex-initial px-3 sm:px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          <span>Statistik</span>
+          <span class="hidden sm:inline">Statistik</span>
+          <span class="sm:hidden text-[11px]">Stats</span>
         </button>
       </nav>
 
@@ -284,27 +297,27 @@
           </div>
 
           <!-- ACTION BAR: IMMEDIATELY BELOW THE QUESTION (Tight Ergonomics!) -->
-          <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+          <div class="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             
-            <div class="flex items-center gap-2">
-              <button id="check-btn" class="btn-tactile px-5 py-2.5 rounded-xl theme-cta-btn font-bold text-xs sm:text-sm flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-1">
+              <button id="check-btn" class="btn-tactile flex-1 sm:flex-initial px-5 py-3 sm:py-2.5 rounded-xl theme-cta-btn font-bold text-sm sm:text-xs md:text-sm flex items-center justify-center gap-2 min-h-[46px] sm:min-h-0 shadow-lg">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 <span>Antwort prüfen</span>
-                <span class="kbd-cap bg-white/20 text-white border-white/30">Enter</span>
+                <span class="kbd-cap bg-white/20 text-white border-white/30 hidden sm:inline-flex">Enter</span>
               </button>
 
-              <button id="hint-btn" class="btn-tactile px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 text-xs font-semibold flex items-center gap-1.5 transition">
+              <button id="hint-btn" class="btn-tactile px-3.5 py-3 sm:py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition min-h-[46px] sm:min-h-0">
                 <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
                 <span>Tipp</span>
-                <span class="kbd-cap">T</span>
+                <span class="kbd-cap hidden sm:inline-flex">T</span>
               </button>
             </div>
 
-            <div>
-              <button id="solution-btn" class="btn-tactile px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition">
+            <div class="w-full sm:w-auto">
+              <button id="solution-btn" class="btn-tactile w-full sm:w-auto px-3.5 py-3 sm:py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition min-h-[44px] sm:min-h-0">
                 <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 <span>Musterlösung</span>
-                <span class="kbd-cap">L</span>
+                <span class="kbd-cap hidden sm:inline-flex">L</span>
               </button>
             </div>
 
@@ -503,7 +516,7 @@
       </div>
 
       <div class="overflow-y-auto flex-1 p-1">
-        <div id="matrix-grid" class="grid grid-cols-10 gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+        <div id="matrix-grid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 sm:gap-1.5 p-1.5 bg-slate-950 rounded-xl border border-slate-800">
           <!-- Dynamically populated 110 buttons -->
         </div>
       </div>

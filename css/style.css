@@ -372,3 +372,113 @@ body[data-theme="nordic"] .special-filter-btn.active {
   box-shadow: 0 2px 8px var(--theme-primary-glow) !important;
 }
 
+/* ==========================================================================
+   MOBILE & TOUCH ERGONOMICS (iOS & Android Engine)
+   ========================================================================== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100dvh;
+}
+
+/* iOS Safe Area Insets (iPhone notch, dynamic island, home indicator) */
+header {
+  padding-top: max(0.65rem, env(safe-area-inset-top));
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+main {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+/* Eliminate 300ms double-tap delay on mobile browsers */
+button,
+a,
+input,
+select,
+textarea,
+.btn-tactile,
+.cloze-input,
+.bug-line,
+.diagram-hotspot,
+.special-filter-btn,
+.topic-btn,
+.nav-mode-btn {
+  touch-action: manipulation;
+}
+
+/* Prevent accidental text selection when rapidly tapping buttons on phones */
+.btn-tactile,
+.nav-mode-btn,
+.special-filter-btn,
+.topic-btn {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Horizontal Topics Strip: Smooth touch pan gesture */
+#topic-filter-list {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+/* Mobile Breakpoint (< 640px) Refinements */
+@media (max-width: 640px) {
+  /* iOS Safari Auto-Zoom Fix: Inputs MUST be >= 16px to prevent viewport shifting */
+  .cloze-input,
+  input[type="text"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* Compact padding on mobile container */
+  #task-workspace {
+    padding: 1rem 0.875rem !important;
+    border-radius: 1.125rem !important;
+  }
+
+  /* Thumb-friendly Touch Targets (44px min for iOS / 48px for Android) */
+  .btn-tactile {
+    min-height: 42px;
+  }
+
+  /* Bug Hunter line height for precise finger taps */
+  .bug-line {
+    min-height: 38px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Cloze inputs inside monospace code block */
+  .cloze-input {
+    padding: 4px 8px;
+    margin: 2px 2px;
+  }
+
+  /* Modal max height & responsive margins on phone screens */
+  .modal-overlay > div {
+    max-height: 90dvh !important;
+    width: 95vw !important;
+    margin: 0.5rem !important;
+  }
+
+  /* Matrix button thumb sizing */
+  #matrix-grid button {
+    height: 40px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+

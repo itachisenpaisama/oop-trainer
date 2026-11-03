@@ -31,11 +31,25 @@
   };
 
   /* ==========================================================================
+     MOBILE HAPTIC FEEDBACK (iOS/Android Native Touch Simulation)
+     ========================================================================== */
+  function triggerHaptic(type = 'light') {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        if (type === 'success') navigator.vibrate([25, 20, 25]);
+        else if (type === 'error') navigator.vibrate(60);
+        else navigator.vibrate(12);
+      } catch(e) {}
+    }
+  }
+
+  /* ==========================================================================
      MODAL CONTROLLER (Bulletproof helper)
      ========================================================================== */
   function openModal(modalEl) {
     if (!modalEl) return;
     sfx?.playClick();
+    triggerHaptic('light');
     modalEl.classList.remove('hidden');
     modalEl.style.display = 'flex';
   }
@@ -375,7 +389,7 @@
     } else if (task.type === 'cloze') {
       let codeHtml = task.codeTemplate;
       Object.keys(task.gaps).forEach(gapKey => {
-        const inp = `<input type="text" autocomplete="off" spellcheck="false" data-gap="${gapKey}" class="cloze-input" style="width: ${Math.max(6, task.gaps[gapKey].length + 2)}ch">`;
+        const inp = `<input type="text" autocomplete="off" spellcheck="false" autocapitalize="none" autocorrect="off" data-gap="${gapKey}" class="cloze-input" style="width: ${Math.max(6, task.gaps[gapKey].length + 2)}ch">`;
         codeHtml = codeHtml.replace(`{{${gapKey}}}`, inp);
       });
 
@@ -383,14 +397,16 @@
         <div class="rounded-xl bg-[#03060c] border border-slate-800/90 p-4 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-slate-200 shadow-inner">
           <pre class="whitespace-pre-wrap">${codeHtml}</pre>
         </div>
-        <p class="text-[11px] text-slate-400 mt-2">💡 Springe mit <span class="kbd-cap">Tab</span> zur nächsten Lücke und drücke <span class="kbd-cap">Enter</span> zum Prüfen.</p>
+        <p class="text-[11px] text-slate-400 mt-2">💡 Springe mit <span class="kbd-cap hidden sm:inline-flex">Tab</span> zur nächsten Lücke und tippe auf <span class="text-indigo-400 font-semibold">Antwort prüfen</span>.</p>
       `;
 
-      // Focus first input automatically
-      setTimeout(() => {
-        const firstInp = area.querySelector('input.cloze-input');
-        if (firstInp) firstInp.focus();
-      }, 60);
+      // Focus first input automatically on desktop only (avoids intrusive virtual keyboard on mobile)
+      if (window.innerWidth >= 768 && !('ontouchstart' in window)) {
+        setTimeout(() => {
+          const firstInp = area.querySelector('input.cloze-input');
+          if (firstInp) firstInp.focus();
+        }, 60);
+      }
 
     } else if (task.type === 'bughunt') {
       const lines = task.codeLines || [];
@@ -561,15 +577,17 @@
     // Record result in storage
     const result = storage.recordResult(task.id, isCorrect);
 
-    // Audio & Visual Effects
+    // Audio & Visual Effects & Mobile Haptics
     const workspace = document.getElementById('task-workspace');
     if (isCorrect) {
       sfx.playCorrect();
+      triggerHaptic('success');
       fireConfetti();
       document.getElementById('xp-counter')?.classList.add('pulse-award');
       setTimeout(() => document.getElementById('xp-counter')?.classList.remove('pulse-award'), 500);
     } else {
       sfx.playIncorrect();
+      triggerHaptic('error');
       if (storage.data.settings.animationsEnabled) {
         workspace?.classList.add('shake');
         setTimeout(() => workspace?.classList.remove('shake'), 400);
@@ -593,9 +611,9 @@
       desc.innerHTML = `
         <p class="leading-relaxed">${escapeHtml(task.explanation)}</p>
         <div class="pt-2">
-          <button id="feedback-next-btn" class="btn-tactile px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition flex items-center gap-2 shadow-md">
+          <button id="feedback-next-btn" class="btn-tactile w-full sm:w-auto px-5 py-3 sm:py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md min-h-[44px] sm:min-h-0">
             <span>Weiter zur nächsten Aufgabe</span>
-            <span class="kbd-cap bg-emerald-400/40 text-slate-950 border-emerald-600/40">Enter</span>
+            <span class="kbd-cap bg-emerald-400/40 text-slate-950 border-emerald-600/40 hidden sm:inline-flex">Enter</span>
           </button>
         </div>
       `;
@@ -777,7 +795,7 @@
       let codeHtml = task.codeTemplate;
       Object.keys(task.gaps).forEach(gapKey => {
         const prevVal = (prevAnswer && prevAnswer[gapKey]) || '';
-        const inp = `<input type="text" autocomplete="off" data-gap="${gapKey}" value="${escapeHtml(prevVal)}" class="exam-cloze-input cloze-input" style="width: ${Math.max(6, task.gaps[gapKey].length + 2)}ch">`;
+        const inp = `<input type="text" autocomplete="off" spellcheck="false" autocapitalize="none" autocorrect="off" data-gap="${gapKey}" value="${escapeHtml(prevVal)}" class="exam-cloze-input cloze-input" style="width: ${Math.max(6, task.gaps[gapKey].length + 2)}ch">`;
         codeHtml = codeHtml.replace(`{{${gapKey}}}`, inp);
       });
       area.innerHTML = `
@@ -1269,6 +1287,55 @@
         else if (e.key === 'ArrowLeft' && e.altKey) document.getElementById('prev-btn')?.click();
       }
     });
+
+    // iOS Safari Audio Unlock on first touch/click
+    const unlockAudio = () => {
+      sfx?.init();
+      window.removeEventListener('touchstart', unlockAudio);
+      window.removeEventListener('click', unlockAudio);
+    };
+    window.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+    window.addEventListener('click', unlockAudio, { once: true, passive: true });
+
+    // Mobile Touch Swipe Navigation (iOS & Android)
+    const taskCard = document.getElementById('task-workspace');
+    if (taskCard) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartTime = 0;
+
+      taskCard.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+      }, { passive: true });
+
+      taskCard.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length !== 1) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+        const duration = Date.now() - touchStartTime;
+
+        // Ensure swipe was deliberate (< 500ms), sufficient distance (> 55px), and primarily horizontal
+        if (duration < 500 && Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+          const target = e.target;
+          if (target && (target.closest('pre') || target.closest('textarea') || target.closest('input') || target.closest('select') || target.closest('button'))) {
+            return;
+          }
+          triggerHaptic('light');
+          if (deltaX < 0) {
+            // Swiped left -> next question
+            document.getElementById('next-btn')?.click();
+          } else {
+            // Swiped right -> previous question
+            document.getElementById('prev-btn')?.click();
+          }
+        }
+      }, { passive: true });
+    }
   }
 
   // Bulletproof initialization regardless of script loading timing:
