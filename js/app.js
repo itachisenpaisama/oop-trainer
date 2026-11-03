@@ -1,8 +1,7 @@
 /**
- * Python OOP & UML Trainer - Master Application Controller (v3.0.0)
- * Rebuilt from scratch: Linear/Raycast-grade ergonomics, reliable modal lifecycle,
- * zero-DOM-destruction filtering, live badge counts, Leitner spaced repetition,
- * and IHK exam simulator.
+ * Python OOP & UML Trainer - Master Application Controller (v3.2.0)
+ * Masterclass Architecture: Centered ergonomic stage, matrix drawer modal,
+ * tactile controls, instant feedback, Leitner 5-box algorithm, and IHK simulator.
  */
 (function() {
   let storage;
@@ -174,18 +173,12 @@
     const rankBadgeEl = document.getElementById('user-rank-badge');
     if (rankBadgeEl) rankBadgeEl.textContent = `${rankInfo.badge} ${rankInfo.title}`;
 
-    // Sidebar Progress
-    const pctEl = document.getElementById('progress-percent');
-    if (pctEl) pctEl.textContent = `${metrics.percent}%`;
-
+    // Header Progress Bar
     const barEl = document.getElementById('progress-bar-fill');
     if (barEl) barEl.style.width = `${metrics.percent}%`;
 
     const progTextEl = document.getElementById('progress-text');
-    if (progTextEl) progTextEl.textContent = `${metrics.solvedCount} von ${metrics.total} gemeistert`;
-
-    const unseenTextEl = document.getElementById('unseen-count-text');
-    if (unseenTextEl) unseenTextEl.textContent = `${metrics.unseenCount} offen`;
+    if (progTextEl) progTextEl.textContent = `${metrics.solvedCount} / ${metrics.total} gemeistert (${metrics.percent}%)`;
 
     // Filter badges count
     const errorCountEl = document.getElementById('filter-error-count');
@@ -213,6 +206,7 @@
 
     const allTasks = window.TASK_DATABASE.TASKS;
     const activeTask = getActiveTask();
+    const matrixModal = document.getElementById('matrix-modal');
 
     allTasks.forEach(task => {
       if (storage.isTrash(task.id)) return;
@@ -223,7 +217,7 @@
       const btn = document.createElement('button');
       btn.textContent = task.id;
       btn.dataset.id = task.id;
-      btn.className = `matrix-btn h-6 rounded text-[10px] font-mono font-bold flex items-center justify-center border transition `;
+      btn.className = `btn-tactile h-8 rounded-lg text-xs font-mono font-bold flex items-center justify-center border transition `;
 
       if (stats.attempts === 0) {
         btn.classList.add('bg-slate-900', 'text-slate-400', 'border-slate-800');
@@ -234,7 +228,7 @@
       }
 
       if (isCurrent) {
-        btn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-500', 'text-slate-950', 'scale-110', 'font-black');
+        btn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-500', 'text-slate-950', 'scale-105', 'font-black');
       }
 
       btn.addEventListener('click', () => {
@@ -246,6 +240,7 @@
         updateFilteredTasks();
         state.currentTaskIdx = state.filteredTaskIds.indexOf(task.id);
         renderCurrentTask();
+        closeModal(matrixModal);
       });
 
       grid.appendChild(btn);
@@ -258,20 +253,20 @@
       const f = btn.dataset.filter;
       const isActive = state.filterType === f;
       if (isActive) {
-        btn.className = 'special-filter-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 transition text-center truncate shadow font-semibold';
+        btn.className = 'special-filter-btn px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 transition text-center shadow font-semibold';
       } else {
-        btn.className = 'special-filter-btn py-1.5 px-2 rounded-lg text-slate-400 hover:text-white transition text-center truncate font-semibold';
+        btn.className = 'special-filter-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white transition text-center font-semibold';
       }
     });
 
-    // Topic list
+    // Horizontal Topic list
     document.querySelectorAll('.topic-btn').forEach(btn => {
       const top = btn.dataset.topic;
       const isActive = state.filterType === 'all' && state.currentTopic.toString() === top.toString();
       if (isActive) {
-        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center justify-between transition';
+        btn.className = 'topic-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 transition shadow-sm';
       } else {
-        btn.className = 'topic-btn w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 transition flex items-center justify-between border border-transparent';
+        btn.className = 'topic-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition border border-transparent';
       }
     });
   }
@@ -354,14 +349,14 @@
 
     if (task.type === 'tf') {
       area.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto py-2">
-          <button id="tf-true-btn" class="py-3 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>Wahr</span> <span class="kbd-pill">W / 1</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto py-2">
+          <button id="tf-true-btn" class="btn-tactile py-3.5 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-3 transition">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Wahr</span> <span class="kbd-cap">W / 1</span>
           </button>
-          <button id="tf-false-btn" class="py-3 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2.5 transition">
-            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            <span>Falsch</span> <span class="kbd-pill">F / 2</span>
+          <button id="tf-false-btn" class="btn-tactile py-3.5 px-4 rounded-xl border-2 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-3 transition">
+            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Falsch</span> <span class="kbd-cap">F / 2</span>
           </button>
         </div>
       `;
@@ -372,11 +367,11 @@
         sfx.playClick();
         state.selectedTf = val;
         if (val === true) {
-          tBtn.className = 'py-3 px-4 rounded-xl border-2 border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold text-sm flex items-center justify-center gap-2.5 shadow-md shadow-emerald-500/20';
-          fBtn.className = 'py-3 px-4 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-400 font-bold text-sm flex items-center justify-center gap-2.5 opacity-60';
+          tBtn.className = 'btn-tactile py-3.5 px-4 rounded-xl border-2 border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold text-sm flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20';
+          fBtn.className = 'btn-tactile py-3.5 px-4 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-400 font-bold text-sm flex items-center justify-center gap-3 opacity-60';
         } else {
-          fBtn.className = 'py-3 px-4 rounded-xl border-2 border-rose-500 bg-rose-500/20 text-rose-300 font-bold text-sm flex items-center justify-center gap-2.5 shadow-md shadow-rose-500/20';
-          tBtn.className = 'py-3 px-4 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-400 font-bold text-sm flex items-center justify-center gap-2.5 opacity-60';
+          fBtn.className = 'btn-tactile py-3.5 px-4 rounded-xl border-2 border-rose-500 bg-rose-500/20 text-rose-300 font-bold text-sm flex items-center justify-center gap-3 shadow-lg shadow-rose-500/20';
+          tBtn.className = 'btn-tactile py-3.5 px-4 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-400 font-bold text-sm flex items-center justify-center gap-3 opacity-60';
         }
       };
 
@@ -391,17 +386,17 @@
       });
 
       area.innerHTML = `
-        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3.5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-slate-200 shadow-inner">
+        <div class="rounded-xl bg-[#03060c] border border-slate-800/90 p-4 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-slate-200 shadow-inner">
           <pre class="whitespace-pre-wrap">${codeHtml}</pre>
         </div>
-        <p class="text-[11px] text-slate-400 mt-1.5">💡 Springe mit <span class="kbd-pill">Tab</span> zur nächsten Lücke und drücke <span class="kbd-pill">Enter</span> zum Prüfen.</p>
+        <p class="text-[11px] text-slate-400 mt-2">💡 Springe mit <span class="kbd-cap">Tab</span> zur nächsten Lücke und drücke <span class="kbd-cap">Enter</span> zum Prüfen.</p>
       `;
 
       // Focus first input automatically
       setTimeout(() => {
         const firstInp = area.querySelector('input.cloze-input');
         if (firstInp) firstInp.focus();
-      }, 50);
+      }, 60);
 
     } else if (task.type === 'bughunt') {
       const lines = task.codeLines || [];
@@ -416,10 +411,10 @@
       }).join('');
 
       area.innerHTML = `
-        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3 space-y-0.5 shadow-inner">
+        <div class="rounded-xl bg-[#03060c] border border-slate-800/90 p-3.5 space-y-0.5 shadow-inner">
           ${linesHtml}
         </div>
-        <p class="text-[11px] text-slate-400 mt-1.5">🎯 Klicke auf die Zeile, die den syntaktischen oder logischen Fehler enthält.</p>
+        <p class="text-[11px] text-slate-400 mt-2">🎯 Klicke direkt auf die fehlerhafte Codezeile (z. B. fehlendes <code>self</code>, Syntax- oder Kapselungsfehler).</p>
       `;
 
       area.querySelectorAll('.bug-line').forEach(el => {
@@ -445,10 +440,10 @@
       }
 
       area.innerHTML = `
-        <div class="rounded-xl bg-[#070b14] border border-slate-800/80 p-3 flex flex-col items-center justify-center shadow-inner">
+        <div class="rounded-xl bg-[#03060c] border border-slate-800/90 p-4 flex flex-col items-center justify-center shadow-inner">
           ${diagramSvg}
         </div>
-        <p class="text-[11px] text-slate-400 mt-1.5 text-center">👆 Klicke direkt im Diagramm auf das gesuchte Element oder den Zielbereich.</p>
+        <p class="text-[11px] text-slate-400 mt-2 text-center">👆 Klicke direkt im Diagramm auf das gesuchte Element oder den Zielbereich.</p>
       `;
 
       area.querySelectorAll('.diagram-hotspot').forEach(el => {
@@ -465,8 +460,8 @@
     } else if (task.type === 'write') {
       area.innerHTML = `
         <div class="space-y-2">
-          <textarea id="write-answer-input" rows="4" placeholder="Schreibe deinen Python-Code oder deine Lösung hier..." class="w-full bg-[#070b14] border border-slate-800 rounded-xl p-3 font-mono text-xs sm:text-sm text-brand-300 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition shadow-inner resize-y"></textarea>
-          <p class="text-[11px] text-slate-400">💡 Schreibe die präzise Anweisung oder den Methodenkopf.</p>
+          <textarea id="write-answer-input" rows="4" placeholder="Schreibe deinen Python-Code oder deine Klausurlösung hier..." class="w-full bg-[#03060c] border border-slate-800 rounded-xl p-3.5 font-mono text-xs sm:text-sm text-brand-300 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition shadow-inner resize-y"></textarea>
+          <p class="text-[11px] text-slate-400">💡 Schreibe den präzisen Code oder die Methodendefinition.</p>
         </div>
       `;
     }
@@ -480,7 +475,6 @@
     if (!task) return;
 
     let isCorrect = false;
-    let userDetail = '';
 
     if (task.type === 'tf') {
       if (state.selectedTf === null) {
@@ -488,7 +482,6 @@
         return;
       }
       isCorrect = (state.selectedTf === task.correctAnswer);
-      userDetail = state.selectedTf ? 'Wahr' : 'Falsch';
 
     } else if (task.type === 'cloze') {
       const inputs = document.querySelectorAll('.cloze-input');
@@ -606,9 +599,9 @@
       desc.innerHTML = `
         <p class="leading-relaxed">${escapeHtml(task.explanation)}</p>
         <div class="pt-2">
-          <button id="feedback-next-btn" class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5">
+          <button id="feedback-next-btn" class="btn-tactile px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition flex items-center gap-2 shadow-md">
             <span>Weiter zur nächsten Aufgabe</span>
-            <span class="kbd-pill bg-emerald-300/40 text-slate-950 border-emerald-600/40">Enter</span>
+            <span class="kbd-cap bg-emerald-400/40 text-slate-950 border-emerald-600/40">Enter</span>
           </button>
         </div>
       `;
@@ -625,7 +618,7 @@
 
       let solCodeHtml = '';
       if (task.solutionCode) {
-        solCodeHtml = `<pre class="bg-[#070b14] p-2.5 rounded-lg font-mono text-xs text-brand-300 border border-slate-800 my-1.5">${escapeHtml(task.solutionCode)}</pre>`;
+        solCodeHtml = `<pre class="bg-[#03060c] p-3 rounded-lg font-mono text-xs text-brand-300 border border-slate-800 my-2">${escapeHtml(task.solutionCode)}</pre>`;
       }
       desc.innerHTML = `
         <p class="leading-relaxed">${escapeHtml(task.explanation)}</p>
@@ -659,19 +652,19 @@
     boxMeta.forEach(b => {
       const count = metrics.boxCounts[b.box] || 0;
       const card = document.createElement('div');
-      card.className = `p-4 rounded-2xl bg-[#0f172a] border border-slate-800 flex flex-col justify-between space-y-3 hover:border-slate-700 transition`;
+      card.className = `p-5 rounded-2xl bg-[#0f172a] border border-slate-800 flex flex-col justify-between space-y-3 hover:border-slate-700 transition shadow-lg`;
 
       card.innerHTML = `
         <div>
-          <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="box-pill box-pill-${b.box}">${b.name}</span>
             <span class="font-mono text-base font-bold text-white">${count}</span>
           </div>
-          <p class="text-[11px] text-slate-400">${b.desc}</p>
+          <p class="text-xs text-slate-400">${b.desc}</p>
         </div>
-        <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-          <span class="text-[10px] text-slate-500 font-mono">Wdh: ${b.interval}</span>
-          <button class="practice-box-btn px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs border border-slate-700 transition" data-box="${b.box}">
+        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+          <span class="text-[11px] text-slate-500 font-mono">Wdh: ${b.interval}</span>
+          <button class="practice-box-btn btn-tactile px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs border border-slate-700 transition" data-box="${b.box}">
             Dieses Fach üben →
           </button>
         </div>
@@ -755,12 +748,12 @@
 
     const box = document.getElementById('exam-task-box');
     box.innerHTML = `
-      <div class="space-y-1">
-        <span class="text-xs font-mono text-emerald-400">Thema ${task.topic} • ${task.type.toUpperCase()}</span>
-        <h3 class="text-base font-bold text-white">${task.title}</h3>
-        <p class="text-xs sm:text-sm text-slate-300">${task.prompt}</p>
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono text-emerald-400 font-bold">Thema ${task.topic} • ${task.type.toUpperCase()}</span>
+        <h3 class="text-base sm:text-lg font-bold text-white">${task.title}</h3>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${task.prompt}</p>
       </div>
-      <div id="exam-interactive-container" class="pt-2"></div>
+      <div id="exam-interactive-container" class="pt-3"></div>
     `;
 
     const area = document.getElementById('exam-interactive-container');
@@ -769,10 +762,10 @@
     if (task.type === 'tf') {
       area.innerHTML = `
         <div class="grid grid-cols-2 gap-3 max-w-sm py-2">
-          <button id="exam-tf-true" class="py-2.5 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-900 text-slate-300'}">
+          <button id="exam-tf-true" class="btn-tactile py-3 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-900 text-slate-300'}">
             Wahr
           </button>
-          <button id="exam-tf-false" class="py-2.5 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === false ? 'bg-rose-500/20 border-rose-500 text-rose-300' : 'bg-slate-900 text-slate-300'}">
+          <button id="exam-tf-false" class="btn-tactile py-3 px-4 rounded-xl border border-slate-700 font-bold text-xs ${prevAnswer === false ? 'bg-rose-500/20 border-rose-500 text-rose-300' : 'bg-slate-900 text-slate-300'}">
             Falsch
           </button>
         </div>
@@ -794,7 +787,7 @@
         codeHtml = codeHtml.replace(`{{${gapKey}}}`, inp);
       });
       area.innerHTML = `
-        <div class="rounded-xl bg-[#070b14] border border-slate-800 p-3 font-mono text-xs sm:text-sm leading-relaxed text-slate-200">
+        <div class="rounded-xl bg-[#03060c] border border-slate-800 p-4 font-mono text-xs sm:text-sm leading-relaxed text-slate-200">
           <pre class="whitespace-pre-wrap">${codeHtml}</pre>
         </div>
       `;
@@ -809,7 +802,7 @@
       // General freeform answer or note
       const prevVal = typeof prevAnswer === 'string' ? prevAnswer : '';
       area.innerHTML = `
-        <textarea id="exam-generic-input" rows="3" placeholder="Deine Klausurantwort..." class="w-full bg-[#070b14] border border-slate-800 rounded-xl p-3 font-mono text-xs sm:text-sm text-slate-200 outline-none focus:border-emerald-500">${escapeHtml(prevVal)}</textarea>
+        <textarea id="exam-generic-input" rows="3" placeholder="Deine Klausurantwort..." class="w-full bg-[#03060c] border border-slate-800 rounded-xl p-3.5 font-mono text-xs sm:text-sm text-slate-200 outline-none focus:border-emerald-500">${escapeHtml(prevVal)}</textarea>
       `;
       document.getElementById('exam-generic-input')?.addEventListener('input', (e) => {
         state.examAnswers[task.id] = e.target.value;
@@ -843,14 +836,14 @@
           if (allMatch) correct++;
         }
       } else {
-        if (ans) correct++; // partial credit for attempting
+        if (ans) correct++; // credit for attempting
       }
     });
 
     const percent = Math.round((correct / total) * 100);
 
     // Official IHK Grade Curve
-    let grade = '6 (Ungenügend)';
+    let grade = 'Note 6 (Ungenügend)';
     let badgeClass = 'bg-rose-500/20 text-rose-300 border border-rose-500/40';
     if (percent >= 92) {
       grade = 'Note 1,0 (Sehr gut)';
@@ -874,7 +867,7 @@
 
     const badge = document.getElementById('exam-grade-badge');
     badge.textContent = grade;
-    badge.className = `inline-block px-5 py-2.5 rounded-xl text-xl sm:text-2xl font-black mb-1 shadow-lg ${badgeClass}`;
+    badge.className = `inline-block px-6 py-3 rounded-2xl text-xl sm:text-2xl font-black mb-1 shadow-xl ${badgeClass}`;
     document.getElementById('exam-summary-text').textContent = `Du hast ${correct} von ${total} Aufgaben korrekt gelöst (${percent}%).`;
   }
 
@@ -907,14 +900,14 @@
       const pct = tMetric.total > 0 ? Math.round((tMetric.solved / tMetric.total) * 100) : 0;
 
       const row = document.createElement('div');
-      row.className = 'p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5';
+      row.className = 'p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5';
       row.innerHTML = `
         <div class="flex items-center justify-between text-xs">
           <span class="font-bold text-slate-200">${tInfo.icon} ${tInfo.title}</span>
           <span class="font-mono text-emerald-400 font-bold">${tMetric.solved} / ${tMetric.total} (${pct}%)</span>
         </div>
-        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-          <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
         </div>
       `;
       topicList.appendChild(row);
@@ -1086,7 +1079,7 @@
       
       let html = `<p class="mt-1">${escapeHtml(task.explanation)}</p>`;
       if (task.solutionCode) {
-        html = `<pre class="bg-[#070b14] p-2.5 rounded-lg font-mono text-xs text-brand-300 border border-slate-800 mb-1.5">${escapeHtml(task.solutionCode)}</pre>` + html;
+        html = `<pre class="bg-[#03060c] p-3 rounded-lg font-mono text-xs text-brand-300 border border-slate-800 mb-2">${escapeHtml(task.solutionCode)}</pre>` + html;
       }
       desc.innerHTML = html;
     });
@@ -1108,6 +1101,15 @@
       const toggleInSettings = document.getElementById('setting-sound-toggle');
       if (toggleInSettings) toggleInSettings.checked = storage.data.settings.soundEnabled;
       if (storage.data.settings.soundEnabled) sfx.playClick();
+    });
+
+    // MODAL: Matrix Modal
+    const matrixModal = document.getElementById('matrix-modal');
+    document.getElementById('open-matrix-btn')?.addEventListener('click', () => openModal(matrixModal));
+    document.getElementById('close-matrix-modal-btn')?.addEventListener('click', () => closeModal(matrixModal));
+    document.getElementById('close-matrix-modal-footer')?.addEventListener('click', () => closeModal(matrixModal));
+    matrixModal?.addEventListener('click', (e) => {
+      if (e.target === matrixModal) closeModal(matrixModal);
     });
 
     // MODAL: Settings
@@ -1217,13 +1219,21 @@
       if (e.key === 'Escape') {
         closeModal(settingsModal);
         closeModal(cheatModal);
+        closeModal(matrixModal);
         return;
       }
 
       if (state.mode === 'practice') {
         if (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.key !== 'Enter')) return;
+        if (e.key === 'm' || e.key === 'M') {
+          if (matrixModal?.classList.contains('hidden')) {
+            openModal(matrixModal);
+          } else {
+            closeModal(matrixModal);
+          }
+          return;
+        }
         if (e.key === 'Enter') {
-          // If feedback next button exists, click it, else check answer
           const feedbackNext = document.getElementById('feedback-next-btn');
           if (feedbackNext && !document.getElementById('feedback-box').classList.contains('hidden')) {
             feedbackNext.click();
