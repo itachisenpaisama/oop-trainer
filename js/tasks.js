@@ -1,767 +1,1514 @@
 /**
- * Python OOP & UML Trainer - Bottom-Up Task Database
- * Structured across 12 didactic levels: from RAM pointers to Exam Capstones.
+ * Python OOP & UML Trainer - Complete Master Task Database
+ * Contains all 104 original curriculum tasks + new interactive diagram tasks (110 total)
  */
 (function() {
   const TOPICS = {
-    1: { id: 1, title: "1. Speicher, Referenzen & RAM", icon: "🧠" },
-    2: { id: 2, title: "2. Funktionen vs. self", icon: "⚡" },
-    3: { id: 3, title: "3. Konstruktor & Attribute", icon: "🏗️" },
-    4: { id: 4, title: "4. Klassen- vs. Instanzdaten", icon: "📦" },
-    5: { id: 5, title: "5. Kapselung & Getter/Setter", icon: "🛡️" },
-    6: { id: 6, title: "6. Rückgaben & Type Hints", icon: "🔄" },
-    7: { id: 7, title: "7. Vererbung & super()", icon: "🧬" },
-    8: { id: 8, title: "8. Polymorphie & Overriding", icon: "🎭" },
-    9: { id: 9, title: "9. UML-Klassendiagramme", icon: "📐" },
-    10: { id: 10, title: "10. UML-Beziehungen (◇ vs. ◆)", icon: "🔗" },
-    11: { id: 11, title: "11. UML Use-Case Diagramme", icon: "🎯" },
-    12: { id: 12, title: "12. Klausur-Synthese & Boss", icon: "👑" }
+    1: { id: 1, title: "1. OOP-Theorie & Grundbegriffe", icon: "🧠" },
+    2: { id: 2, title: "2. Konstruktor, self & Attribute", icon: "🏗️" },
+    3: { id: 3, title: "3. Kapselung, Getter & Setter", icon: "🛡️" },
+    4: { id: 4, title: "4. return vs print & Type Hints", icon: "🔄" },
+    5: { id: 5, title: "5. Vererbung, super() & Polymorphie", icon: "🧬" },
+    6: { id: 6, title: "6. UML: Klassen & Use-Cases", icon: "📐" }
   };
 
   const TASKS = [
-    // =========================================================================
-    // LEVEL 1: SPEICHER, REFERENZEN & RAM (ID 1 - 10)
-    // =========================================================================
-    {
-      id: 1, topic: 1, type: "tf",
-      title: "Variablen als Zettel im Speicher",
-      prompt: "In Python speichert eine Variable wie `a = [10, 20]` nicht die Zahlen selbst in ihrer Tabellenzelle, sondern lediglich eine Referenz (die Speicheradresse / einen Pfeil) auf das Listen-Objekt im Heap.",
-      answer: true,
-      hint: "Überlege: Ist eine Variable eine Kiste mit dem Objekt oder ein Zettel mit der Hausnummer?",
-      explanation: "Richtig! Variablen in Python sind Referenzen (Pfeile im Speicher). Sie zeigen auf Objekte im Heap-Arbeitsspeicher."
+  {
+    "id": 1,
+    "topic": 1,
+    "type": "tf",
+    "title": "Klasse vs. Objekt",
+    "prompt": "Stimmt die Aussage: Eine Klasse ist das konkrete Exemplar, das zur Laufzeit im Speicher existiert, während das Objekt nur der Bauplan ist?",
+    "answer": false,
+    "hint": "Überlege, was die Backform ist und was das tatsächliche Plätzchen.",
+    "explanation": "Falsch! Es ist genau umgekehrt: Die Klasse ist der abstrakte Bauplan (die Schablone). Das Objekt (die Instanz) ist das konkrete Exemplar im Speicher."
+  },
+  {
+    "id": 2,
+    "topic": 1,
+    "type": "tf",
+    "title": "Kapselung (Encapsulation)",
+    "prompt": "Bedeutet Kapselung in der OOP, dass die inneren Datenstrukturen eines Objekts verborgen werden und der Zugriff nur über kontrollierte Methoden erfolgt?",
+    "answer": true,
+    "hint": "Denke an den Kaffeevollautomaten: Man drückt Knöpfe, greift aber nicht in das Mahlwerk.",
+    "explanation": "Richtig! Kapselung (Information Hiding) schützt den internen Objektzustand vor unerlaubten Zugriffen von außen."
+  },
+  {
+    "id": 3,
+    "topic": 1,
+    "type": "tf",
+    "title": "Polymorphie überladener Operatoren",
+    "prompt": "Der Ausdruck '42' + '3' führt in Python zum selben Ergebnis wie 42 + 3, weil der Plus-Operator polymorph ist.",
+    "answer": false,
+    "hint": "Was passiert, wenn zwei Strings mit + verkettet werden?",
+    "explanation": "Falsch! '42' + '3' verkettet die Strings zu '423', während 42 + 3 die mathematische Summe 45 ergibt. Das unterschiedliche Verhalten bei unterschiedlichen Typen ist zwar Polymorphie, führt aber zu völlig anderen Ergebnissen!"
+  },
+  {
+    "id": 4,
+    "topic": 1,
+    "type": "tf",
+    "title": "Abstrakte Klasse (ABC)",
+    "prompt": "Eine abstrakte Klasse kann in einem Programm direkt mit `obj = AbstrakteKlasse()` instanziiert werden.",
+    "answer": false,
+    "hint": "Kann man aus einem unvollständigen Bauplan ein fertiges Haus bauen?",
+    "explanation": "Falsch! Abstrakte Klassen sind unvollständige Schablonen. Sie können nicht direkt instanziiert werden, sondern zwingen Subklassen dazu, abstrakte Methoden zu implementieren."
+  },
+  {
+    "id": 5,
+    "topic": 1,
+    "type": "cloze",
+    "title": "Generalisierung vs. Spezialisierung",
+    "prompt": "Ergänze den zentralen Lehrplansatz mit den exakten Fachbegriffen (Groß-/Kleinschreibung beachten):",
+    "codeTemplate": "Während die {{gap1}} die Subklassen generalisiert,\nspezialisieren die {{gap2}} die Superklasse.",
+    "gaps": {
+      "gap1": "Superklasse",
+      "gap2": "Subklassen"
     },
-    {
-      id: 2, topic: 1, type: "diagram_click",
-      title: "Speicher-Zeiger: Aliasing",
-      prompt: "Gegeben ist: `a = Auto()` und `b = a`. Klicke in der Grafik auf das Element im RAM, das den eigentlichen Objektzustand speichert:",
-      diagramType: "memory_pointer",
-      diagramConfig: {
-        stackVars: [
-          { name: "a", id: "var_a", pointsToId: "heap_car" },
-          { name: "b", id: "var_b", pointsToId: "heap_car" }
-        ],
-        heapObjects: [
-          { id: "heap_car", label: "Auto (Objekt #104)", attrs: ["marke='BMW'", "km=0"] }
-        ]
-      },
-      targetHotspotId: "heap_car",
-      hint: "Links sind die Namen (Stack), rechts sind die realen Objekte im Arbeitsspeicher (Heap).",
-      explanation: "Exakt! 'a' und 'b' sind nur zwei verschiedene Zeiger auf dasselbe physische Auto-Objekt im Heap. Ändert man b.km, ändert sich auch a.km!"
+    "hint": "Oben steht die allgemeine Superklasse, unten die spezifischen Subklassen.",
+    "explanation": "Die Superklasse fasst Gemeinsamkeiten zusammen (Generalisierung nach oben). Die Subklassen erweitern und verfeinern das Verhalten (Spezialisierung nach unten)."
+  },
+  {
+    "id": 6,
+    "topic": 1,
+    "type": "tf",
+    "title": "Abstraktion",
+    "prompt": "Unter Abstraktion versteht man in der Softwaremodellierung das Weglassen unwichtiger Details der Realität, um sich auf das Wesentliche zu konzentrieren.",
+    "answer": true,
+    "hint": "Denke an die Straßenkarte, die Straßennamen zeigt, aber Gartenzäune ignoriert.",
+    "explanation": "Richtig! Abstraktion reduziert die reale Komplexität auf den für das Softwaresystem relevanten Zweck."
+  },
+  {
+    "id": 7,
+    "topic": 1,
+    "type": "cloze",
+    "title": "Definition von Klassenbestandteilen",
+    "prompt": "Vervollständige die OOP-Definition:",
+    "codeTemplate": "In einer Klasse nennt man die Daten {{gap1}}\nund die Funktionen nennt man {{gap2}}.",
+    "gaps": {
+      "gap1": "Attribute",
+      "gap2": "Methoden"
     },
-    {
-      id: 3, topic: 1, type: "tf",
-      title: "Identität 'is' vs. Gleichheit '=='",
-      prompt: "Wenn zwei verschiedene Objekte `auto1` und `auto2` exakt die gleichen Attributwerte besitzen (z. B. beide Farbe 'rot'), liefert `auto1 is auto2` immer True.",
-      answer: false,
-      hint: "'is' prüft, ob die Speicheradresse (id) identisch ist; '==' prüft den Inhalt.",
-      explanation: "Falsch! '==' vergleicht die Werte, aber 'is' prüft die physische Identität im RAM (`id(auto1) == id(auto2)`). Zwei getrennte Autos an zwei Speicherstellen ergeben `auto1 is auto2 -> False`."
+    "hint": "Attribute = Eigenschaften, Methoden = Operationen.",
+    "explanation": "Daten werden in Attributen gespeichert; Verhalten und Logik werden in Methoden (Operationen) gekapselt."
+  },
+  {
+    "id": 8,
+    "topic": 1,
+    "type": "tf",
+    "title": "Ist-Ein-Beziehung (is-a)",
+    "prompt": "Vererbung modelliert eine 'Hat-Ein'-Beziehung (z. B. ein Auto hat einen Motor), während Komposition eine 'Ist-Ein'-Beziehung beschreibt.",
+    "answer": false,
+    "hint": "Ist ein Wollwaschmittel ein Waschmittel oder hat es ein Waschmittel?",
+    "explanation": "Falsch! Vererbung modelliert eine 'Ist-Ein'-Beziehung (Ein Hund ist ein Tier). Eine 'Hat-Ein'-Beziehung (Auto hat Motor) ist eine Aggregation bzw. Komposition."
+  },
+  {
+    "id": 9,
+    "topic": 1,
+    "type": "tf",
+    "title": "Dynamisches Binden & Polymorphie",
+    "prompt": "Wenn eine Subklasse eine geerbte Methode überschreibt, entscheidet erst zur Laufzeit der konkrete Objekttyp, welche Methodenversion ausgeführt wird.",
+    "answer": true,
+    "hint": "Das ist die Kernidee von dynamischem Binden bei Vererbung.",
+    "explanation": "Richtig! Dank dynamischem Binden (Dynamic Dispatch) wird immer die spezialisierte Methode des tatsächlichen Objekts aufgerufen."
+  },
+  {
+    "id": 10,
+    "topic": 1,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Grundgerüst einer Tier-Klasse",
+    "prompt": "Finde die genau 2 Fehler in dieser simplen Klassendefinition (Klicke auf die beiden Zeilen):",
+    "codeLines": [
+      "class Tier:",
+      "    def __init__(self, name):",
+      "        self.name = name",
+      "    def laut_geben():",
+      "        print(name)"
+    ],
+    "bugIndices": [
+      3,
+      4
+    ],
+    "hint": "Achte auf den ersten Methodenparameter und wie auf Instanzattribute zugegriffen werden muss.",
+    "explanation": "Zeile 4: Es fehlt `self` als 1. Parameter (`def laut_geben(self):`).\nZeile 5: Zugriff auf das Attribut muss `self.name` lauten, da `name` sonst eine nicht existierende lokale Variable ist."
+  },
+  {
+    "id": 11,
+    "topic": 1,
+    "type": "tf",
+    "title": "Schnittstelle (Interface)",
+    "prompt": "Ein Interface in der UML enthält vollständigen Programmiercode für alle seine Methoden.",
+    "answer": false,
+    "hint": "Ein Interface ist ein reiner Vertrag ohne eigene Implementierung.",
+    "explanation": "Falsch! Ein Interface definiert lediglich Methodensignaturen (Namen, Parameter, Rückgabewerte), enthält aber absolut keinen Implementierungscode."
+  },
+  {
+    "id": 12,
+    "topic": 1,
+    "type": "cloze",
+    "title": "Instanziierung Begriff",
+    "prompt": "Wie nennt man den Vorgang, wenn aus dem Bauplan einer Klasse ein echtes Objekt im Speicher erzeugt wird?",
+    "codeTemplate": "Der Vorgang der Objekterzeugung heißt {{gap1}}.",
+    "gaps": {
+      "gap1": "Instanziierung"
     },
-    {
-      id: 4, topic: 1, type: "cloze",
-      title: "Speicheradresse ermitteln",
-      prompt: "Mit welcher eingebauten Python-Funktion kann man die eindeutige Speicheradresse eines Objekts im RAM abfragen?",
-      codeTemplate: "speicher_adresse = {{gap1}}(mein_objekt)",
-      gaps: { gap1: "id" },
-      hint: "Zwei Buchstaben, kurz für Identität.",
-      explanation: "`id(objekt)` gibt die numerische Speicheradresse des Objekts im Arbeitsspeicher zurück."
+    "hint": "Kommt von Instanz.",
+    "explanation": "Die Erzeugung eines konkreten Objekts aus einer Klasse heißt Instanziierung."
+  },
+  {
+    "id": 13,
+    "topic": 1,
+    "type": "tf",
+    "title": "Methoden überschreiben vs überladen",
+    "prompt": "In Python kann man wie in Java Methoden mit gleichem Namen einfach mehrfach mit unterschiedlicher Parameteranzahl definieren (klassisches Überladen).",
+    "answer": false,
+    "hint": "Was passiert in Python, wenn du zwei Methoden mit demselben Namen in einer Klasse definierst?",
+    "explanation": "Falsch! In Python überschreibt die zuletzt definierte Methode alle vorherigen gleichen Namens. Echtes Methodenüberladen wie in Java oder C++ gibt es nativ nicht; man nutzt stattdessen Standard-Parameter (`b=None`)."
+  },
+  {
+    "id": 14,
+    "topic": 1,
+    "type": "tf",
+    "title": "Zustand eines Objekts",
+    "prompt": "Der Zustand eines Objekts zur Laufzeit wird durch die aktuellen Werte seiner Attribute definiert.",
+    "answer": true,
+    "hint": "Ändern sich die Werte, ändert sich der Zustand.",
+    "explanation": "Richtig! Die Gesamtheit aller Variablen-/Attributwerte eines Objekts zu einem Zeitpunkt bildet seinen Zustand."
+  },
+  {
+    "id": 15,
+    "topic": 1,
+    "type": "cloze",
+    "title": "Polymorphie Übersetzung",
+    "prompt": "Aus dem Griechischen übersetzt bedeutet das Wort Polymorphie wörtlich:",
+    "codeTemplate": "Polymorphie bedeutet {{gap1}}.",
+    "gaps": {
+      "gap1": "Vielgestaltigkeit"
     },
-    {
-      id: 5, topic: 1, type: "bughunt",
-      title: "Bug-Hunter: Unbeabsichtigtes Aliasing",
-      prompt: "In welchem Schritt wird fälschlicherweise kein neues Objekt erzeugt, sondern nur die Referenz kopiert? Klicke auf die fehlerhafte Zeile:",
-      codeLines: [
-        "liste1 = [1, 2, 3]",
-        "liste2 = liste1",
-        "liste2.append(99)",
-        "print(liste1)"
+    "hint": "Poly = viel, morph = Gestalt/Form.",
+    "explanation": "Polymorphie bedeutet 'Vielgestaltigkeit' – ein Aufruf, viele unterschiedliche Gestalten der Ausführung."
+  },
+  {
+    "id": 16,
+    "topic": 1,
+    "type": "tf",
+    "title": "Superklasse & Subklasse Austauschbarkeit",
+    "prompt": "Nach dem Liskovschen Substitutionsprinzip kann eine Subklasse überall dort eingesetzt werden, wo ihre Superklasse erwartet wird.",
+    "answer": true,
+    "hint": "Ein Cabrio kann überall dort fahren, wo ein allgemeines Fahrzeug fahren darf.",
+    "explanation": "Richtig! Da die Subklasse alle Merkmale der Superklasse erbt, ist sie voll kompatibel und kann an deren Stelle treten."
+  },
+  {
+    "id": 17,
+    "topic": 1,
+    "type": "write",
+    "title": "Code-Writing: Abstrakte Vorlage gedanklich umsetzen",
+    "prompt": "Erstelle eine Klasse `Rechteck`, deren Konstruktor `laenge` und `breite` (beide float) entgegennimmt und als Instanzattribute speichert. Ergänze die Methode `flaeche(self)`, die das Produkt beider Werte mit `return` zurückgibt.",
+    "starterCode": "class Rechteck:\n    def __init__(self, laenge: float, breite: float):\n        # Hier Code\n        pass\n\n    def flaeche(self) -> float:\n        # Hier Code\n        pass",
+    "expectedKeywords": [
+      "self.laenge",
+      "self.breite",
+      "return",
+      "self.laenge * self.breite"
+    ],
+    "solutionCode": "class Rechteck:\n    def __init__(self, laenge: float, breite: float):\n        self.laenge = laenge\n        self.breite = breite\n\n    def flaeche(self) -> float:\n        return self.laenge * self.breite",
+    "hint": "Multipliziere `self.laenge * self.breite` und gib das Ergebnis mit `return` zurück.",
+    "explanation": "Instanzattribute werden mit `self.` gebunden, und das Ergebnis der Flächenberechnung wird mit `return` an den Aufrufer übergeben."
+  },
+  {
+    "id": 18,
+    "topic": 2,
+    "type": "tf",
+    "title": "Der Parameter self",
+    "prompt": "Der Parameter `self` in einer Instanzmethode verweist immer auf die Klasse selbst, niemals auf das konkrete Objekt.",
+    "answer": false,
+    "hint": "Steht self für 'ich selbst' (das Objekt) oder den Bauplan?",
+    "explanation": "Falsch! `self` verweist immer auf die konkrete Instanz (das Objekt) im Speicher. Der Verweis auf die Klasse selbst heißt in Klassenmethoden üblicherweise `cls`."
+  },
+  {
+    "id": 19,
+    "topic": 2,
+    "type": "cloze",
+    "title": "Der Konstruktorname",
+    "prompt": "Wie lautet der exakte Methodenname des Konstruktors in Python?",
+    "codeTemplate": "def {{gap1}}(self, parameter):\n    self.x = parameter",
+    "gaps": {
+      "gap1": "__init__"
+    },
+    "hint": "Zwei führende und zwei nachfolgende Unterstriche.",
+    "explanation": "Der Konstruktor heißt in Python immer `__init__` (kurz für initialize)."
+  },
+  {
+    "id": 20,
+    "topic": 2,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Parameter vs. Zuweisung",
+    "prompt": "Finde die 2 Fehler im folgenden Konstruktor:",
+    "codeLines": [
+      "class User:",
+      "    def __init__(username, email):",
+      "        username = username",
+      "        self.email = email"
+    ],
+    "bugIndices": [
+      1,
+      2
+    ],
+    "hint": "Was fehlt als 1. Parameter und was fehlt vor der Variablen username in Zeile 3?",
+    "explanation": "Zeile 2: `self` fehlt als erster Parameter (`def __init__(self, username, email):`).\nZeile 3: `self.` fehlt bei der Zuweisung (`self.username = username`), sonst stirbt der Wert mit Funktionsende."
+  },
+  {
+    "id": 21,
+    "topic": 2,
+    "type": "tf",
+    "title": "Klassenattribut vs. Instanzattribut",
+    "prompt": "Ein Attribut, das direkt im Klassenrumpf (außerhalb von Methoden) definiert wird, existiert für jede Instanz separat und unabhängig.",
+    "answer": false,
+    "hint": "Das ist die Definition eines Klassenattributs (static).",
+    "explanation": "Falsch! Das ist ein Klassenattribut. Es existiert nur genau einmal für die gesamte Klasse und wird von allen Instanzen geteilt."
+  },
+  {
+    "id": 22,
+    "topic": 2,
+    "type": "cloze",
+    "title": "Feste Startattribute",
+    "prompt": "Ein Buch soll beim Erstellen immer den festen Startwert `ausgeliehen = False` erhalten, ohne dass dieser Wert übergeben werden muss. Ergänze die Zeile:",
+    "codeTemplate": "class Buch:\n    def __init__(self, titel: str):\n        self.titel = titel\n        self.{{gap1}} = False",
+    "gaps": {
+      "gap1": "ausgeliehen"
+    },
+    "hint": "Der Attributname lautet ausgeliehen.",
+    "explanation": "Feste Startzustände (wie ausgeliehen=False oder punktestand=0) werden direkt im Konstruktorrumpf an `self` gebunden und müssen nicht in der Parameterklammer stehen."
+  },
+  {
+    "id": 23,
+    "topic": 2,
+    "type": "tf",
+    "title": "Aufruf ohne self",
+    "prompt": "Wenn wir `auto1.fahren()` aufrufen, übergibt Python das Objekt `auto1` automatisch als erstes Argument `self` an die Methode `fahren`.",
+    "answer": true,
+    "hint": "auto1.fahren() ist syntaktischer Zucker für Auto.fahren(auto1).",
+    "explanation": "Richtig! Python transformiert `obj.methode()` intern in `Klasse.methode(obj)`. Daher muss in der Definition immer `self` stehen."
+  },
+  {
+    "id": 24,
+    "topic": 2,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Instanziierung eines Objekts",
+    "prompt": "Finde die 2 Fehler bei der Objekterzeugung und Methodenbenutzung:",
+    "codeLines": [
+      "class Lampe:",
+      "    def __init__(self, watt: int):",
+      "        self.watt = watt",
+      "l = Lampe",
+      "l.watt = 60",
+      "print(watt)"
+    ],
+    "bugIndices": [
+      3,
+      5
+    ],
+    "hint": "Zeile 4 ruft den Konstruktor nicht auf (Klammern fehlen), und Zeile 6 versucht global auf watt zuzugreifen.",
+    "explanation": "Zeile 4: Bei der Instanziierung müssen Argumentklammern angegeben werden: `l = Lampe(60)`.\nZeile 6: Der Zugriff muss über das Objekt erfolgen: `print(l.watt)`."
+  },
+  {
+    "id": 25,
+    "topic": 2,
+    "type": "cloze",
+    "title": "Standardparameter im Konstruktor",
+    "prompt": "Ergänze den Standardwert 0 für den Kilometerstand im Methodenkopf:",
+    "codeTemplate": "def __init__(self, marke: str, km: int = {{gap1}}):\n    self.marke = marke\n    self.km = km",
+    "gaps": {
+      "gap1": "0"
+    },
+    "hint": "Standardmäßig null Kilometer.",
+    "explanation": "Standardparameter (`= 0`) erlauben es, beim Aufruf das Argument wegzulassen; dann greift der Standardwert."
+  },
+  {
+    "id": 26,
+    "topic": 2,
+    "type": "tf",
+    "title": "Attribute nachträglich anheften",
+    "prompt": "In Python ist es syntaktisch möglich, einem existierenden Objekt außerhalb der Klasse neue Attribute zuzuweisen, z. B. `auto.farbe = 'blau'`.",
+    "answer": true,
+    "hint": "Python ist eine sehr dynamische Sprache.",
+    "explanation": "Richtig! Python erlaubt dynamisches Hinzufügen von Attributen zur Laufzeit, auch wenn guter OOP-Stil verlangt, alle Attribute sauber in `__init__` zu deklarieren."
+  },
+  {
+    "id": 27,
+    "topic": 2,
+    "type": "write",
+    "title": "Code-Writing: Klasse Bankkunde erstellen",
+    "prompt": "Schreibe die Klasse `Bankkunde`. Der Konstruktor soll `name` (str) und `kontostand` (float, Standardwert 0.0) entgegennehmen und an `self` binden.",
+    "starterCode": "# Schreibe hier die vollständige Klasse Bankkunde:\n",
+    "expectedKeywords": [
+      "class Bankkunde",
+      "def __init__",
+      "self",
+      "name",
+      "kontostand"
+    ],
+    "solutionCode": "class Bankkunde:\n    def __init__(self, name: str, kontostand: float = 0.0):\n        self.name = name\n        self.kontostand = kontostand",
+    "hint": "Achte auf `def __init__(self, name: str, kontostand: float = 0.0):`.",
+    "explanation": "Klassenname großschreiben, `self` als 1. Parameter und Werte mit `self.attribut = wert` speichern."
+  },
+  {
+    "id": 28,
+    "topic": 2,
+    "type": "tf",
+    "title": "Mehrere Instanzen Unabhängigkeit",
+    "prompt": "Wenn `k1` und `k2` zwei verschiedene Instanzen von `Konto` sind, verändert `k1.kontostand += 100` auch den `kontostand` von `k2`.",
+    "answer": false,
+    "hint": "Instanzattribute gehören exakt einem Objekt.",
+    "explanation": "Falsch! Instanzattribute sind strikt getrennt im Speicher. Eine Änderung an `k1` hat keinerlei Auswirkung auf `k2`."
+  },
+  {
+    "id": 29,
+    "topic": 2,
+    "type": "cloze",
+    "title": "Zugriff auf Klassenattribut",
+    "prompt": "Ergänze den Zugriff auf das Klassenattribut über den Klassennamen:",
+    "codeTemplate": "class Config:\n    VERSION = 2.0\n\naktuelle_version = {{gap1}}.VERSION",
+    "gaps": {
+      "gap1": "Config"
+    },
+    "hint": "Der Name der Klasse.",
+    "explanation": "Klassenattribute können direkt über den Klassennamen (`Config.VERSION`) abgerufen werden, ohne dass ein Objekt erzeugt werden muss."
+  },
+  {
+    "id": 30,
+    "topic": 2,
+    "type": "tf",
+    "title": "Vergessenes self bei Zuweisung",
+    "prompt": "Schreibt man im Konstruktor nur `alter = alter` statt `self.alter = alter`, ist das Attribut trotzdem auf dem Objekt gespeichert.",
+    "answer": false,
+    "hint": "Was passiert mit lokalen Variablen nach dem Funktionsende?",
+    "explanation": "Falsch! Ohne `self.` ist `alter` nur eine lokale Variable der Funktion `__init__` und wird beim Verlassen sofort gelöscht."
+  },
+  {
+    "id": 31,
+    "topic": 2,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Methodenaufruf im Konstruktor",
+    "prompt": "Finde die 2 Fehler in dieser Zähler-Klasse:",
+    "codeLines": [
+      "class Counter:",
+      "    def __init__(self):",
+      "        self.count = 0",
+      "    def increment(self):",
+      "        count += 1",
+      "    def reset():",
+      "        self.count = 0"
+    ],
+    "bugIndices": [
+      4,
+      5
+    ],
+    "hint": "Zeile 5 greift ohne self auf count zu; Zeile 6 fehlt der Parameter self.",
+    "explanation": "Zeile 5: Muss `self.count += 1` heißen.\nZeile 6: `def reset(self):` benötigt zwingend `self` als Parameter."
+  },
+  {
+    "id": 32,
+    "topic": 2,
+    "type": "tf",
+    "title": "Konstruktor Rückgabewert",
+    "prompt": "Die Methode `__init__` darf explizit einen String per `return 'Erfolg'` zurückgeben.",
+    "answer": false,
+    "hint": "Was darf der Konstruktor zurückliefern?",
+    "explanation": "Falsch! `__init__` darf niemals einen expliziten Wert zurückgeben. Ein `return` mit Wert führt in Python zu einem schweren `TypeError`!"
+  },
+  {
+    "id": 33,
+    "topic": 2,
+    "type": "cloze",
+    "title": "Objekt erzeugen",
+    "prompt": "Erzeuge ein Objekt der Klasse `Auto` mit dem Argument 'BMW' und speichere es in der Variable `mein_wagen`:",
+    "codeTemplate": "mein_wagen = {{gap1}}(\"BMW\")",
+    "gaps": {
+      "gap1": "Auto"
+    },
+    "hint": "Klassenname als Funktion aufrufen.",
+    "explanation": "Objekte werden erzeugt, indem der Klassenname wie eine Funktion aufgerufen wird: `mein_wagen = Auto('BMW')`."
+  },
+  {
+    "id": 34,
+    "topic": 2,
+    "type": "tf",
+    "title": "Parameter self Umbenennung",
+    "prompt": "Theoretisch könnte man `self` in Python auch `this` nennen und der Code würde funktionieren, es verstößt aber gegen die offizielle PEP8-Konvention.",
+    "answer": true,
+    "hint": "Python achtet auf die Position des 1. Parameters, nicht auf das Wort.",
+    "explanation": "Richtig! Technisch zählt nur, dass es der erste Parameter ist. Die Python-Konvention schreibt aber ausnahmslos das Wort `self` vor."
+  },
+  {
+    "id": 35,
+    "topic": 2,
+    "type": "write",
+    "title": "Code-Writing: Fester Startzustand",
+    "prompt": "Erstelle eine Klasse `Server`. Der Konstruktor nimmt nur `ip` (str) entgegen. Im Rumpf soll automatisch `self.online = False` und `self.verbindungen = 0` initialisiert werden.",
+    "starterCode": "class Server:\n    # Konstruktor hier implementieren:\n",
+    "expectedKeywords": [
+      "def __init__",
+      "self",
+      "ip",
+      "self.online = False",
+      "self.verbindungen = 0"
+    ],
+    "solutionCode": "class Server:\n    def __init__(self, ip: str):\n        self.ip = ip\n        self.online = False\n        self.verbindungen = 0",
+    "hint": "Nur `ip` kommt in die Klammer `(self, ip: str)`. Die anderen beiden Werte setzt du fest im Rumpf.",
+    "explanation": "Feste Vorgabewerte gehören nicht in die Parameterliste, sondern werden im Rumpf direkt an `self` zugewiesen."
+  },
+  {
+    "id": 36,
+    "topic": 3,
+    "type": "tf",
+    "title": "Private Attribute in Python",
+    "prompt": "In Python kennzeichnet man ein privates Attribut, indem man zwei führende Unterstriche voranstellt, z. B. `self.__passwort`.",
+    "answer": true,
+    "hint": "Zwei Unterstriche lösen Name Mangling aus.",
+    "explanation": "Richtig! Zwei führende Unterstriche (`__attribut`) signalisieren private Sichtbarkeit und verhindern den direkten Zugriff von außen."
+  },
+  {
+    "id": 37,
+    "topic": 3,
+    "type": "cloze",
+    "title": "Getter mit Return",
+    "prompt": "Vervollständige die Getter-Methode, die das private Attribut `__gehalt` zurückliefert:",
+    "codeTemplate": "def get_gehalt(self) -> float:\n    {{gap1}} self.__gehalt",
+    "gaps": {
+      "gap1": "return"
+    },
+    "hint": "Mit welchem Befehl gibt eine Funktion einen Wert zurück?",
+    "explanation": "Ein Getter muss den Wert mit `return` an den Aufrufer übergeben."
+  },
+  {
+    "id": 38,
+    "topic": 3,
+    "type": "tf",
+    "title": "Zweck eines Setters",
+    "prompt": "Der Hauptgrund für einen Setter ist, dass man vor dem Überschreiben eines Werts eine Validierung (Schutzprüfung) durchführen kann.",
+    "answer": true,
+    "hint": "Der Setter fungiert als 'Türsteher'.",
+    "explanation": "Richtig! Ein Setter verhindert, dass ungültige oder zerstörerische Daten (z. B. negatives Alter oder Minus-Gehalt) ins Objekt gelangen."
+  },
+  {
+    "id": 39,
+    "topic": 3,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Setter ohne Parameter",
+    "prompt": "Finde die 2 Fehler in dieser Kapselungs-Implementierung:",
+    "codeLines": [
+      "class Konto:",
+      "    def __init__(self):",
+      "        self.__pin = 1234",
+      "    def set_pin(self):",
+      "        if neuer_pin > 0:",
+      "            self.__pin = neuer_pin"
+    ],
+    "bugIndices": [
+      3,
+      4
+    ],
+    "hint": "Der Setter in Zeile 4 empfängt keinen neuen Wert in der Parameterliste, nutzt ihn aber in Zeile 5.",
+    "explanation": "Zeile 4: Der Setter muss den neuen Wert empfangen: `def set_pin(self, neuer_pin):`.\nZeile 5: Da `neuer_pin` vorher nicht deklariert war, stürzt diese Zeile mit einem NameError ab."
+  },
+  {
+    "id": 40,
+    "topic": 3,
+    "type": "cloze",
+    "title": "Privates Attribut anlegen",
+    "prompt": "Schütze das Attribut `kontostand` vor unbefugtem Direktzugriff, indem du die zwei Unterstriche einsetzt:",
+    "codeTemplate": "def __init__(self, start: float):\n    self.{{gap1}}kontostand = start",
+    "gaps": {
+      "gap1": "__"
+    },
+    "hint": "Genau zwei Unterstriche.",
+    "explanation": "Mit zwei Unterstrichen `self.__kontostand` wird das Attribut als privat deklariert."
+  },
+  {
+    "id": 41,
+    "topic": 3,
+    "type": "tf",
+    "title": "Direktzugriff auf Private",
+    "prompt": "Wenn ein Attribut `self.__pin` heißt, kann man von außen problemlos `k.pin` schreiben, um den Wert zu lesen.",
+    "answer": false,
+    "hint": "Das Attribut heißt ja `__pin`, nicht `pin`.",
+    "explanation": "Falsch! `k.pin` existiert nicht und `k.__pin` wirft einen AttributeError. Man benötigt den Getter `k.get_pin()`."
+  },
+  {
+    "id": 42,
+    "topic": 3,
+    "type": "write",
+    "title": "Code-Writing: Getter und Setter für Alter",
+    "prompt": "Schreibe die Methoden `get_alter(self)` und `set_alter(self, wert: int)`. Der Setter darf das private Attribut `self.__alter` nur aktualisieren, wenn `wert >= 0` ist.",
+    "starterCode": "class Person:\n    def __init__(self):\n        self.__alter = 0\n\n    # Implementiere hier get_alter und set_alter:\n",
+    "expectedKeywords": [
+      "def get_alter",
+      "return self.__alter",
+      "def set_alter",
+      "if wert >= 0",
+      "self.__alter = wert"
+    ],
+    "solutionCode": "class Person:\n    def __init__(self):\n        self.__alter = 0\n\n    def get_alter(self) -> int:\n        return self.__alter\n\n    def set_alter(self, wert: int) -> None:\n        if wert >= 0:\n            self.__alter = wert",
+    "hint": "Vergiss das `return` im Getter nicht und prüfe im Setter mit `if wert >= 0:`.",
+    "explanation": "Der Getter liest das private Feld aus; der Setter schützt es vor negativen Zahlen."
+  },
+  {
+    "id": 43,
+    "topic": 3,
+    "type": "tf",
+    "title": "Getter Rückgabetyp in Python",
+    "prompt": "Ein Getter muss immer den Rückgabetyp `None` haben.",
+    "answer": false,
+    "hint": "Ein Getter liefert ja Daten zurück, also nicht None!",
+    "explanation": "Falsch! Ein Getter liefert den Typ des Attributs zurück (z. B. `-> int` oder `-> str`). `None` wäre ein Hinweis darauf, dass gar nichts zurückgegeben wird."
+  },
+  {
+    "id": 44,
+    "topic": 3,
+    "type": "cloze",
+    "title": "Setter Rückgabetyp",
+    "prompt": "Welcher Rückgabetyp wird üblicherweise für Setter notiert, da sie nur Daten verändern und nichts zurückgeben?",
+    "codeTemplate": "def set_name(self, neuer_name: str) -> {{gap1}}:\n    self.__name = neuer_name",
+    "gaps": {
+      "gap1": "None"
+    },
+    "hint": "Entspricht dem englischen 'void'.",
+    "explanation": "Setter geben typischerweise nichts zurück; in Python ist der Rückgabetyp daher `None` (in UML `void`)."
+  },
+  {
+    "id": 45,
+    "topic": 3,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Getter mit print statt return",
+    "prompt": "Finde die 2 Fehler in diesem Getter/Setter-Paar:",
+    "codeLines": [
+      "class Sensor:",
+      "    def __init__(self):",
+      "        self.__temp = 20.0",
+      "    def get_temp(self):",
+      "        print(self.__temp)",
+      "    def set_temp(self, t):",
+      "        self.__temp == t"
+    ],
+    "bugIndices": [
+      4,
+      6
+    ],
+    "hint": "Zeile 5 druckt nur auf den Bildschirm statt den Wert zurückzugeben; Zeile 7 vergleicht mit == statt zuzuweisen.",
+    "explanation": "Zeile 5: Ein Getter muss `return self.__temp` verwenden, nicht `print`.\nZeile 7: Zuweisung erfordert ein einzelnes `=`. `==` ist ein Vergleich ohne Effekt!"
+  },
+  {
+    "id": 46,
+    "topic": 3,
+    "type": "tf",
+    "title": "Kapselung und Wartbarkeit",
+    "prompt": "Kapselung sorgt dafür, dass man die interne Speicherung eines Werts (z. B. Umrechnung von Celsius in Kelvin) ändern kann, ohne dass der restliche Code, der Getter aufruft, kaputtgeht.",
+    "answer": true,
+    "hint": "Das ist einer der größten Software-Engineering-Vorteile von Gettern.",
+    "explanation": "Richtig! Die Aufrufer nutzen die Schnittstelle `get_temp()`. Wie die Temperatur intern gespeichert wird, ist dem Aufrufer egal."
+  },
+  {
+    "id": 47,
+    "topic": 3,
+    "type": "cloze",
+    "title": "Read-Only Attribute durch Kapselung",
+    "prompt": "Wie erzeugt man ein schreibgeschütztes (Read-Only) Attribut in einer Klasse?",
+    "codeTemplate": "Man deklariert das Attribut privat und stellt nur einen {{gap1}} bereit, aber keinen Setter.",
+    "gaps": {
+      "gap1": "Getter"
+    },
+    "hint": "Mit welcher Methode kann man nur lesen?",
+    "explanation": "Wenn es nur einen Getter, aber keinen Setter gibt, kann der Wert von außen nur gelesen, aber niemals überschrieben werden."
+  },
+  {
+    "id": 48,
+    "topic": 3,
+    "type": "tf",
+    "title": "Ein einzelner Unterstrich",
+    "prompt": "Ein einzelner Unterstrich vor einem Namen (`self._wert`) ist in Python eine reine Konvention für 'protected', schützt technisch aber nicht vor Zugriff.",
+    "answer": true,
+    "hint": "Erst zwei Unterstriche lösen Name Mangling aus.",
+    "explanation": "Richtig! Ein einzelner Unterstrich signalisiert Entwicklern 'bitte als intern/protected behandeln', blockiert den Zugriff zur Laufzeit jedoch nicht."
+  },
+  {
+    "id": 49,
+    "topic": 3,
+    "type": "write",
+    "title": "Code-Writing: Setter mit Grenzwertprüfung",
+    "prompt": "Schreibe einen Setter `set_lautstaerke(self, wert: int)`, der das private Attribut `self.__lautstaerke` nur aktualisiert, wenn `wert` zwischen 0 und 100 liegt (einschließlich).",
+    "starterCode": "class Radio:\n    def __init__(self):\n        self.__lautstaerke = 20\n\n    # Implementiere set_lautstaerke hier:\n",
+    "expectedKeywords": [
+      "def set_lautstaerke",
+      "self",
+      "wert",
+      "if 0 <= wert <= 100",
+      "self.__lautstaerke = wert"
+    ],
+    "solutionCode": "class Radio:\n    def __init__(self):\n        self.__lautstaerke = 20\n\n    def set_lautstaerke(self, wert: int) -> None:\n        if 0 <= wert <= 100:\n            self.__lautstaerke = wert",
+    "hint": "Bedingung: `if 0 <= wert <= 100:` oder `if wert >= 0 and wert <= 100:`.",
+    "explanation": "Der Türsteher stellt sicher, dass Lautstärken unter 0 oder über 100 ignoriert werden."
+  },
+  {
+    "id": 50,
+    "topic": 3,
+    "type": "tf",
+    "title": "Setter Name Konvention",
+    "prompt": "Nach Namenskonvention sollte ein Setter immer mit dem Präfix `set_` gefolgt vom Attributnamen beginnen.",
+    "answer": true,
+    "hint": "Zum Beispiel set_gewicht oder set_alter.",
+    "explanation": "Richtig! Das erleichtert die Lesbarkeit und das Zuordnen zu Klassendiagrammen enorm."
+  },
+  {
+    "id": 51,
+    "topic": 3,
+    "type": "cloze",
+    "title": "Private Methode",
+    "prompt": "Kann man auch Methoden privat machen? Ja, indem man vor den Methodennamen ebenfalls {{gap1}} Unterstriche setzt.",
+    "codeTemplate": "def {{gap1}}berechne_intern(self):\n    pass",
+    "gaps": {
+      "gap1": "__"
+    },
+    "hint": "Genauso viele wie bei privaten Attributen.",
+    "explanation": "Auch Methoden können mit zwei Unterstrichen privatisiert werden, sodass sie nur intern von anderen Methoden der Klasse aufgerufen werden können."
+  },
+  {
+    "id": 52,
+    "topic": 3,
+    "type": "tf",
+    "title": "Setter ohne Wertprüfung",
+    "prompt": "Ein Setter, der ohne jegliche Prüfung einfach `self.__x = x` macht, ist syntaktisch verboten und stürzt ab.",
+    "answer": false,
+    "hint": "Es ist syntaktisch erlaubt, auch wenn man sich fragen kann, warum x dann privat ist.",
+    "explanation": "Falsch! Syntaktisch ist das völlig legal. Oft beginnt man mit einem einfachen Setter und baut später Prüfungen ein."
+  },
+  {
+    "id": 53,
+    "topic": 4,
+    "type": "tf",
+    "title": "return vs. print",
+    "prompt": "Wenn eine Methode `print(42)` ausführt, kann der Aufrufer das Ergebnis in einer Variable fangen und damit weiterrechnen: `x = obj.methode() * 2`.",
+    "answer": false,
+    "hint": "Was liefert eine Funktion zurück, die kein return hat?",
+    "explanation": "Falsch! `print()` gibt nur Text auf der Konsole aus. Der Rückgabewert der Methode ist `None`, wodurch `None * 2` mit einem TypeError abstürzt!"
+  },
+  {
+    "id": 54,
+    "topic": 4,
+    "type": "cloze",
+    "title": "Was liefert eine Funktion ohne return?",
+    "prompt": "Welchen Wert hat eine Variable, wenn ihr der Aufruf einer Funktion ohne return-Befehl zugewiesen wird?",
+    "codeTemplate": "def mache_etwas():\n    print(\"Hallo\")\n\nx = mache_etwas()\n# x hat jetzt den Wert: {{gap1}}",
+    "gaps": {
+      "gap1": "None"
+    },
+    "hint": "Pythons Schlüsselwort für 'Nichts'.",
+    "explanation": "In Python geben Funktionen ohne explizites `return` automatisch den Wert `None` zurück."
+  },
+  {
+    "id": 55,
+    "topic": 4,
+    "type": "tf",
+    "title": "Type Hint -> None",
+    "prompt": "Die Typangabe `-> None` am Ende eines Funktionskopfes bedeutet, dass die Funktion keinen Wert zurückgibt (entspricht `void` in UML).",
+    "answer": true,
+    "hint": "Vergleiche UML-Operationen: `fahren(): void`.",
+    "explanation": "Richtig! `-> None` ist der Python Type Hint für Prozeduren ohne Rückgabewert."
+  },
+  {
+    "id": 56,
+    "topic": 4,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Berechnungsfunktion",
+    "prompt": "Finde die 2 Fehler in dieser Additions-Methode:",
+    "codeLines": [
+      "class Rechner:",
+      "    def addiere(a, b) -> int:",
+      "        ergebnis = a + b",
+      "        print(ergebnis)",
+      "r = Rechner()",
+      "summe = r.addiere(5, 10)"
+    ],
+    "bugIndices": [
+      1,
+      3
+    ],
+    "hint": "In Zeile 2 fehlt self; in Zeile 4 fehlt das return, weshalb summe leer bleibt.",
+    "explanation": "Zeile 2: `def addiere(self, a, b):` benötigt `self`.\nZeile 4: Die Methode muss `return ergebnis` ausführen, sonst ist `summe` gleich `None`."
+  },
+  {
+    "id": 57,
+    "topic": 4,
+    "type": "cloze",
+    "title": "Rückgabe erzwingen",
+    "prompt": "Ergänze das Schlüsselwort, um die Summe an den Aufrufer zurückzugeben:",
+    "codeTemplate": "def berechne_gesamtpreis(self) -> float:\n    {{gap1}} self.netto * 1.19",
+    "gaps": {
+      "gap1": "return"
+    },
+    "hint": "Englisch für zurückgeben.",
+    "explanation": "Mit `return` wird der berechnete Wert aus der Funktion herausgereicht."
+  },
+  {
+    "id": 58,
+    "topic": 4,
+    "type": "tf",
+    "title": "Code nach return",
+    "prompt": "Code-Zeilen, die direkt nach einem ausgeführten `return`-Befehl in derselben Funktion stehen, werden trotzdem noch abgearbeitet.",
+    "answer": false,
+    "hint": "Ein return beendet die Funktionsausführung sofort.",
+    "explanation": "Falsch! Sobald `return` ausgeführt wird, verlässt Python die Funktion augenblicklich. Nachfolgende Zeilen werden ignoriert (Dead Code)."
+  },
+  {
+    "id": 59,
+    "topic": 4,
+    "type": "tf",
+    "title": "Type Hints Verbindlichkeit",
+    "prompt": "Wenn in Python `def verdopple(x: int) -> int:` steht und man versehentlich einen String übergibt, stürzt Python sofort beim Start wegen des Type Hints ab.",
+    "answer": false,
+    "hint": "Type Hints sind in Python 'Hints' (Hinweise), keine starre Typbindung wie in C++.",
+    "explanation": "Falsch! Type Hints sind optionale Hinweise für Entwickler und IDEs. Python prüft sie zur Laufzeit standardmäßig nicht und erzwingt keine Typen."
+  },
+  {
+    "id": 60,
+    "topic": 4,
+    "type": "cloze",
+    "title": "Type Hint für String-Rückgabe",
+    "prompt": "Wie lautet der Type Hint für eine Methode, die Text zurückliefert?",
+    "codeTemplate": "def get_beschreibung(self) -> {{gap1}}:\n    return self.beschreibung",
+    "gaps": {
+      "gap1": "str"
+    },
+    "hint": "Kurzform für String.",
+    "explanation": "In Python wird der Datentyp für Text mit `str` angegeben."
+  },
+  {
+    "id": 61,
+    "topic": 4,
+    "type": "write",
+    "title": "Code-Writing: Methode mit Berechnung & Return",
+    "prompt": "Schreibe eine Methode `ist_volljaehrig(self) -> bool` für eine Klasse mit dem Attribut `self.alter`. Sie soll `True` zurückgeben, wenn `alter >= 18`, andernfalls `False`.",
+    "starterCode": "class Person:\n    def __init__(self, alter: int):\n        self.alter = alter\n\n    # Implementiere ist_volljaehrig hier:\n",
+    "expectedKeywords": [
+      "def ist_volljaehrig",
+      "self",
+      "return self.alter >= 18"
+    ],
+    "solutionCode": "class Person:\n    def __init__(self, alter: int):\n        self.alter = alter\n\n    def ist_volljaehrig(self) -> bool:\n        return self.alter >= 18",
+    "hint": "Du kannst direkt `return self.alter >= 18` schreiben oder ein `if/else` verwenden.",
+    "explanation": "Der Vergleich `self.alter >= 18` liefert direkt einen booleschen Wert (`True` oder `False`), der mit `return` zurückgegeben wird."
+  },
+  {
+    "id": 62,
+    "topic": 4,
+    "type": "tf",
+    "title": "Mehrere return Anweisungen",
+    "prompt": "Eine Funktion darf mehrere `return`-Anweisungen enthalten (z. B. in unterschiedlichen if-else-Zweigen).",
+    "answer": true,
+    "hint": "Je nach Bedingung kann an unterschiedlichen Stellen zurückgekehrt werden.",
+    "explanation": "Richtig! Häufig nutzt man `if bedingung: return a` und sonst `return b`."
+  },
+  {
+    "id": 63,
+    "topic": 4,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Falscher Rückgabetyp",
+    "prompt": "Finde die 2 Fehler in dieser Rabatt-Berechnung:",
+    "codeLines": [
+      "class Kasse:",
+      "    def gewaehre_rabatt(self, preis: float) -> float:",
+      "        if preis > 100:",
+      "            return preis * 0.9",
+      "        print(preis)"
+    ],
+    "bugIndices": [
+      4
+    ],
+    "hint": "Wenn der Preis <= 100 ist, wird print statt return ausgeführt und die Funktion liefert None zurück!",
+    "explanation": "Zeile 5: Wenn `preis <= 100` ist, muss die Methode `return preis` ausführen! Durch `print(preis)` gibt sie im else-Fall unabsichtlich `None` zurück."
+  },
+  {
+    "id": 64,
+    "topic": 4,
+    "type": "cloze",
+    "title": "Type Hint für Ganzzahl",
+    "prompt": "Ergänze den Type Hint für eine Methode, die die Anzahl der Tage als ganze Zahl zurückliefert:",
+    "codeTemplate": "def get_tage(self) -> {{gap1}}:\n    return self.tage",
+    "gaps": {
+      "gap1": "int"
+    },
+    "hint": "Kurzform für Integer.",
+    "explanation": "Ganze Zahlen werden in Python als `int` deklariert."
+  },
+  {
+    "id": 65,
+    "topic": 4,
+    "type": "tf",
+    "title": "Rückgabe von Tupeln",
+    "prompt": "In Python kann eine Methode mit `return x, y` zwei Werte auf einmal zurückgeben.",
+    "answer": true,
+    "hint": "Python packt sie automatisch in ein Tupel.",
+    "explanation": "Richtig! `return x, y` liefert ein Tupel `(x, y)` zurück, das beim Aufrufer entpackt werden kann (`a, b = obj.coords()`)."
+  },
+  {
+    "id": 66,
+    "topic": 4,
+    "type": "tf",
+    "title": "UML void zu Python",
+    "prompt": "Die UML-Signatur `pruefeStatus(): void` übersetzt man in Python sauber als `def pruefe_status(self) -> None:`.",
+    "answer": true,
+    "hint": "void = kein Rückgabewert = None.",
+    "explanation": "Richtig! `void` bedeutet 'kein Rückgabewert', was in Python als `-> None` ausgedrückt wird."
+  },
+  {
+    "id": 67,
+    "topic": 4,
+    "type": "write",
+    "title": "Code-Writing: String-Repräsentation",
+    "prompt": "Schreibe eine Methode `get_info(self) -> str`, die einen formatierten String im Format 'Produkt: [name], Preis: [preis] €' per `return` zurückgibt.",
+    "starterCode": "class Produkt:\n    def __init__(self, name: str, preis: float):\n        self.name = name\n        self.preis = preis\n\n    # Implementiere get_info hier:\n",
+    "expectedKeywords": [
+      "def get_info",
+      "self",
+      "return",
+      "self.name",
+      "self.preis"
+    ],
+    "solutionCode": "class Produkt:\n    def __init__(self, name: str, preis: float):\n        self.name = name\n        self.preis = preis\n\n    def get_info(self) -> str:\n        return f\"Produkt: {self.name}, Preis: {self.preis} €\"",
+    "hint": "Nutze einen f-String: `return f'Produkt: {self.name}, Preis: {self.preis} €'`.",
+    "explanation": "Der formatierte String wird zusammengestellt und mit `return` nach draußen gereicht."
+  },
+  {
+    "id": 68,
+    "topic": 4,
+    "type": "tf",
+    "title": "Vergessenes Return in Suchfunktion",
+    "prompt": "Wenn eine Schleife in einer Funktion ein gesuchtes Element findet, reicht es, `print('Gefunden')` zu schreiben, damit der Rest des Programms das Objekt hat.",
+    "answer": false,
+    "hint": "Hat das Programm das Objekt danach wirklich in einer Variable?",
+    "explanation": "Falsch! Nur mit `return element` wird das gefundene Objekt an den Aufrufer übergeben."
+  },
+  {
+    "id": 69,
+    "topic": 5,
+    "type": "tf",
+    "title": "Syntax der Vererbung",
+    "prompt": "Um in Python festzulegen, dass `Hund` von `Tier` erbt, schreibt man: `class Hund extends Tier:`.",
+    "answer": false,
+    "hint": "extends gibt es in Java, aber wie schreibt man es in Python?",
+    "explanation": "Falsch! In Python wird die Elternklasse in runden Klammern hinter den Klassennamen gesetzt: `class Hund(Tier):`."
+  },
+  {
+    "id": 70,
+    "topic": 5,
+    "type": "cloze",
+    "title": "Elternkonstruktor mit super()",
+    "prompt": "Ergänze den Aufruf des Elternkonstruktors in der Subklasse:",
+    "codeTemplate": "class Manager(Mitarbeiter):\n    def __init__(self, name: str, gehalt: float, bonus: float):\n        {{gap1}}().__init__(name, gehalt)\n        self.bonus = bonus",
+    "gaps": {
+      "gap1": "super"
+    },
+    "hint": "Die Funktion zur Referenzierung der Superklasse.",
+    "explanation": "`super()` delegiert den Aufruf an die Superklasse (Mitarbeiter)."
+  },
+  {
+    "id": 71,
+    "topic": 5,
+    "type": "tf",
+    "title": "Auslassen von super()",
+    "prompt": "Wenn eine Subklasse `__init__` überschreibt und `super().__init__()` weglässt, werden die Attribute der Elternklasse trotzdem automatisch initialisiert.",
+    "answer": false,
+    "hint": "Python ruft den Elternkonstruktor nicht magisch von alleine auf.",
+    "explanation": "Falsch! Wenn eine Subklasse einen eigenen `__init__` definiert, überschreibt sie den der Elternklasse komplett. Ohne `super().__init__()` fehlen alle Attribute der Basisklasse!"
+  },
+  {
+    "id": 72,
+    "topic": 5,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Vererbung und super()",
+    "prompt": "Finde die 2 Fehler in dieser Vererbungshierarchie:",
+    "codeLines": [
+      "class Fahrzeug:",
+      "    def __init__(self, marke):",
+      "        self.marke = marke",
+      "class LKW: Fahrzeug",
+      "    def __init__(self, marke, tonnen):",
+      "        super.__init__(marke)",
+      "        self.tonnen = tonnen"
+    ],
+    "bugIndices": [
+      3,
+      5
+    ],
+    "hint": "Zeile 4 nutzt Doppelpunkt statt Klammern; Zeile 6 vergisst die Klammern bei super().",
+    "explanation": "Zeile 4: Vererbungssyntax lautet `class LKW(Fahrzeug):`.\nZeile 6: `super()` ist eine Funktion und muss mit Klammern aufgerufen werden: `super().__init__(marke)`."
+  },
+  {
+    "id": 73,
+    "topic": 5,
+    "type": "cloze",
+    "title": "Vererbungssyntax",
+    "prompt": "Ergänze die Klammer, damit `PKW` von `Fahrzeug` erbt:",
+    "codeTemplate": "class PKW({{gap1}}):\n    def hupen(self):\n        print(\"Hup!\")",
+    "gaps": {
+      "gap1": "Fahrzeug"
+    },
+    "hint": "Name der Elternklasse.",
+    "explanation": "In den Klammern steht die Superklasse `Fahrzeug`."
+  },
+  {
+    "id": 74,
+    "topic": 5,
+    "type": "tf",
+    "title": "Polymorphie durch Überschreiben",
+    "prompt": "Definiert eine Subklasse eine Methode mit exakt demselben Namen wie die Superklasse, nennt man diesen Vorgang 'Überschreiben' (Overriding).",
+    "answer": true,
+    "hint": "Die Subklasse liefert ihre eigene, spezialisierte Version.",
+    "explanation": "Richtig! Beim Überschreiben ersetzt die Subklasse das geerbte Verhalten durch ihre eigene Logik."
+  },
+  {
+    "id": 75,
+    "topic": 5,
+    "type": "write",
+    "title": "Code-Writing: Vollständige Vererbung",
+    "prompt": "Erstelle die Klasse `ElektroAuto`, die von `Auto` erbt. Der Konstruktor soll `marke` (str) und `batterie` (int) entgegennehmen. Rufe den Elternkonstruktor mit `super().__init__(marke)` auf und speichere `self.batterie = batterie`.",
+    "starterCode": "class Auto:\n    def __init__(self, marke: str):\n        self.marke = marke\n\n# Schreibe hier die Klasse ElektroAuto:\n",
+    "expectedKeywords": [
+      "class ElektroAuto(Auto):",
+      "def __init__",
+      "super().__init__(marke)",
+      "self.batterie = batterie"
+    ],
+    "solutionCode": "class ElektroAuto(Auto):\n    def __init__(self, marke: str, batterie: int):\n        super().__init__(marke)\n        self.batterie = batterie",
+    "hint": "Achte auf `class ElektroAuto(Auto):` und `super().__init__(marke)`.",
+    "explanation": "Saubere Vererbung: Elternklasse in Klammern und Basisattribute mit `super().__init__()` initialisieren."
+  },
+  {
+    "id": 76,
+    "topic": 5,
+    "type": "tf",
+    "title": "self bei super().__init__()",
+    "prompt": "Beim Aufruf von `super().__init__(self, marke)` muss man `self` zwingend als erstes Argument in die Klammer von `__init__` schreiben.",
+    "answer": false,
+    "hint": "Überlege: Übergibt man bei super() noch extra self?",
+    "explanation": "Falsch! `super()` bindet `self` bereits automatisch. Der Aufruf lautet schlicht `super().__init__(marke)` ohne `self`!"
+  },
+  {
+    "id": 77,
+    "topic": 5,
+    "type": "cloze",
+    "title": "Originalmethode erweitern",
+    "prompt": "Wie ruft man die Methode der Elternklasse auf, um deren Ergebnis zu erweitern?",
+    "codeTemplate": "def beschreibung(self) -> str:\n    basis = {{gap1}}().beschreibung()\n    return f\"{basis} [Spezialisiert]\"",
+    "gaps": {
+      "gap1": "super"
+    },
+    "hint": "Derselbe Befehl wie im Konstruktor.",
+    "explanation": "Mit `super().methode()` kann man die Originalimplementierung der Elternklasse aufrufen und um zusätzliche Logik ergänzen."
+  },
+  {
+    "id": 78,
+    "topic": 5,
+    "type": "tf",
+    "title": "Mehrfachvererbung in Python",
+    "prompt": "Python erlaubt es im Gegensatz zu Java, dass eine Klasse von mehr als einer Basisklasse gleichzeitig erbt (z. B. `class Smartphone(Telefon, Kamera):`).",
+    "answer": true,
+    "hint": "Python unterstützt echte Mehrfachvererbung.",
+    "explanation": "Richtig! Python unterstützt Mehrfachvererbung (Multiple Inheritance). Die Reihenfolge der Auflösung wird über das MRO-Verfahren gesteuert."
+  },
+  {
+    "id": 79,
+    "topic": 5,
+    "type": "bughunt",
+    "title": "Bug-Hunter: Methoden überschreiben",
+    "prompt": "Finde die 2 Fehler in dieser Überschreibung:",
+    "codeLines": [
+      "class Tier:",
+      "    def laut(self):",
+      "        return \"Geräusch\"",
+      "class Katze(Tier):",
+      "    def laut():",
+      "        return super.laut() + \" -> Miau\""
+    ],
+    "bugIndices": [
+      4,
+      5
+    ],
+    "hint": "Zeile 5 fehlt self; Zeile 6 fehlen die Klammern bei super().",
+    "explanation": "Zeile 5: Auch überschriebene Methoden brauchen `self`: `def laut(self):`.\nZeile 6: `super` muss als Funktion aufgerufen werden: `super().laut()`."
+  },
+  {
+    "id": 80,
+    "topic": 5,
+    "type": "tf",
+    "title": "Vererbung von privaten Attributen",
+    "prompt": "Ein mit `__` geschütztes privates Attribut der Superklasse kann in der Subklasse direkt mit `self.__attribut` verändert werden.",
+    "answer": false,
+    "hint": "Private Attribute sind strikt auf ihre eigene definierende Klasse beschränkt.",
+    "explanation": "Falsch! Private Attribute unterliegen dem Name Mangling der Superklasse. Die Subklasse kann nur über geerbte Getter/Setter darauf zugreifen."
+  },
+  {
+    "id": 81,
+    "topic": 5,
+    "type": "cloze",
+    "title": "DRY-Prinzip bei Vererbung",
+    "prompt": "Vererbung verhindert redundanten Code. Wofür steht die Abkürzung DRY?",
+    "codeTemplate": "DRY steht für: Don't {{gap1}} Yourself.",
+    "gaps": {
+      "gap1": "Repeat"
+    },
+    "hint": "Englisch für wiederholen.",
+    "explanation": "Don't Repeat Yourself (Wiederhole dich nicht) – gemeinsame Logik wird zentral in der Superklasse gepflegt."
+  },
+  {
+    "id": 82,
+    "topic": 5,
+    "type": "tf",
+    "title": "isinstance Prüfung",
+    "prompt": "Wenn `d = Dackel()` von `Hund` erbt, liefert der Aufruf `isinstance(d, Hund)` den Wert `True`.",
+    "answer": true,
+    "hint": "Ein Dackel ist ein Hund.",
+    "explanation": "Richtig! `isinstance` prüft die gesamte Vererbungshierarchie ab. Ein Dackel-Objekt ist gleichzeitig eine Instanz von `Hund` und von `Tier`."
+  },
+  {
+    "id": 83,
+    "topic": 5,
+    "type": "write",
+    "title": "Code-Writing: Polymorphe Methode implementieren",
+    "prompt": "Gegeben ist die Klasse `Mitarbeiter` mit der Methode `arbeite(self)`. Erstelle die Subklasse `Entwickler(Mitarbeiter)`, die `arbeite(self)` überschreibt und `'Schreibt Code'` per `return` zurückgibt.",
+    "starterCode": "class Mitarbeiter:\n    def arbeite(self) -> str:\n        return \"Erledigt Aufgaben\"\n\n# Schreibe hier Entwickler:\n",
+    "expectedKeywords": [
+      "class Entwickler(Mitarbeiter):",
+      "def arbeite(self)",
+      "return \"Schreibt Code\""
+    ],
+    "solutionCode": "class Entwickler(Mitarbeiter):\n    def arbeite(self) -> str:\n        return \"Schreibt Code\"",
+    "hint": "Erbe mit `class Entwickler(Mitarbeiter):` und definiere `def arbeite(self):` neu.",
+    "explanation": "Die Subklasse überschreibt die geerbte Methode und gibt ihr eigenes, spezialisiertes Verhalten zurück."
+  },
+  {
+    "id": 84,
+    "topic": 5,
+    "type": "tf",
+    "title": "Subklasse erweitert Attribute",
+    "prompt": "Eine Subklasse darf neben den geerbten Attributen beliebig viele eigene, neue Attribute deklarieren.",
+    "answer": true,
+    "hint": "Das ist das Wesen der Spezialisierung.",
+    "explanation": "Richtig! Spezialisierung bedeutet genau das: Die Basis behalten und durch zusätzliche Attribute oder Methoden erweitern."
+  },
+  {
+    "id": 85,
+    "topic": 5,
+    "type": "cloze",
+    "title": "Oberklassen-Referenz",
+    "prompt": "Wie nennt man die übergeordnete Klasse in der Fachterminologie noch?",
+    "codeTemplate": "Andere Begriffe für Superklasse sind Basisklasse oder {{gap1}}.",
+    "gaps": {
+      "gap1": "Elternklasse"
+    },
+    "hint": "Gegenstück zur Kindklasse.",
+    "explanation": "Superklasse, Basisklasse, Oberklasse und Elternklasse sind synonyme Begriffe."
+  },
+  {
+    "id": 86,
+    "topic": 5,
+    "type": "tf",
+    "title": "Polymorphe Schleife",
+    "prompt": "Man kann Objekte unterschiedlicher Subklassen (z. B. `Hund`, `Katze`) in eine gemeinsame Liste packen und in einer for-Schleife für jedes Objekt dieselbe Methode aufrufen.",
+    "answer": true,
+    "hint": "for tier in tiere: tier.laut()",
+    "explanation": "Richtig! Das ist das Paradebeispiel für Polymorphie: Der aufrufende Code muss den konkreten Untertyp nicht kennen."
+  },
+  {
+    "id": 87,
+    "topic": 6,
+    "type": "tf",
+    "title": "UML Sichtbarkeit Plus (+)",
+    "prompt": "Im UML-Klassendiagramm steht das Pluszeichen `+` für private Sichtbarkeit.",
+    "answer": false,
+    "hint": "Was bedeutet das Minuszeichen?",
+    "explanation": "Falsch! `+` bedeutet public (öffentlich). `-` steht für private und `#` für protected."
+  },
+  {
+    "id": 88,
+    "topic": 6,
+    "type": "cloze",
+    "title": "UML Sichtbarkeits-Symbol Protected",
+    "prompt": "Welches Zeichen symbolisiert die Sichtbarkeit protected im UML-Klassendiagramm?",
+    "codeTemplate": "Sichtbarkeit protected = {{gap1}}",
+    "gaps": {
+      "gap1": "#"
+    },
+    "hint": "Die Raute / das Doppelkreuz auf der Tastatur.",
+    "explanation": "`#` steht für protected (nur in der eigenen Klasse und Subklassen sichtbar)."
+  },
+  {
+    "id": 89,
+    "topic": 6,
+    "type": "tf",
+    "title": "Abgeleitetes Attribut (/)",
+    "prompt": "Ein Attribut mit einem vorangestellten Schrägstrich `/alter: int` wird dauerhaft als feste Spalte in der Datenbank gespeichert.",
+    "answer": false,
+    "hint": "Ein Schrägstrich kennzeichnet abgeleitete Attribute.",
+    "explanation": "Falsch! Der Schrägstrich `/` kennzeichnet ein abgeleitetes Attribut. Es wird zur Laufzeit dynamisch berechnet (z. B. aus dem Geburtsdatum) und nicht persistent gespeichert."
+  },
+  {
+    "id": 90,
+    "topic": 6,
+    "type": "tf",
+    "title": "Klassenattribute im UML Diagramm",
+    "prompt": "Statische Attribute (Klassenattribute) werden im Klassendiagramm durch Unterstreichung dargestellt.",
+    "answer": true,
+    "hint": "Vergleiche Folie 16 im Skript.",
+    "explanation": "Richtig! Unterstrichene Attribute oder Operationen kennzeichnen Klassenattribute bzw. Klassenmethoden (`static`)."
+  },
+  {
+    "id": 91,
+    "topic": 6,
+    "type": "cloze",
+    "title": "Aggregation vs. Komposition Rauten",
+    "prompt": "Ergänze die Rautenfarben: Eine leere (weiße) Raute bedeutet {{gap1}}, eine ausgefüllte (schwarze) Raute bedeutet {{gap2}}.",
+    "codeTemplate": "Weiß = {{gap1}}\nSchwarz = {{gap2}}",
+    "gaps": {
+      "gap1": "Aggregation",
+      "gap2": "Komposition"
+    },
+    "hint": "Aggregation ist lose, Komposition ist streng.",
+    "explanation": "Leere Raute = Aggregation (Teile können ohne Ganzes leben). Ausgefüllte Raute = Komposition (Existenzabhängigkeit, Teile sterben mit dem Ganzen)."
+  },
+  {
+    "id": 92,
+    "topic": 6,
+    "type": "tf",
+    "title": "Komposition Lebensdauer",
+    "prompt": "Bei einer Komposition (z. B. Tisch ◆── Tischbein) können die Beine ohne den Tisch weiter existieren, wenn der Tisch zerstört wird.",
+    "answer": false,
+    "hint": "Eine Komposition ist eine strenge Existenzabhängigkeit.",
+    "explanation": "Falsch! Bei einer Komposition sind die Teile existenzabhängig vom Ganzen. Wird das Ganze zerstört, enden auch die Teile."
+  },
+  {
+    "id": 93,
+    "topic": 6,
+    "type": "tf",
+    "title": "Objektdiagramm Methoden",
+    "prompt": "Im UML-Objektdiagramm werden alle Methoden der Klasse mit Parametern und Rückgabewerten gezeichnet.",
+    "answer": false,
+    "hint": "Achtung, Klausurfalle! Objektdiagramme zeigen nur Zustände.",
+    "explanation": "Falsch! Im Objektdiagramm werden grundsätzlich KEINE Methoden dargestellt! Es zeigt ausschließlich konkrete Attributwerte zu einem Zeitpunkt."
+  },
+  {
+    "id": 94,
+    "topic": 6,
+    "type": "cloze",
+    "title": "Objektdiagramm Kopfzeile",
+    "prompt": "Im Unterschied zum Klassendiagramm ist die Kopfzeile im Objektdiagramm (z. B. `maren : Gast`) immer:",
+    "codeTemplate": "Der Kopfname im Objektdiagramm ist immer {{gap1}}.",
+    "gaps": {
+      "gap1": "unterstrichen"
+    },
+    "hint": "Visuelles Merkmal für Instanzen.",
+    "explanation": "Instanznamen im Objektdiagramm werden immer unterstrichen notiert (`instanzName : KlassenName`)."
+  },
+  {
+    "id": 95,
+    "topic": 6,
+    "type": "tf",
+    "title": "Use-Case: Akteure Position",
+    "prompt": "Im UML-Anwendungsfalldiagramm (Use-Case) dürfen Akteure sowohl innerhalb als auch außerhalb der Systemgrenze gezeichnet werden.",
+    "answer": false,
+    "hint": "Akteure interagieren von außen mit dem System.",
+    "explanation": "Falsch! Akteure stehen ausnahmslos IMMER AUSSERHALB der Systemgrenze, da sie die externe Umwelt darstellen."
+  },
+  {
+    "id": 96,
+    "topic": 6,
+    "type": "cloze",
+    "title": "Use-Case: Include Beziehung",
+    "prompt": "Welche Beziehung kennzeichnet einen obligatorischen Pflichtschritt, der bei jeder Ausführung des Basisfalls zwingend aufgerufen wird?",
+    "codeTemplate": "Pflichtschritt = <<{{gap1}}>>",
+    "gaps": {
+      "gap1": "include"
+    },
+    "hint": "Englisch für einbinden.",
+    "explanation": "`<<include>>` modelliert das unbedingte Aufrufen eines Teilschritts (z. B. 'Mit Karte zahlen' includes 'PIN prüfen')."
+  },
+  {
+    "id": 97,
+    "topic": 6,
+    "type": "tf",
+    "title": "Pfeilrichtung bei Extend",
+    "prompt": "Bei einer `<<extend>>`-Beziehung zeigt die gestrichelte Pfeilspitze vom erweiternden Sonderfall ZURÜCK zum erweiterten Basisfall.",
+    "answer": true,
+    "hint": "Der Sonderfall klinkt sich rückwirkend am Extension Point ein.",
+    "explanation": "Richtig! Der Pfeil bei `<<extend>>` zeigt immer vom optionalen Sonderfall ZUM Basisfall! (Gegenstück zu include, wo der Pfeil zum Teilschritt zeigt)."
+  },
+  {
+    "id": 98,
+    "topic": 6,
+    "type": "tf",
+    "title": "Use-Case: Reihenfolge der Ausführung",
+    "prompt": "Ein Anwendungsfalldiagramm legt präzise fest, in welcher zeitlichen Reihenfolge die Use-Cases im Programmcode ausgeführt werden müssen.",
+    "answer": false,
+    "hint": "Ein Use-Case-Diagramm zeigt nur das WAS, nicht das WIE oder WANN.",
+    "explanation": "Falsch! Anwendungsfalldiagramme zeigen keine Ablaufreihenfolgen. Zeitliche Abfolgen modelliert man in Aktivitäts- oder Sequenzdiagrammen."
+  },
+  {
+    "id": 99,
+    "topic": 6,
+    "type": "cloze",
+    "title": "Use-Case: Extend Bedingung",
+    "prompt": "Ein `<<extend>>`-Fall wird nur ausgeführt, wenn an einem Extension Point eine bestimmte {{gap1}} erfüllt ist.",
+    "codeTemplate": "Extend erfordert eine {{gap1}} (Condition).",
+    "gaps": {
+      "gap1": "Bedingung"
+    },
+    "hint": "Englisch: Condition.",
+    "explanation": "Ein Extend-Fall ist konditional und wird nur ausgeführt, wenn die definierte Bedingung (Condition) zutrifft (z. B. 'erhaltener Betrag < Preis')."
+  },
+  {
+    "id": 100,
+    "topic": 6,
+    "type": "tf",
+    "title": "Vererbungspfeil im Klassendiagramm",
+    "prompt": "Die geschlossene, leere Pfeilspitze der Generalisierungslinie zeigt im Klassendiagramm immer zur Subklasse nach unten.",
+    "answer": false,
+    "hint": "Zeigt der Pfeil zum Kind oder zur Mutter?",
+    "explanation": "Falsch! Der Vererbungspfeil zeigt immer nach oben zur allgemeinen Superklasse (Elternklasse)!"
+  },
+  {
+    "id": 101,
+    "topic": 6,
+    "type": "tf",
+    "title": "Externes System als Akteur",
+    "prompt": "Ein externes IT-System (z. B. Kreditkarten-Gesellschaft) kann im Use-Case-Diagramm als Akteur mit dem Stereotyp `<<Actor>>` modelliert werden.",
+    "answer": true,
+    "hint": "Akteure müssen keine echten Menschen sein.",
+    "explanation": "Richtig! Externe Systeme, die mit unserer Software kommunizieren, werden als Kasten mit dem Stereotyp `<<Actor>>` außerhalb der Systemgrenze platziert."
+  },
+  {
+    "id": 102,
+    "topic": 6,
+    "type": "cloze",
+    "title": "Multiplizität Stern (*)",
+    "prompt": "Was bedeutet das Multiplizitäts-Symbol `*` an einem Assoziationsende?",
+    "codeTemplate": "Das Symbol * bedeutet beliebig {{gap1}}.",
+    "gaps": {
+      "gap1": "viele"
+    },
+    "hint": "Null bis unendlich.",
+    "explanation": "`*` (oder `0..*`) bedeutet 'beliebig viele' Objekte."
+  },
+  {
+    "id": 103,
+    "topic": 6,
+    "type": "tf",
+    "title": "Position der Raute bei Aggregation",
+    "prompt": "Die Raute einer Aggregation oder Komposition steht immer auf der Seite des Einzelteils, niemals beim Ganzen.",
+    "answer": false,
+    "hint": "Achtung Klausurfalle! Wo klebt die Raute?",
+    "explanation": "Falsch! Die Raute steht ausnahmslos IMMER auf der Seite des GANZEN (des Aggregats/Besitzers)!"
+  },
+  {
+    "id": 104,
+    "topic": 6,
+    "type": "write",
+    "title": "Code-Writing: UML in Python umsetzen",
+    "prompt": "Gegeben ist der UML-Kasten:\n--------------------------\nFahrrad\n--------------------------\n- rahmennummer : str\n+ gaenge : int = 7\n--------------------------\n+ get_rahmennummer() : str\n--------------------------\nImplementiere diese Klasse 1:1 in Python mit privater Rahmennummer.",
+    "starterCode": "# Implementiere die Klasse Fahrrad gemäß UML-Vorgabe:\n",
+    "expectedKeywords": [
+      "class Fahrrad",
+      "def __init__",
+      "self.__rahmennummer",
+      "self.gaenge = 7",
+      "def get_rahmennummer",
+      "return self.__rahmennummer"
+    ],
+    "solutionCode": "class Fahrrad:\n    def __init__(self, rahmennummer: str, gaenge: int = 7):\n        self.__rahmennummer = rahmennummer  # - bedeutet privat (__)\n        self.gaenge = gaenge                # + bedeutet public\n\n    def get_rahmennummer(self) -> str:\n        return self.__rahmennummer",
+    "hint": "`-` bedeutet zwei Unterstriche (`self.__rahmennummer`). Der Getter liefert diesen Wert per `return` zurück.",
+    "explanation": "Private Attribute beginnen mit `__`, öffentliche sind normal zugänglich, und Operationen werden als Methoden implementiert."
+  },
+  {
+    "id": 105,
+    "topic": 1,
+    "type": "diagram_click",
+    "title": "RAM-Modell: Zeiger & Aliasing",
+    "prompt": "Gegeben ist: a = Auto() und b = a. Klicke im Speicher-Diagramm auf das reale Objekt im Heap, auf das beide Variablen zeigen:",
+    "diagramType": "memory_pointer",
+    "diagramConfig": {
+      "stackVars": [
+        {
+          "name": "a",
+          "id": "var_a",
+          "pointsToId": "heap_car"
+        },
+        {
+          "name": "b",
+          "id": "var_b",
+          "pointsToId": "heap_car"
+        }
       ],
-      bugIndices: [1],
-      hint: "Zeile 2 erzeugt keine Kopie der Liste, sondern lässt liste2 auf dasselbe Objekt zeigen.",
-      explanation: "Zeile 2: `liste2 = liste1` kopiert nur den Zeiger! Um eine echte Kopie im RAM zu erzeugen, müsste man `liste1.copy()` oder `liste1[:]` schreiben."
+      "heapObjects": [
+        {
+          "id": "heap_car",
+          "label": "Auto (Objekt #104)",
+          "attrs": [
+            "marke=\"BMW\"",
+            "km=0"
+          ]
+        }
+      ]
     },
-    {
-      id: 6, topic: 1, type: "tf",
-      title: "Garbage Collector",
-      prompt: "Wenn kein einziger Zeiger im Stack mehr auf ein Objekt im Heap verweist, wird der Speicherplatz durch den Python Garbage Collector automatisch freigegeben.",
-      answer: true,
-      hint: "Reference Counting räumt verwaiste Objekte auf.",
-      explanation: "Richtig! Sobald der Referenzzähler eines Objekts auf 0 fällt, räumt Pythons automatischer Müllsammler das Objekt aus dem RAM."
-    },
-    {
-      id: 7, topic: 1, type: "cloze",
-      title: "Objekt vs. Klasse",
-      prompt: "Vervollständige den fundamentalen Unterschied bezüglich des Arbeitsspeichers:",
-      codeTemplate: "Die {{gap1}} ist der Bauplan im Code,\nwährend das {{gap2}} das konkrete Ding im RAM ist.",
-      gaps: { gap1: "Klasse", gap2: "Objekt" },
-      hint: "Zuerst der Bauplan, dann das fertige Ding im Speicher.",
-      explanation: "Die Klasse existiert als Typ-Definition; das Objekt (die Instanz) belegt echten dynamischen Heap-Speicher zur Laufzeit."
-    },
-    {
-      id: 8, topic: 1, type: "write",
-      title: "Code-Writing: Speichervergleich",
-      prompt: "Schreibe eine Funktion `selbes_objekt(a, b) -> bool`, die prüft, ob `a` und `b` auf exakt denselben Speicherplatz zeigen (Identitätsprüfung mit dem Operator `is`).",
-      starterCode: "def selbes_objekt(a, b) -> bool:\n    # Gib True zurück, wenn a und b im RAM identisch sind:\n    pass",
-      expectedKeywords: ["return a is b"],
-      solutionCode: "def selbes_objekt(a, b) -> bool:\n    return a is b",
-      hint: "Verwende `return a is b`.",
-      explanation: "Der Operator `is` prüft direkt, ob beide Operanden auf dieselbe Speicheradresse im Heap verweisen."
-    },
-    {
-      id: 9, topic: 1, type: "tf",
-      title: "Veränderbarkeit (Mutability)",
-      prompt: "Strings und Integer sind in Python veränderbare (mutable) Objekte; wenn man `x = 5; x += 1` schreibt, wird die Zahl an derselben Speicheradresse überschrieben.",
-      answer: false,
-      hint: "Zahlen und Strings sind immutable (unveränderlich).",
-      explanation: "Falsch! `int`, `str` und `tuple` sind unveränderlich (immutable). `x += 1` erzeugt im RAM ein völlig neues Integer-Objekt 6 und lässt x dorthin zeigen."
-    },
-    {
-      id: 10, topic: 1, type: "cloze",
-      title: "Instanziierungs-Syntax",
-      prompt: "Vervollständige den Aufruf, um aus der Klasse `Konto` eine neue Instanz im Speicher anzulegen:",
-      codeTemplate: "k1 = {{gap1}}()",
-      gaps: { gap1: "Konto" },
-      hint: "Der Klassenname mit Aufrufklammern.",
-      explanation: "Das Aufrufen des Klassennamens mit Klammern `Konto()` instanziiert das Objekt im Heap."
-    },
-
-    // =========================================================================
-    // LEVEL 2: FUNKTIONEN VS. METHODEN & DAS GEHEIMNIS VON SELF (ID 11 - 20)
-    // =========================================================================
-    {
-      id: 11, topic: 2, type: "tf",
-      title: "Was ist self?",
-      prompt: "In Python ist `self` ein magisches, vom Compiler reserviertes Schlüsselwort und kann technisch unter keinen Umständen umbenannt werden.",
-      answer: false,
-      hint: "Gibt es das Wort self in der Python-Grammatik als reserviertes Keyword?",
-      explanation: "Falsch! `self` ist kein reserviertes Schlüsselwort. Es ist lediglich der erste Parameter einer Instanzmethode. Man könnte es technisch 'x' nennen (auch wenn PEP8 ausnahmslos 'self' vorschreibt)."
-    },
-    {
-      id: 12, topic: 2, type: "diagram_click",
-      title: "Speicher: Wohin zeigt self?",
-      prompt: "Der Aufruf `mein_auto.fahren()` übergibt das Objekt an die Methode. Klicke auf die Variable im Stack, die exakt denselben Zeiger wie `self` besitzt:",
-      diagramType: "memory_pointer",
-      diagramConfig: {
-        stackVars: [
-          { name: "mein_auto", id: "var_car", pointsToId: "heap_car1" },
-          { name: "anderes_auto", id: "var_other", pointsToId: "heap_car2" },
-          { name: "self", id: "var_self", pointsToId: "heap_car1" }
-        ],
-        heapObjects: [
-          { id: "heap_car1", label: "Auto (Objekt #1)", attrs: ["km=50"] },
-          { id: "heap_car2", label: "Auto (Objekt #2)", attrs: ["km=120"] }
-        ]
-      },
-      targetHotspotId: "var_car",
-      hint: "Schau dir an, auf welches Objekt 'self' im Diagramm zeigt, und welche andere Variable auf dasselbe Objekt zeigt.",
-      explanation: "Genau! `mein_auto` und `self` zeigen auf dasselbe Heap-Objekt. `mein_auto.fahren()` wird intern übersetzt in `Auto.fahren(self=mein_auto)`."
-    },
-    {
-      id: 13, topic: 2, type: "cloze",
-      title: "Die interne Übersetzung von Methodenaufrufen",
-      prompt: "Vervollständige die interne Äquivalenz: Der Aufruf `hund.bellen()` entspricht genau:",
-      codeTemplate: "Hund.bellen({{gap1}})",
-      gaps: { gap1: "hund" },
-      hint: "Welches Objekt wird als self hineingereicht?",
-      explanation: "`hund.bellen()` ist nur eleganter 'syntaktischer Zucker' für `Hund.bellen(hund)`. Das Objekt wird als 1. Parameter übergeben!"
-    },
-    {
-      id: 14, topic: 2, type: "bughunt",
-      title: "Bug-Hunter: Fehlendes self im Methodenkopf",
-      prompt: "Finde die Zeile, die beim Aufruf von `b.tanken()` zu einem 'takes 0 positional arguments but 1 was given' TypeError führt:",
-      codeLines: [
-        "class Boot:",
-        "    def __init__(self):",
-        "        self.liter = 10",
-        "    def tanken():",
-        "        print('Vollgetankt')"
+    "targetHotspotId": "heap_car",
+    "hint": "Variablen im Stack sind nur Zeiger. Das eigentliche Objekt existiert genau 1x im Heap.",
+    "explanation": "Richtig! Beide Variablen \"a\" und \"b\" verweisen auf dieselbe Instanz im Heap. Ändert man b.km, ändert sich auch a.km!"
+  },
+  {
+    "id": 106,
+    "topic": 2,
+    "type": "diagram_click",
+    "title": "RAM-Modell: Wohin zeigt self?",
+    "prompt": "Beim Aufruf von auto1.fahren() wird das Objekt übergeben. Klicke auf die Variable im Stack, die auf dasselbe Objekt wie self zeigt:",
+    "diagramType": "memory_pointer",
+    "diagramConfig": {
+      "stackVars": [
+        {
+          "name": "auto1",
+          "id": "var_car1",
+          "pointsToId": "heap_car1"
+        },
+        {
+          "name": "auto2",
+          "id": "var_car2",
+          "pointsToId": "heap_car2"
+        },
+        {
+          "name": "self",
+          "id": "var_self",
+          "pointsToId": "heap_car1"
+        }
       ],
-      bugIndices: [3],
-      hint: "Instanzmethoden empfangen das aufrufende Objekt immer als ersten Parameter.",
-      explanation: "Zeile 4: `def tanken():` muss `def tanken(self):` heißen. Da Python beim Aufruf `b.tanken()` das Objekt `b` übergibt, stürzt der Aufruf ab, wenn kein Parameter deklariert ist!"
+      "heapObjects": [
+        {
+          "id": "heap_car1",
+          "label": "Auto #1 (Heap)",
+          "attrs": [
+            "km=50"
+          ]
+        },
+        {
+          "id": "heap_car2",
+          "label": "Auto #2 (Heap)",
+          "attrs": [
+            "km=120"
+          ]
+        }
+      ]
     },
-    {
-      id: 15, topic: 2, type: "tf",
-      title: "Methodenaufruf auf der Klasse selbst",
-      prompt: "Der Aufruf `Auto.fahren(auto1)` ist in Python vollkommen legal und führt denselben Code aus wie `auto1.fahren()`.",
-      answer: true,
-      hint: "Erinnere dich an die Funktionsweise von self.",
-      explanation: "Richtig! Beide Aufrufarten sind semantisch exakt identisch. Die Kurzform `auto1.fahren()` ist der OOP-Standard."
-    },
-    {
-      id: 16, topic: 2, type: "write",
-      title: "Code-Writing: Erste saubere Instanzmethode",
-      prompt: "Definiere in der Klasse `Konto` eine Methode `anzeigen(self) -> str`. Sie soll den Text `'Konto aktiv'` per `return` zurückgeben.",
-      starterCode: "class Konto:\n    # Implementiere anzeigen hier:\n",
-      expectedKeywords: ["def anzeigen", "self", "return \"Konto aktiv\""],
-      solutionCode: "class Konto:\n    def anzeigen(self) -> str:\n        return \"Konto aktiv\"",
-      hint: "Achte auf `def anzeigen(self) -> str:` und `return 'Konto aktiv'`.",
-      explanation: "Instanzmethoden erhalten immer `self` als 1. Argument und reichen ihr Ergebnis mit `return` nach draußen."
-    },
-    {
-      id: 17, topic: 2, type: "tf",
-      title: "Funktion vs. Methode",
-      prompt: "Eine Methode ist nichts anderes als eine Funktion, die innerhalb des Rumpfes einer Klasse definiert ist und an Instanzen gebunden wird.",
-      answer: true,
-      hint: "Methode = Funktion im Kontext eines Objekts.",
-      explanation: "Richtig! Außerhalb einer Klasse spricht man von Funktionen; innerhalb einer Klasse heißen sie Methoden (oder Operationen in der UML)."
-    },
-    {
-      id: 18, topic: 2, type: "cloze",
-      title: "Zugriff auf eigene Attribute in Methoden",
-      prompt: "Wie greift eine Methode auf das Attribut `tempo` des aufrufenden Objekts zu?",
-      codeTemplate: "def bremsen(self):\n    {{gap1}}.tempo = 0",
-      gaps: { gap1: "self" },
-      hint: "Über welche Referenz steuert die Methode das eigene Objekt?",
-      explanation: "Innerhalb von Methoden greift man immer über `self.attribut` auf die Instanzdaten zu."
-    },
-    {
-      id: 19, topic: 2, type: "bughunt",
-      title: "Bug-Hunter: Ungebundene Variable in Methode",
-      prompt: "Finde den Fehler, bei dem versucht wird, auf ein Attribut ohne `self.` zuzugreifen:",
-      codeLines: [
-        "class Spieler:",
-        "    def __init__(self, punkte):",
-        "        self.punkte = punkte",
-        "    def print_punkte(self):",
-        "        print(punkte)"
+    "targetHotspotId": "var_car1",
+    "hint": "Schau, auf welches Objekt self im Diagramm zeigt.",
+    "explanation": "Genau! auto1 und self zeigen auf dasselbe Heap-Objekt. auto1.fahren() wird intern als Auto.fahren(self=auto1) aufgerufen."
+  },
+  {
+    "id": 107,
+    "topic": 3,
+    "type": "diagram_click",
+    "title": "UML: Privates Attribut identifizieren",
+    "prompt": "Klicke im abgebildeten UML-Klassendiagramm auf das Attribut mit privater Sichtbarkeit (-):",
+    "diagramType": "class_diagram",
+    "diagramConfig": {
+      "className": "Bankkonto",
+      "attributes": [
+        {
+          "text": "+ kontonummer : str",
+          "id": "attr_nr"
+        },
+        {
+          "text": "- pin : int",
+          "id": "attr_pin"
+        },
+        {
+          "text": "# saldo : float",
+          "id": "attr_saldo"
+        }
       ],
-      bugIndices: [4],
-      hint: "In Zeile 5 sucht Python nach einer lokalen Variable punkte, die in der Methode nicht existiert.",
-      explanation: "Zeile 5: Ohne `self.` ist `punkte` nicht definiert (NameError). Es muss zwingend `print(self.punkte)` heißen."
+      "methods": [
+        {
+          "text": "+ abheben(betrag: float) : bool",
+          "id": "meth_withdraw"
+        }
+      ]
     },
-    {
-      id: 20, topic: 2, type: "tf",
-      title: "self bei Methodenverkettung",
-      prompt: "Wenn eine Methode `return self` ausführt, kann der Aufrufer direkt weitere Methoden aneinanderhängen (Method Chaining, z. B. `auto.tanken().fahren()`).",
-      answer: true,
-      hint: "Wenn das Objekt zurückgegeben wird, kann darauf sofort die nächste Methode aufgerufen werden.",
-      explanation: "Richtig! `return self` gibt die Instanz selbst zurück und erlaubt flüssige Verkettungen wie `obj.set_a(1).set_b(2)`."
-    },
-
-    // =========================================================================
-    // LEVEL 3: KONSTRUKTOR & ATTRIBUTE (ID 21 - 32)
-    // =========================================================================
-    {
-      id: 21, topic: 3, type: "tf",
-      title: "Konstruktor-Aufgabe",
-      prompt: "Die Methode `__init__` ist dafür zuständig, das Objekt im Speicher neu zu allozieren, nicht dafür, seine Attribute zu initialisieren.",
-      answer: false,
-      hint: "Überlege: Was macht __new__ und was macht __init__?",
-      explanation: "Falsch! Die Allokation im Speicher erledigt `__new__`. `__init__` ist der Initialisierer – er belegt die Attribute des bereits erzeugten Objekts mit ihren Startwerten."
-    },
-    {
-      id: 22, topic: 3, type: "cloze",
-      title: "Feste Startwerte im Konstruktor",
-      prompt: "Ein `Kunde` soll beim Erstellen immer den festen Status `aktiv = True` erhalten, ohne dass dieser Wert übergeben werden muss. Ergänze die Zeile:",
-      codeTemplate: "class Kunde:\n    def __init__(self, name: str):\n        self.name = name\n        self.{{gap1}} = True",
-      gaps: { gap1: "aktiv" },
-      hint: "Der Attributname lautet aktiv.",
-      explanation: "Feste Startzustände deklariert man direkt im Konstruktor an `self`, ohne sie als Parameter in die Klammer zu schreiben."
-    },
-    {
-      id: 23, topic: 3, type: "bughunt",
-      title: "Bug-Hunter: Lokale Variable statt Attribut",
-      prompt: "Finde die 2 Fehler im folgenden Konstruktor (Zuweisung & Aufruf):",
-      codeLines: [
-        "class Artikel:",
-        "    def __init__(self, preis):",
-        "        preis = preis",
-        "a = Artikel",
-        "print(a.preis)"
+    "targetHotspotId": "attr_pin",
+    "hint": "+ steht für public, - für private, # für protected.",
+    "explanation": "Perfekt! Das Minuszeichen (-) steht in der UML für private Sichtbarkeit. In Python wird dies mit zwei führenden Unterstrichen (__pin) umgesetzt."
+  },
+  {
+    "id": 108,
+    "topic": 6,
+    "type": "diagram_click",
+    "title": "UML: Abgeleitetes Attribut (/) erkennen",
+    "prompt": "Ein Attribut wird zur Laufzeit dynamisch berechnet und nicht gespeichert. Klicke im Klassendiagramm auf dieses abgeleitete Attribut:",
+    "diagramType": "class_diagram",
+    "diagramConfig": {
+      "className": "Person",
+      "attributes": [
+        {
+          "text": "- geburtsdatum : Date",
+          "id": "attr_birth"
+        },
+        {
+          "text": "+ /alter : int",
+          "id": "attr_derived_age"
+        },
+        {
+          "text": "- name : str",
+          "id": "attr_name"
+        }
       ],
-      bugIndices: [2, 3],
-      hint: "Zeile 3 vergisst self; Zeile 4 instanziiert nicht (Klammern fehlen).",
-      explanation: "Zeile 3: Muss `self.preis = preis` heißen, sonst stirbt der Wert mit Funktionsende.\nZeile 4: Zur Objekterzeugung müssen Klammern und Argumente übergeben werden: `a = Artikel(19.99)`."
+      "methods": [
+        {
+          "text": "+ get_name() : str",
+          "id": "meth_get_name"
+        }
+      ]
     },
-    {
-      id: 24, topic: 3, type: "write",
-      title: "Code-Writing: Vollständiger Konstruktor",
-      prompt: "Schreibe die Klasse `Produkt` mit einem Konstruktor, der `bezeichnung` (str) und `menge` (int, Standardwert 1) an `self` bindet.",
-      starterCode: "# Schreibe hier die Klasse Produkt:\n",
-      expectedKeywords: ["class Produkt", "def __init__", "self", "bezeichnung", "menge = 1"],
-      solutionCode: "class Produkt:\n    def __init__(self, bezeichnung: str, menge: int = 1):\n        self.bezeichnung = bezeichnung\n        self.menge = menge",
-      hint: "Achte auf `def __init__(self, bezeichnung: str, menge: int = 1):`.",
-      explanation: "Standardwerte in Parametern ermöglichen flexible Aufrufe: `Produkt('Stift')` oder `Produkt('Heft', 5)`."
+    "targetHotspotId": "attr_derived_age",
+    "hint": "Abgeleitete Attribute werden in UML durch ein Satzzeichen vor dem Namen gekennzeichnet.",
+    "explanation": "Richtig! Der Schrägstrich (/) kennzeichnet ein abgeleitetes Attribut, das dynamisch berechnet wird."
+  },
+  {
+    "id": 109,
+    "topic": 6,
+    "type": "diagram_click",
+    "title": "UML: Komposition (◆) erkennen",
+    "prompt": "Ein Auto besteht aus einem Motor. Stirbt das Auto, wird der Motor mit zerstört (Existenzabhängigkeit). Klicke auf die Verbindung:",
+    "diagramType": "relationship",
+    "diagramConfig": {
+      "classA": "Auto (Ganzes)",
+      "subtextA": "Besitzer",
+      "classB": "Motor (Teil)",
+      "subtextB": "existenzabhängig",
+      "currentSymbol": "composition"
     },
-    {
-      id: 25, topic: 3, type: "tf",
-      title: "Rückgabewert von __init__",
-      prompt: "Die Methode `__init__` darf explizit `return self` zurückgeben, um Methodenketten zu ermöglichen.",
-      answer: false,
-      hint: "Achtung Klausurfalle! Was darf der Konstruktor zurückgeben?",
-      explanation: "Falsch! `__init__` darf NIEMALS etwas anderes als `None` zurückgeben! Ein expliziter Return-Wert führt zu einem schweren `TypeError: __init__() should return None`."
+    "targetHotspotId": "relation-link",
+    "hint": "Schwarze Raute = Komposition (strenge Bindung), weiße Raute = Aggregation (lose Bindung).",
+    "explanation": "Genau! Die ausgefüllte Raute ◆ kennzeichnet eine Komposition. Die Teile können ohne das Ganze nicht existieren."
+  },
+  {
+    "id": 110,
+    "topic": 6,
+    "type": "diagram_click",
+    "title": "Use-Case: Akteur außerhalb der Systemgrenze",
+    "prompt": "Akteure interagieren von außen mit dem System. Klicke im Diagramm auf den externen Akteur:",
+    "diagramType": "use_case",
+    "diagramConfig": {
+      "actorName": "Kunde",
+      "stereotype": "<<include>>"
     },
-    {
-      id: 26, topic: 3, type: "cloze",
-      title: "Standardwert im Konstruktor",
-      prompt: "Ergänze den Standardwert für `rabatt` mit 0.0 Prozent:",
-      codeTemplate: "def __init__(self, preis: float, rabatt: float = {{gap1}}):\n    self.preis = preis\n    self.rabatt = rabatt",
-      gaps: { gap1: "0.0" },
-      hint: "Standardmäßig null Nachlass.",
-      explanation: "Standardparameter werden mit `= wert` im Funktionskopf deklariert."
-    },
-    {
-      id: 27, topic: 3, type: "tf",
-      title: "Unabhängigkeit zweier Instanzen",
-      prompt: "Werden mit `k1 = Konto('A')` und `k2 = Konto('B')` zwei Objekte erzeugt, besitzen beide ihre eigenen, völlig unabhängigen Kopien der Instanzattribute im RAM.",
-      answer: true,
-      hint: "Instanzdaten gehören exakt einem Objekt.",
-      explanation: "Richtig! Instanzattribute sind strikt an ihre jeweilige Instanz im Heap gebunden."
-    },
-    {
-      id: 28, topic: 3, type: "bughunt",
-      title: "Bug-Hunter: Methodenaufruf vor Attributerstellung",
-      prompt: "Finde die Zeile im Konstruktor, die fehlschlägt, weil auf ein Attribut zugegriffen wird, bevor es erzeugt wurde:",
-      codeLines: [
-        "class Rechner:",
-        "    def __init__(self, x, y):",
-        "        self.summe = self.x + self.y",
-        "        self.x = x",
-        "        self.y = y"
-      ],
-      bugIndices: [2],
-      hint: "In Zeile 3 existieren self.x und self.y noch gar nicht an dem Objekt!",
-      explanation: "Zeile 3: `self.summe = self.x + self.y` wirft einen AttributeError, weil `self.x` und `self.y` erst in Zeile 4 und 5 zugewiesen werden. Die Reihenfolge im Konstruktor ist strikt sequenziell!"
-    },
-    {
-      id: 29, topic: 3, type: "write",
-      title: "Code-Writing: Startzustand Liste",
-      prompt: "Erstelle die Klasse `Warenkorb`. Der Konstruktor nimmt keine Argumente (außer `self`) entgegen und initialisiert `self.artikel = []` als leere Liste.",
-      starterCode: "class Warenkorb:\n    # Initialisiere hier die leere Artikelliste:\n",
-      expectedKeywords: ["def __init__(self)", "self.artikel = []"],
-      solutionCode: "class Warenkorb:\n    def __init__(self):\n        self.artikel = []",
-      hint: "Achte auf `self.artikel = []` oder `self.artikel = list()`.",
-      explanation: "Jedes Warenkorb-Objekt erhält dadurch seine eigene leere Liste im RAM."
-    },
-    {
-      id: 30, topic: 3, type: "tf",
-      title: "Gefahr mutable Standardparameter",
-      prompt: "Schreibt man `def __init__(self, artikel=[]): self.artikel = artikel`, teilen sich alle ohne Argument erstellten Warenkörbe dieselbe Liste im RAM!",
-      answer: true,
-      hint: "Standardparameter werden in Python zur Definitionszeit nur genau 1x erzeugt.",
-      explanation: "Richtig! Dies ist eine berüchtigte Python-Falle: Mutable Default Arguments wie `[]` werden nur 1x im Speicher angelegt und von allen Instanzen ungewollt geteilt!"
-    },
-
-    // =========================================================================
-    // LEVEL 4: KLASSEN- VS. INSTANZDATEN (ID 31 - 40)
-    // =========================================================================
-    {
-      id: 31, topic: 4, type: "tf",
-      title: "Klassenattribut Definition",
-      prompt: "Ein Attribut, das direkt im Klassenrumpf außerhalb aller Methoden definiert wird, existiert für jedes Objekt separat als eigene Kopie.",
-      answer: false,
-      hint: "Überlege: Was ist ein Klassenattribut (static) im Unterschied zum Instanzattribut?",
-      explanation: "Falsch! Das ist ein Klassenattribut. Es existiert genau einmal für die gesamte Klasse und wird von allen Instanzen gemeinsam genutzt."
-    },
-    {
-      id: 32, topic: 4, type: "diagram_click",
-      title: "UML: Statisches Klassenattribut erkennen",
-      prompt: "Im abgebildeten UML-Klassendiagramm ist ein Element statisch (Klassenmerkmal). Klicke auf das statische Merkmal:",
-      diagramType: "class_diagram",
-      diagramConfig: {
-        className: "Fahrzeug",
-        attributes: [
-          { text: "- fin : str", id: "attr_fin", isStatic: false },
-          { text: "+ anzahl_raeder : int = 4", id: "attr_raeder", isStatic: true },
-          { text: "- km_stand : float", id: "attr_km", isStatic: false }
-        ],
-        methods: [
-          { text: "+ fahren(km: float) : void", id: "meth_drive", isStatic: false }
-        ]
-      },
-      targetHotspotId: "attr_raeder",
-      hint: "Statischer Code (Klassenattribute / Klassenmethoden) wird in der UML durch ein bestimmtes typografisches Merkmal gekennzeichnet.",
-      explanation: "Perfekt! Statische Merkmale (Klassenattribute und Klassenmethoden) werden in UML-Klassendiagrammen immer UNTERSTRICHEN dargestellt!"
-    },
-    {
-      id: 33, topic: 4, type: "cloze",
-      title: "Klassenattribut Aufruf",
-      prompt: "Über welches Element ruft man ein Klassenattribut sauber und direkt auf, ohne vorher ein Objekt instanziieren zu müssen?",
-      codeTemplate: "class Datenbank:\n    TIMEOUT = 30\n\nzeit = {{gap1}}.TIMEOUT",
-      gaps: { gap1: "Datenbank" },
-      hint: "Der Name der Klasse.",
-      explanation: "Klassenattribute können direkt über den Klassennamen (`Klasse.ATTRIBUT`) aufgerufen werden."
-    },
-    {
-      id: 34, topic: 4, type: "bughunt",
-      title: "Bug-Hunter: Instanzvariable überschreibt Klassenvariable",
-      prompt: "In welcher Zeile wird unabsichtlich ein lokales Instanzattribut angeheftet, anstatt die gemeinsame Klassenvariable zu verändern?",
-      codeLines: [
-        "class Zaehler:",
-        "    gesamt = 0",
-        "z1 = Zaehler()",
-        "z1.gesamt += 1",
-        "print(Zaehler.gesamt)"
-      ],
-      bugIndices: [3],
-      hint: "z1.gesamt += 1 weist z1 ein eigenes Attribut zu, lässt aber Zaehler.gesamt unberührt bei 0!",
-      explanation: "Zeile 4: Durch `z1.gesamt += 1` erzeugt Python ein neues Instanzattribut auf `z1`. Das Klassenattribut `Zaehler.gesamt` bleibt unverändert bei 0! Richtig wäre: `Zaehler.gesamt += 1`."
-    },
-    {
-      id: 35, topic: 4, type: "write",
-      title: "Code-Writing: Instanzzähler als Klassenattribut",
-      prompt: "Schreibe eine Klasse `Kunde`. Sie soll ein Klassenattribut `anzahl = 0` besitzen. Im Konstruktor soll `Kunde.anzahl` bei jedem Erstellen eines neuen Kunden um 1 erhöht werden.",
-      starterCode: "class Kunde:\n    # Klassenattribut und Konstruktor hier definieren:\n",
-      expectedKeywords: ["anzahl = 0", "def __init__(self)", "Kunde.anzahl += 1"],
-      solutionCode: "class Kunde:\n    anzahl = 0\n    def __init__(self):\n        Kunde.anzahl += 1",
-      hint: "Definiere `anzahl = 0` direkt unter dem Klassennamen und erhöhe im `__init__` mit `Kunde.anzahl += 1`.",
-      explanation: "Da das Klassenattribut von allen Objekten geteilt wird, zählt `Kunde.anzahl` automatisch alle erzeugten Kunden mit."
-    },
-
-    // =========================================================================
-    // LEVEL 5: KAPSELUNG & GETTER/SETTER (ID 41 - 52)
-    // =========================================================================
-    {
-      id: 41, topic: 5, type: "tf",
-      title: "Zweck der Kapselung",
-      prompt: "Kapselung bedeutet, dass Attribute privatisiert werden, um sie vor unkontrollierten Außenänderungen (z. B. negatives Alter, falsche PIN) zu schützen.",
-      answer: true,
-      hint: "Kapselung = Geheimnisprinzip (Information Hiding).",
-      explanation: "Richtig! Kapselung schützt die innere Datenintegrität des Objekts."
-    },
-    {
-      id: 42, topic: 5, type: "diagram_click",
-      title: "UML: Privates Attribut identifizieren",
-      prompt: "Klicke im UML-Diagramm auf das Attribut, das mit privater Sichtbarkeit geschützt ist:",
-      diagramType: "class_diagram",
-      diagramConfig: {
-        className: "Bankkonto",
-        attributes: [
-          { text: "+ kontonummer : str", id: "attr_nr" },
-          { text: "- pin : int", id: "attr_pin" },
-          { text: "# saldo : float", id: "attr_saldo" }
-        ],
-        methods: [
-          { text: "+ abheben(betrag: float) : bool", id: "meth_withdraw" }
-        ]
-      },
-      targetHotspotId: "attr_pin",
-      hint: "'+' steht für public, '-' für private, '#' für protected.",
-      explanation: "Perfekt! Das Minuszeichen '-' steht in der UML für private Sichtbarkeit. In Python wird dies mit zwei führenden Unterstrichen (`self.__pin`) umgesetzt."
-    },
-    {
-      id: 43, topic: 5, type: "cloze",
-      title: "Name Mangling in Python",
-      prompt: "Wenn ein Attribut `self.__passwort` in der Klasse `User` heißt, benennt Python es intern um in: `_User{{gap1}}`",
-      codeTemplate: "_User{{gap1}}",
-      gaps: { gap1: "__passwort" },
-      hint: "Der Attributname mit den zwei Unterstrichen.",
-      explanation: "Python wendet 'Name Mangling' an und benennt private Attribute intern in `_Klassenname__attribut` um, um versehentliches Überschreiben zu verhindern."
-    },
-    {
-      id: 44, topic: 5, type: "write",
-      title: "Code-Writing: Setter mit Validierung",
-      prompt: "Implementiere den Setter `set_gehalt(self, wert: float) -> None`. Er darf das private Attribut `self.__gehalt` nur aktualisieren, wenn `wert > 0` ist.",
-      starterCode: "class Angestellter:\n    def __init__(self):\n        self.__gehalt = 2000.0\n\n    # Implementiere set_gehalt hier:\n",
-      expectedKeywords: ["def set_gehalt", "self", "wert", "if wert > 0", "self.__gehalt = wert"],
-      solutionCode: "class Angestellter:\n    def __init__(self):\n        self.__gehalt = 2000.0\n\n    def set_gehalt(self, wert: float) -> None:\n        if wert > 0:\n            self.__gehalt = wert",
-      hint: "Prüfe mit `if wert > 0:` bevor du `self.__gehalt = wert` zuweist.",
-      explanation: "Der Setter fungiert als 'Türsteher' und verhindert ungültige Daten (wie Gehälter unter 0)."
-    },
-    {
-      id: 45, topic: 5, type: "bughunt",
-      title: "Bug-Hunter: Getter mit print statt return",
-      prompt: "Finde die 2 Fehler in dieser Kapselung:",
-      codeLines: [
-        "class Tresor:",
-        "    def __init__(self, code):",
-        "        self.__code = code",
-        "    def get_code(self):",
-        "        print(self.__code)",
-        "    def set_code(self, c):",
-        "        self.__code == c"
-      ],
-      bugIndices: [4, 6],
-      hint: "Zeile 5 druckt nur auf die Konsole; Zeile 7 nutzt Vergleichsoperator == statt Zuweisung =.",
-      explanation: "Zeile 5: Ein Getter muss `return self.__code` verwenden.\nZeile 7: Eine Zuweisung erfordert ein einfaches Gleichheitszeichen (`=`), kein `==`."
-    },
-    {
-      id: 46, topic: 5, type: "cloze",
-      title: "Protected Konvention in Python",
-      prompt: "Wie viele führende Unterstriche signalisieren Entwicklern nach Konvention die Sichtbarkeit protected (geschützt für Subklassen)?",
-      codeTemplate: "self.{{gap1}}wert = 10",
-      gaps: { gap1: "_" },
-      hint: "Genau ein einzelner Unterstrich.",
-      explanation: "Ein einzelner Unterstrich `_attribut` bedeutet 'protected' (Konvention). Zwei Unterstriche `__attribut` bedeuten 'private' (Name Mangling)."
-    },
-
-    // =========================================================================
-    // LEVEL 6: RÜCKGABEN & TYPE HINTS (ID 53 - 62)
-    // =========================================================================
-    {
-      id: 53, topic: 6, type: "tf",
-      title: "return vs. print",
-      prompt: "Wenn eine Funktion `print(Ergebnis)` ausführt, aber kein `return` enthält, ist ihr tatsächlicher Rückgabewert `None`.",
-      answer: true,
-      hint: "Was liefert eine Funktion ohne return?",
-      explanation: "Richtig! `print` schreibt nur Text in das Terminal. Der Aufrufer erhält `None` zurück."
-    },
-    {
-      id: 54, topic: 6, type: "cloze",
-      title: "Type Hint für void",
-      prompt: "Wie lautet der offizielle Python Type Hint für eine Methode, die keinen Rückgabewert liefert (UML void)?",
-      codeTemplate: "def starte_motor(self) -> {{gap1}}:\n    pass",
-      gaps: { gap1: "None" },
-      hint: "Pythons Begriff für 'Nichts'.",
-      explanation: "`-> None` ist das Python-Äquivalent zum UML-Typ `void`."
-    },
-    {
-      id: 55, topic: 6, type: "write",
-      title: "Code-Writing: Berechnung mit sauberem Return",
-      prompt: "Schreibe die Methode `gesamtbetrag(self) -> float`. Sie soll das Produkt aus `self.menge * self.stueckpreis` berechnen und per `return` zurückgeben.",
-      starterCode: "class Posten:\n    def __init__(self, menge: int, stueckpreis: float):\n        self.menge = menge\n        self.stueckpreis = stueckpreis\n\n    # Implementiere gesamtbetrag hier:\n",
-      expectedKeywords: ["def gesamtbetrag(self) -> float:", "return self.menge * self.stueckpreis"],
-      solutionCode: "class Posten:\n    def __init__(self, menge: int, stueckpreis: float):\n        self.menge = menge\n        self.stueckpreis = stueckpreis\n\n    def gesamtbetrag(self) -> float:\n        return self.menge * self.stueckpreis",
-      hint: "Multipliziere `self.menge * self.stueckpreis` und gib das Ergebnis mit `return` zurück.",
-      explanation: "Saubere Methoden verwenden `return`, damit der berechnete Wert im Gesamtsystem weiterverarbeitet werden kann."
-    },
-    {
-      id: 56, topic: 6, type: "bughunt",
-      title: "Bug-Hunter: Toter Code nach Return",
-      prompt: "Welche Zeile in dieser Methode wird niemals ausgeführt, weil sie nach einem Return steht? Klicke auf die Zeile:",
-      codeLines: [
-        "def berechne_rabatt(preis):",
-        "    if preis > 100:",
-        "        return preis * 0.9",
-        "        print('Rabatt gewährt!')",
-        "    return preis"
-      ],
-      bugIndices: [3],
-      hint: "Ein 'return' beendet die Funktion sofort.",
-      explanation: "Zeile 4: Nach Ausführung von `return` verlässt Python die Funktion augenblicklich. Der `print`-Befehl dahinter ist unerreichbar (Dead Code)."
-    },
-
-    // =========================================================================
-    // LEVEL 7: VERERBUNG & SUPER() (ID 63 - 72)
-    // =========================================================================
-    {
-      id: 63, topic: 7, type: "tf",
-      title: "Vererbungssyntax in Python",
-      prompt: "In Python notiert man die Elternklasse in runden Klammern direkt hinter dem Klassennamen der Subklasse: `class Subklasse(Elternklasse):`.",
-      answer: true,
-      hint: "In Java schreibt man extends, in Python runde Klammern.",
-      explanation: "Richtig! `class Kind(Eltern):` erbt alle Eigenschaften und Methoden der Elternklasse."
-    },
-    {
-      id: 64, topic: 7, type: "cloze",
-      title: "super() Aufruf",
-      prompt: "Mit welchem Funktionsaufruf ruft eine Subklasse den Konstruktor ihrer Elternklasse auf?",
-      codeTemplate: "class Manager(Mitarbeiter):\n    def __init__(self, name: str, bonus: float):\n        {{gap1}}().__init__(name)\n        self.bonus = bonus",
-      gaps: { gap1: "super" },
-      hint: "Englisch für übergeordnet.",
-      explanation: "`super().__init__(name)` delegiert die Initialisierung an die Elternklasse."
-    },
-    {
-      id: 65, topic: 7, type: "bughunt",
-      title: "Bug-Hunter: Falsches self in super()",
-      prompt: "Finde die 2 Fehler im folgenden Vererbungsbeispiel:",
-      codeLines: [
-        "class Tier:",
-        "    def __init__(self, name):",
-        "        self.name = name",
-        "class Hund(Tier):",
-        "    def __init__(self, name, rasse):",
-        "        super().__init__(self, name)",
-        "        self.rasse = rasse"
-      ],
-      bugIndices: [5],
-      hint: "Beim Aufruf von super().__init__() darf self NICHT nochmals als Argument übergeben werden!",
-      explanation: "Zeile 6: `super()` bindet `self` bereits automatisch. Der Aufruf muss `super().__init__(name)` lauten – die explizite Übergabe von `self` führt zu einem TypeError!"
-    },
-    {
-      id: 66, topic: 7, type: "write",
-      title: "Code-Writing: Vollständige Subklasse",
-      prompt: "Gegeben ist `class Geraet:\n    def __init__(self, marke: str):\n        self.marke = marke`. Erstelle die Subklasse `Laptop`, die von `Geraet` erbt, im Konstruktor `marke` (str) und `ram` (int) empfängt, den Elternkonstruktor mit `super().__init__(marke)` aufruft und `self.ram = ram` speichert.",
-      starterCode: "class Geraet:\n    def __init__(self, marke: str):\n        self.marke = marke\n\n# Schreibe hier die Klasse Laptop:\n",
-      expectedKeywords: ["class Laptop(Geraet):", "def __init__", "super().__init__(marke)", "self.ram = ram"],
-      solutionCode: "class Laptop(Geraet):\n    def __init__(self, marke: str, ram: int):\n        super().__init__(marke)\n        self.ram = ram",
-      hint: "Vererbung: `class Laptop(Geraet):`. Basis-Initialisierung: `super().__init__(marke)`.",
-      explanation: "Subklassen spezialisieren das Verhalten und rufen gemeinsame Basislogik per `super()` auf."
-    },
-
-    // =========================================================================
-    // LEVEL 8: POLYMORPHIE & OVERRIDING (ID 73 - 82)
-    // =========================================================================
-    {
-      id: 73, topic: 8, type: "tf",
-      title: "Methoden überschreiben (Overriding)",
-      prompt: "Wenn eine Subklasse eine geerbte Methode mit exakt demselben Namen neu definiert, wird bei Aufrufen auf Subklassen-Objekten automatisch die neue, spezialisierte Version ausgeführt.",
-      answer: true,
-      hint: "Das ist die Essenz von Polymorphie und dynamischem Binden.",
-      explanation: "Richtig! Beim Überschreiben verdeckt die Subklasse das alte Verhalten der Elternklasse."
-    },
-    {
-      id: 74, topic: 8, type: "cloze",
-      title: "Typprüfung mit isinstance",
-      prompt: "Welche eingebaute Funktion prüft, ob ein Objekt eine Instanz einer bestimmten Klasse oder deren Subklassen ist?",
-      codeTemplate: "ist_hund = {{gap1}}(mein_tier, Hund)",
-      gaps: { gap1: "isinstance" },
-      hint: "Zusammengesetzt aus 'is' und 'instance'.",
-      explanation: "`isinstance(obj, Klasse)` berücksichtigt die gesamte Vererbungshierarchie."
-    },
-    {
-      id: 75, topic: 8, type: "write",
-      title: "Code-Writing: Polymorphe Methode",
-      prompt: "Gegeben ist `class Figur:\n    def zeichnen(self) -> str:\n        return 'Figur'`. Erstelle die Subklasse `Kreis(Figur)`, die `zeichnen(self)` überschreibt und `'Kreis'` zurückgibt.",
-      starterCode: "class Figur:\n    def zeichnen(self) -> str:\n        return 'Figur'\n\n# Schreibe hier Kreis:\n",
-      expectedKeywords: ["class Kreis(Figur):", "def zeichnen(self)", "return \"Kreis\""],
-      solutionCode: "class Kreis(Figur):\n    def zeichnen(self) -> str:\n        return \"Kreis\"",
-      hint: "Erbe mit `class Kreis(Figur):` und implementiere `def zeichnen(self) -> str:`.",
-      explanation: "Verschiedene Subklassen reagieren auf denselben Aufruf `obj.zeichnen()` mit ihrem eigenen spezifischen Verhalten."
-    },
-
-    // =========================================================================
-    // LEVEL 9: UML-KLASSENDIAGRAMME (ID 83 - 92)
-    // =========================================================================
-    {
-      id: 83, topic: 9, type: "diagram_click",
-      title: "UML: Abgeleitetes Attribut (/) erkennen",
-      prompt: "Ein Attribut wird zur Laufzeit dynamisch berechnet und nicht in der Datenbank gespeichert. Klicke im Klassendiagramm auf dieses abgeleitete Attribut:",
-      diagramType: "class_diagram",
-      diagramConfig: {
-        className: "Person",
-        attributes: [
-          { text: "- geburtsdatum : Date", id: "attr_birth" },
-          { text: "+ /alter : int", id: "attr_derived_age" },
-          { text: "- name : str", id: "attr_name" }
-        ],
-        methods: [
-          { text: "+ get_name() : str", id: "meth_get_name" }
-        ]
-      },
-      targetHotspotId: "attr_derived_age",
-      hint: "Abgeleitete Attribute werden in der UML durch ein vorangestelltes Satzzeichen markiert.",
-      explanation: "Hervorragend! Der Schrägstrich `/` kennzeichnet ein abgeleitetes Attribut (derived attribute). Es wird zur Laufzeit berechnet (z. B. aus dem Geburtsdatum) und nicht dauerhaft gespeichert."
-    },
-    {
-      id: 84, topic: 9, type: "cloze",
-      title: "UML Sichtbarkeits-Symbole",
-      prompt: "Ordne die UML-Symbole für Sichtbarkeiten zu: `+` = public, `-` = private, `{{gap1}}` = protected.",
-      codeTemplate: "Protected = {{gap1}}",
-      gaps: { gap1: "#" },
-      hint: "Die Raute / das Doppelkreuz.",
-      explanation: "`#` steht in der UML für protected, `+` für public, `-` für private."
-    },
-    {
-      id: 85, topic: 9, type: "tf",
-      title: "Objektdiagramm vs. Klassendiagramm",
-      prompt: "Im UML-Objektdiagramm werden genau wie im Klassendiagramm alle Methoden der Klasse mit Rückgabewerten abgebildet.",
-      answer: false,
-      hint: "Achtung Klausurfalle! Enthalten Objektdiagramme Methoden?",
-      explanation: "Falsch! In UML-Objektdiagrammen werden grundsätzlich KEINE Methoden dargestellt! Sie zeigen ausschließlich konkrete Attributwerte zur Laufzeit."
-    },
-
-    // =========================================================================
-    // LEVEL 10: UML-BEZIEHUNGEN (ID 93 - 102)
-    // =========================================================================
-    {
-      id: 93, topic: 10, type: "diagram_click",
-      title: "Komposition (◆) erkennen",
-      prompt: "Ein Gebäude besteht aus Räumen. Wird das Gebäude abgerissen, hören die Räume auf zu existieren (strenge Existenzabhängigkeit). Welche Rautenform gehört an die Seite des Gebäudes?",
-      diagramType: "relationship",
-      diagramConfig: {
-        classA: "Gebäude (Ganzes)",
-        subtextA: "Besitzer",
-        classB: "Raum (Teil)",
-        subtextB: "stirbt mit Gebäude",
-        currentSymbol: "composition"
-      },
-      targetHotspotId: "relation-link",
-      hint: "Ausgefüllte Raute = Komposition (strenge Bindung), leere Raute = Aggregation (lose Bindung).",
-      explanation: "Perfekt! Die schwarze, ausgefüllte Raute ◆ steht für eine Komposition. Die Teile sind existenziell an das Ganze gebunden und sterben mit ihm."
-    },
-    {
-      id: 94, topic: 10, type: "tf",
-      title: "Wo steht die Raute in der UML?",
-      prompt: "Bei Aggregation und Komposition steht die Raute immer auf der Seite des GANZEN (des Besitzers), niemals auf der Seite des Einzelteils.",
-      answer: true,
-      hint: "Klausurfalle: Raute beim Ganzen oder beim Teil?",
-      explanation: "Richtig! Die Raute steht ausnahmslos IMMER beim Ganzen (dem Aggregat / Container)!"
-    },
-    {
-      id: 95, topic: 10, type: "cloze",
-      title: "Aggregation Begriff",
-      prompt: "Wie nennt man die lose Teil-Ganzes-Beziehung (weiße Raute ◇), bei der die Teile unabhängig vom Ganzen weiter existieren können?",
-      codeTemplate: "Lose Beziehung = {{gap1}}",
-      gaps: { gap1: "Aggregation" },
-      hint: "Gegenstück zur Komposition.",
-      explanation: "Bei einer Aggregation (z. B. Verein ◇── Mitglied) existiert das Mitglied weiter, selbst wenn der Verein aufgelöst wird."
-    },
-    {
-      id: 96, topic: 10, type: "tf",
-      title: "Richtung des Vererbungspfeils",
-      prompt: "Im UML-Klassendiagramm zeigt die geschlossene, leere Pfeilspitze der Generalisierung von der Subklasse nach oben zur Superklasse.",
-      answer: true,
-      hint: "Zeigt der Pfeil zum Kind oder zur Elternklasse?",
-      explanation: "Richtig! Der Vererbungspfeil zeigt immer nach oben zur allgemeinen Superklasse!"
-    },
-
-    // =========================================================================
-    // LEVEL 11: UML USE-CASE DIAGRAMME (ID 103 - 110)
-    // =========================================================================
-    {
-      id: 103, topic: 11, type: "diagram_click",
-      title: "Use-Case: Akteur-Position",
-      prompt: "Im Anwendungsfalldiagramm interagieren Akteure mit dem System. Klicke auf den Akteur in der Grafik:",
-      diagramType: "use_case",
-      diagramConfig: {
-        actorName: "Kunde",
-        stereotype: "<<include>>"
-      },
-      targetHotspotId: "actor-human",
-      hint: "Akteure werden als Strichmännchen gezeichnet und stehen IMMER außerhalb der Systemgrenze.",
-      explanation: "Genau! Akteure stehen grundsätzlich AUSSERHALB der Systemgrenze, weil sie die externe Umwelt repräsentieren."
-    },
-    {
-      id: 104, topic: 11, type: "cloze",
-      title: "Include vs. Extend",
-      prompt: "Welche Beziehung kennzeichnet einen obligatorischen Pflichtschritt, der bei jeder Ausführung des Basisfalls zwingend ausgeführt wird?",
-      codeTemplate: "Pflichtschritt = <<{{gap1}}>>",
-      gaps: { gap1: "include" },
-      hint: "Englisch für 'einbinden'.",
-      explanation: "`<<include>>` modelliert zwingend erforderliche Teilschritte (z. B. 'Überweisen' includes 'Authentifizieren')."
-    },
-    {
-      id: 105, topic: 11, type: "tf",
-      title: "Pfeilrichtung bei <<extend>>",
-      prompt: "Bei einer `<<extend>>`-Beziehung zeigt die gestrichelte Pfeilspitze vom optionalen Erweiterungsfall ZURÜCK zum erweiterten Basisfall.",
-      answer: true,
-      hint: "Der Sonderfall klinkt sich rückwirkend am Extension Point ein.",
-      explanation: "Richtig! Der Pfeil bei `<<extend>>` zeigt immer vom optionalen Sonderfall ZUM Basisfall!"
-    },
-
-    // =========================================================================
-    // LEVEL 12: KLAUSUR-SYNTHESE & BOSS (ID 111 - 120)
-    // =========================================================================
-    {
-      id: 111, topic: 12, type: "write",
-      title: "Klausur-Endgegner: UML 1:1 in Python implementieren",
-      prompt: "Gegeben ist die UML-Klasse:\n--------------------------\nKonto\n--------------------------\n- kontostand : float = 0.0\n+ inhaber : str\n--------------------------\n+ einzahlen(betrag: float) : void\n+ get_kontostand() : float\n--------------------------\nImplementiere diese Klasse 1:1 in Python. `einzahlen` soll `betrag` auf `self.__kontostand` addieren, wenn `betrag > 0`.",
-      starterCode: "# Implementiere die Klasse Konto gemäß UML-Vorgabe:\n",
-      expectedKeywords: ["class Konto", "def __init__", "self.__kontostand = 0.0", "self.inhaber", "def einzahlen", "def get_kontostand", "return self.__kontostand"],
-      solutionCode: "class Konto:\n    def __init__(self, inhaber: str, start_stand: float = 0.0):\n        self.__kontostand = start_stand  # - privat (__)\n        self.inhaber = inhaber           # + public\n\n    def einzahlen(self, betrag: float) -> None:\n        if betrag > 0:\n            self.__kontostand += betrag\n\n    def get_kontostand(self) -> float:\n        return self.__kontostand",
-      hint: "'-' bedeutet zwei Unterstriche (`self.__kontostand`), `+` bedeutet öffentlich (`self.inhaber`).",
-      explanation: "Perfekte Klausurlösung: Private Felder geschützt, Methoden mit korrekten Type Hints und kontrollierter Zustandspflege."
-    },
-    {
-      id: 112, topic: 12, type: "bughunt",
-      title: "Boss-Bug: Gesamtsystem Vererbung & Kapselung",
-      prompt: "Finde die 2 Zeilen, die zu fatalen Fehlern in dieser Hierarchie führen:",
-      codeLines: [
-        "class Basis:",
-        "    def __init__(self):",
-        "        self.__geheim = 42",
-        "class Kind(Basis):",
-        "    def zeige(self):",
-        "        return self.__geheim",
-        "k = Kind()",
-        "print(k.zeige())"
-      ],
-      bugIndices: [5],
-      hint: "Subklassen haben keinen direkten Zugriff auf mit __ geschützte private Attribute der Elternklasse!",
-      explanation: "Zeile 6: `return self.__geheim` wirft einen AttributeError! Durch Name Mangling heißt das Attribut der Basisklasse `_Basis__geheim`. Die Subklasse kann nur über einen geerbten Getter darauf zugreifen!"
-    }
-  ];
+    "targetHotspotId": "actor-human",
+    "hint": "Akteure werden als Strichmännchen gezeichnet und stehen IMMER außerhalb des Systemkastens.",
+    "explanation": "Richtig! Akteure stehen ausnahmslos außerhalb der Systemgrenze, da sie die Umwelt des Systems darstellen."
+  }
+];
 
   window.TASK_DATABASE = {
     TOPICS,

@@ -1,103 +1,113 @@
 /* ==========================================================================
-   Python OOP & UML Trainer - Modern Developer Styles
+   Python OOP & UML Trainer - High-Performance Developer Dark Theme
+   Based on ui-ux-pro-max: JetBrains Mono + IBM Plex Sans, tight ergonomics,
+   content-driven compact heights, accessible contrast, smooth transitions.
    ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-bg: #090d16;
+  --color-surface: #0f172a;
+  --color-surface-hover: #1e293b;
+  --color-border: #1e293b;
+  --color-border-focus: #38bdf8;
+  --color-primary: #22c55e;
+  --color-accent: #38bdf8;
+}
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-bg);
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
 
 /* Custom smooth scrollbars */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #090d16;
 }
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 4px;
-  border: 1px solid #0f172a;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
 
-/* Reduced motion support */
+/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
-/* Screen shake effect on error (controlled via JS toggle) */
+/* Shake feedback animation for mistakes */
 @keyframes shake-anim {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 .shake {
-  animation: shake-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: shake-anim 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-/* Pulse glow for current active element */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.45); }
-}
-.pulse-glow {
-  animation: pulse-glow 2s infinite ease-in-out;
-}
-
-/* Cloze Input Field Styling */
+/* Cloze Input Field Styling - Compact & Focused */
 .cloze-input {
-  background: #0b1120;
+  background: #090e1a;
   border: 1.5px solid #334155;
   color: #38bdf8;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.95rem;
-  padding: 3px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  padding: 2px 8px;
   border-radius: 6px;
   outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   display: inline-block;
   vertical-align: middle;
-  margin: 0 3px;
+  margin: 0 2px;
   font-weight: 600;
   text-align: center;
 }
 .cloze-input:focus {
   border-color: #38bdf8;
-  background: #030712;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  background: #020617;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
 }
 .cloze-input.correct {
   border-color: #22c55e !important;
   background: #052e16 !important;
   color: #4ade80 !important;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3) !important;
 }
 .cloze-input.incorrect {
   border-color: #f43f5e !important;
   background: #4c0519 !important;
   color: #fda4af !important;
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.3) !important;
 }
 
 /* Bug Hunter Interactive Code Lines */
 .bug-line {
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease, border-left-color 0.15s ease, padding-left 0.15s ease;
+  transition: background-color 0.12s ease, border-left-color 0.12s ease;
   border-left: 3px solid transparent;
-  padding-left: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 .bug-line:hover {
-  background-color: rgba(51, 65, 85, 0.45);
+  background-color: rgba(51, 65, 85, 0.4);
   border-left-color: #64748b;
-  padding-left: 12px;
 }
 .bug-line.selected {
-  background-color: rgba(244, 63, 94, 0.18);
+  background-color: rgba(244, 63, 94, 0.2);
   border-left-color: #f43f5e;
 }
 .bug-line.correct-bug {
@@ -109,74 +119,55 @@
   border-left-color: #f43f5e !important;
 }
 
-/* Interactive SVG Diagrams */
+/* Interactive SVG Hotspots */
 .diagram-hotspot {
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: filter 0.15s ease, stroke 0.15s ease;
 }
 .diagram-hotspot:hover {
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
 }
-.diagram-hotspot.selected {
+.diagram-hotspot.selected rect {
   stroke: #38bdf8 !important;
-  stroke-width: 2.5px !important;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
+  stroke-width: 2px !important;
+  fill: rgba(56, 189, 248, 0.15) !important;
 }
-.diagram-hotspot.correct-hit {
+.diagram-hotspot.correct-hit rect {
   stroke: #22c55e !important;
-  stroke-width: 3px !important;
-  filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.8));
+  stroke-width: 2.5px !important;
+  fill: rgba(34, 197, 94, 0.2) !important;
 }
-.diagram-hotspot.wrong-hit {
+.diagram-hotspot.wrong-hit rect {
   stroke: #f43f5e !important;
-  stroke-width: 3px !important;
-  filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.8));
+  stroke-width: 2.5px !important;
+  fill: rgba(244, 63, 94, 0.2) !important;
 }
 
-/* Drag and Drop Zone in Diagrams */
-.diagram-dropzone {
-  transition: all 0.2s ease;
-  border: 2px dashed #475569;
+/* Matrix Button Compact Ergonomics */
+.matrix-btn {
+  transition: transform 0.1s ease, background-color 0.15s ease;
 }
-.diagram-dropzone.dragover {
-  border-color: #38bdf8;
-  background-color: rgba(56, 189, 248, 0.15);
-  transform: scale(1.04);
-}
-.diagram-dropzone.filled {
-  border-style: solid;
-  border-color: #22c55e;
-  background-color: rgba(34, 197, 94, 0.12);
+.matrix-btn:hover {
+  transform: scale(1.08);
 }
 
-.diagram-draggable {
-  cursor: grab;
-  user-select: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.diagram-draggable:active {
-  cursor: grabbing;
-  transform: scale(0.96);
-}
-
-/* Leitner Box Pill Indicators */
+/* Leitner Box Badges */
 .box-pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-family: ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
   font-weight: 700;
   border-radius: 9999px;
-  padding: 2px 8px;
+  padding: 1px 7px;
 }
-.box-pill-1 { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-.box-pill-2 { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.4); }
-.box-pill-3 { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
-.box-pill-4 { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.4); }
-.box-pill-5 { background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.4); }
+.box-pill-1 { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.35); }
+.box-pill-2 { background: rgba(245, 158, 11, 0.15); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.35); }
+.box-pill-3 { background: rgba(56, 189, 248, 0.15); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.35); }
+.box-pill-4 { background: rgba(168, 85, 247, 0.15); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.35); }
+.box-pill-5 { background: rgba(34, 197, 94, 0.15); color: #bbf7d0; border: 1px solid rgba(34, 197, 94, 0.35); }
 
-/* Confetti canvas overlay */
+/* Confetti Overlay */
 #confetti-canvas {
   position: fixed;
   inset: 0;
