@@ -24,6 +24,7 @@
     tasks: {}, // taskId -> { attempts, correct, incorrect, box: 1..5, lastTested: timestamp, bookmarked: false }
     hidden: [], // taskIds placed in trash
     settings: {
+      theme: 'indigo', // 'indigo', 'cyberpunk', 'nordic', 'terminal'
       soundEnabled: true,
       soundVolume: 0.7,
       soundProfile: 'synth', // 'synth' or 'retro'

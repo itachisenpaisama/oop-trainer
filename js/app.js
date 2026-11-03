@@ -228,7 +228,7 @@
       }
 
       if (isCurrent) {
-        btn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-500', 'text-slate-950', 'scale-105', 'font-black');
+        btn.classList.add('ring-2', 'ring-cyan-400', 'theme-cta-btn', 'scale-105', 'font-black');
       }
 
       btn.addEventListener('click', () => {
@@ -252,22 +252,16 @@
     document.querySelectorAll('.special-filter-btn').forEach(btn => {
       const f = btn.dataset.filter;
       const isActive = state.filterType === f;
-      if (isActive) {
-        btn.className = 'special-filter-btn px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 transition text-center shadow font-semibold';
-      } else {
-        btn.className = 'special-filter-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white transition text-center font-semibold';
-      }
+      btn.classList.toggle('active', isActive);
+      btn.classList.toggle('text-slate-400', !isActive);
     });
 
     // Horizontal Topic list
     document.querySelectorAll('.topic-btn').forEach(btn => {
       const top = btn.dataset.topic;
       const isActive = state.filterType === 'all' && state.currentTopic.toString() === top.toString();
-      if (isActive) {
-        btn.className = 'topic-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 transition shadow-sm';
-      } else {
-        btn.className = 'topic-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition border border-transparent';
-      }
+      btn.classList.toggle('active', isActive);
+      btn.classList.toggle('text-slate-400', !isActive);
     });
   }
 
@@ -927,6 +921,12 @@
     sfx = new window.SoundEngine(storage);
     diagrams = new window.DiagramEngine();
 
+    // Theme Engine initialization
+    const activeTheme = storage.data.settings?.theme || 'indigo';
+    document.body.dataset.theme = activeTheme;
+    const quickThemeSelect = document.getElementById('quick-theme-select');
+    if (quickThemeSelect) quickThemeSelect.value = activeTheme;
+
     updateFilterUI();
     renderCurrentTask();
 
@@ -953,11 +953,9 @@
       });
       Object.keys(navBtns).forEach(m => {
         if (navBtns[m]) {
-          if (m === targetMode) {
-            navBtns[m].className = 'px-3.5 py-1.5 rounded-lg font-semibold bg-emerald-500 text-slate-950 shadow transition flex items-center gap-1.5';
-          } else {
-            navBtns[m].className = 'px-3.5 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5';
-          }
+          const isActive = (m === targetMode);
+          navBtns[m].classList.toggle('active', isActive);
+          navBtns[m].classList.toggle('text-slate-400', !isActive);
         }
       });
 
@@ -1158,6 +1156,28 @@
     document.getElementById('setting-anim-toggle')?.addEventListener('change', (e) => {
       storage.data.settings.animationsEnabled = e.target.checked;
       storage.save();
+    });
+
+    // Theme Switchers (Header & Modal)
+    document.getElementById('quick-theme-select')?.addEventListener('change', (e) => {
+      const val = e.target.value;
+      storage.data.settings.theme = val;
+      document.body.dataset.theme = val;
+      storage.save();
+      sfx.playClick();
+    });
+
+    document.querySelectorAll('.theme-pick-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.themeVal;
+        if (!val) return;
+        storage.data.settings.theme = val;
+        document.body.dataset.theme = val;
+        const quickSel = document.getElementById('quick-theme-select');
+        if (quickSel) quickSel.value = val;
+        storage.save();
+        sfx.playCorrect();
+      });
     });
 
     document.getElementById('export-json-btn')?.addEventListener('click', () => {
